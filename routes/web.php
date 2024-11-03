@@ -105,3 +105,11 @@ Route::group(['middleware'=>['auth']],function (){
 
 });
 
+Route::group(['middleware' => ['auth', 'check.staff']], function() {
+    Route::get('users', [UserController::class, 'index'])->name('users');
+    Route::get('staff', [StaffController::class, 'index'])->name('staff');
+    Route::get('designations', [DesignationController::class, 'index'])->name('designations');
+    // Add other admin-only routes here
+});
+
+

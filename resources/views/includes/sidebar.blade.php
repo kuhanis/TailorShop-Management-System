@@ -48,32 +48,36 @@
                 </a>
             </li>
            
-            <li class="{{ Request::routeIs('users') ? 'active' : '' }} nav-item">
-                <a href="{{route('users')}}">
-                    <i class="la la-users"></i>
-                    <span class="menu-title" data-i18n="Users">Users</span>
-                </a>
-            </li>
-            <li class=" nav-item">
-                <a href="#">
-                    <i class="material-icons">people_outline</i>
-                    <span class="menu-title" data-i18n="Staff">Staff Management</span>
-                </a>
-                <ul class="menu-content">
-                    <li class="{{ Request::routeIs('designations') ? 'active' : '' }}">
-                        <a class="menu-item" href="{{route('designations')}}">
-                            <i class="material-icons"></i>
-                            <span data-i18n="designations">Designation</span>
-                        </a>
-                    </li>
-                    <li class="{{ Request::routeIs('staff') ? 'active' : '' }}">
-                        <a class="menu-item" href="{{route('staff')}}">
-                            <i class="material-icons"></i>
-                            <span data-i18n="staff">Staff</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            @if(auth()->user()->role !== 'staff')
+                <li class="{{ Request::routeIs('users') ? 'active' : '' }} nav-item">
+                    <a href="{{route('users')}}">
+                        <i class="la la-users"></i>
+                        <span class="menu-title" data-i18n="Users">Users</span>
+                    </a>
+                </li>
+
+                <li class=" nav-item">
+                    <a href="#">
+                        <i class="material-icons">people_outline</i>
+                        <span class="menu-title" data-i18n="Staff">Staff Management</span>
+                    </a>
+                    <ul class="menu-content">
+                        <li class="{{ Request::routeIs('designations') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{route('designations')}}">
+                                <i class="material-icons"></i>
+                                <span data-i18n="designations">Designation</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::routeIs('staff') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{route('staff')}}">
+                                <i class="material-icons"></i>
+                                <span data-i18n="staff">Staff</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+
 
             <li class=" nav-item">
                 <a href="#">
