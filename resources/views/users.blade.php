@@ -53,6 +53,7 @@
 						<th>Username</th>
 						<th>FullName</th>
 						<th>Email</th>
+						<th>Role</th>
 						<th>Action</th>
 					</tr>
 					</thead>
@@ -64,6 +65,7 @@
 							<td>{{$user->username}}</td>
 							<td>{{$user->name}}</td>
 							<td>{{$user->email}}</td>
+							<td>{{ $user->role }}</td>
 							<td>
 								<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
 								<div class="dropdown-menu">
