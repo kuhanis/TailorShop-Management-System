@@ -23,17 +23,21 @@ class UserController extends Controller
             'avatar' =>'file|image|mimes:jpg,jpeg,png,gif',
         ]);
 
-        User::create([
+        $plainPassword = $request->password;
+    
+        $user = User::create([
             'name'=>$request->name,
             'username'=>$request->username,
             'email'=>$request->email,
-            'password'=>Hash::make($request->password),
+            'password'=>Hash::make($plainPassword),
         ]);
-        $notification = array(
-            'message'=>"New user added successfully!!",
-            'alert-type'=>'success'
-        );
-        return back()->with($notification);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'New user added successfully!',
+            'username' => $user->username,
+            'password' => $plainPassword
+        ]);
     }
 
     public function profile(){
