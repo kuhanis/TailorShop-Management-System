@@ -149,6 +149,78 @@
                    
 @endsection
 
+<div class="modal wobble text-left" id="credentials-display" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title text-text-bold-600">New User Credentials</label>
+                <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Username: </label>
+                    <div class="form-control" id="new-username"></div>
+                </div>
+                <div class="form-group">
+                    <label>Password: </label>
+                    <div class="input-group">
+                        <div class="form-control" id="new-password"></div>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary copy-btn" onclick="copyPassword()">
+                                <i class="la la-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@push('page-js')
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#new-username').text(response.username);
+                $('#new-password').text(response.password);
+                $('#credentials-display').modal('show');
+                $('#add-user').modal('hide');
+                $('form')[0].reset();
+            }
+        });
+    });
+
+    // Handle close button click
+    $('#credentials-display .close, #credentials-display button[data-dismiss="modal"]').on('click', function() {
+        $('#credentials-display').modal('hide');
+    });
+});
+
+function copyPassword() {
+    const password = document.getElementById('new-password').textContent;
+    navigator.clipboard.writeText(password);
+    $('.copy-btn').text('Copied!');
+    setTimeout(() => $('.copy-btn').html('<i class="la la-copy"></i> Copy'), 2000);
+}
+</script>
+@endpush
+
+
 
 @push('page-js')
 
