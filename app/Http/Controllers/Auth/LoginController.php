@@ -22,6 +22,11 @@ class LoginController extends Controller
         if (!$authenticate){
             return back()->with('loginError',"Invalid User Credentials");
         }
+
+        if (auth()->user()->first_login) {
+            return redirect()->route('first.time.password');
+        }
+        
         return redirect()->route('dashboard');
 
     }
