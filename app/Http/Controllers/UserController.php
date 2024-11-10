@@ -108,4 +108,31 @@ class UserController extends Controller
         
         return back()->with($notification);
     }
+
+    public function firstTimePasswordForm()
+    {
+        if (!auth()->user()->first_login) {
+            return redirect()->route('dashboard');
+        }
+        $title = "Change Password";
+        return view('auth.first-time-password', compact('title'));
+    }
+
+    public function firstTimePasswordChange(Request $request)
+    {
+        $this->validate($request, [
+            'password' => 'required|max:200'
+        ]);
+
+        auth()->user()->update([
+            'password' => Hash::make($request->password),
+            'first_login' => false
+        ]);
+
+        return redirect()->route('dashboard')->with([
+            'message' => 'Password changed successfully!',
+            'alert-type' => 'success'
+        ]);
+    }
+
 }

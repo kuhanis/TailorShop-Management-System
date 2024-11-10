@@ -112,4 +112,13 @@ Route::group(['middleware' => ['auth', 'check.staff']], function() {
     // Add other admin-only routes here
 });
 
+Route::group(['middleware'=>['auth']], function (){
+    // Add these new routes
+    Route::get('first-time-password', [UserController::class, 'firstTimePasswordForm'])->name('first.time.password');
+    Route::post('first-time-password', [UserController::class, 'firstTimePasswordChange'])->name('first.time.password.change');
+    
+    // ... existing routes ...
+});
+
+
 
