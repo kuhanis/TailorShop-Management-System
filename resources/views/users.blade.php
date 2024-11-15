@@ -2,6 +2,23 @@
 
 @push('page-css')
 
+<style>
+    .modal {
+        padding-left: 260px; /* Half of sidebar width for perfect centering */
+    }
+    
+    .modal-dialog {
+        max-width: 500px;
+        margin: 1.75rem auto;
+    }
+
+    @media (max-width: 768px) {
+        .modal {
+            padding-left: 0;
+        }
+    }
+</style>
+
 @endpush
 
 @push('breadcrumb')
