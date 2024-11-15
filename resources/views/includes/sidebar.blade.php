@@ -7,7 +7,7 @@
                 <a class="white dropdown-toggle ml-2" id="user-account" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="user-name">{{auth()->user()->name}}</span>
                 </a>
-                <div class="text-light">Super Admin</div>
+                <div class="text-light">{{ucfirst(auth()->user()->role)}}</div>
                 <div class="dropdown-menu arrow" aria-labelledby="dropdownMenuLink">
                     <a href="{{route('user-profile')}}" class="dropdown-item">
                         <i class="material-icons align-middle mr-1">person</i>
@@ -85,12 +85,7 @@
                     <span class="menu-title" data-i18n="Measurement Settings">Measurement Settings</span>
                 </a>
                 <ul class="menu-content">
-                    <li class="{{ Request::routeIs('cloth-types') ? 'active' : '' }}">
-                        <a class="menu-item" href="{{route("cloth-types")}}">
-                            <i class="material-icons"></i>
-                            <span data-i18n="Cloth Types">Cloth Types</span>
-                        </a>
-                    </li>
+        
                     <li class="{{ Request::routeIs('measurement-parts') ? 'active' : '' }}">
                         <a class="menu-item" href="{{route('measurement-parts')}}">
                             <i class="material-icons"></i>
