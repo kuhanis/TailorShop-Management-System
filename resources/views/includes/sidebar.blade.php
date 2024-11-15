@@ -81,48 +81,6 @@
 
             <li class=" nav-item">
                 <a href="#">
-                    <i class="la la-briefcase"></i>
-                    <span class="menu-title" data-i18n="Expense management">Expense Management</span>
-                </a>
-                <ul class="menu-content">
-                    <li class="{{ Request::routeIs('expense-categories') ? 'active' : '' }}">
-                        <a class="menu-item" href="{{route('expense-categories')}}">
-                            <i class="material-icons"></i>
-                            <span data-i18n="Expense Categories">Expense Categories</span>
-                        </a>
-                    </li>
-                    <li class="{{ Request::routeIs('expenses') ? 'active' : '' }}">
-                        <a class="menu-item" href="{{route('expenses')}}">
-                            <i class="material-icons"></i>
-                            <span data-i18n="Expenses">Expenses</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class=" nav-item">
-                <a href="#">
-                    <i class="la la-money"></i>
-                    <span class="menu-title" data-i18n="Income management">Income Management</span>
-                </a>
-                <ul class="menu-content">
-                    <li class="{{ Request::routeIs('income-categories') ? 'active' : '' }}">
-                        <a class="menu-item" href="{{route('income-categories')}}">
-                            <i class="material-icons"></i>
-                            <span data-i18n="Income Categories">Income Categories</span>
-                        </a>
-                    </li>
-                    <li class="{{ Request::routeIs('income') ? 'active' : '' }}">
-                        <a class="menu-item" href="{{route('income')}}">
-                            <i class="material-icons"></i>
-                            <span data-i18n="Income">Income</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class=" nav-item">
-                <a href="#">
                     <i class="material-icons">face</i>
                     <span class="menu-title" data-i18n="Measurement Settings">Measurement Settings</span>
                 </a>
