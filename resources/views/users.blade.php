@@ -203,8 +203,26 @@ $(document).ready(function() {
                 $('#credentials-display').modal('show');
                 $('#add-user').modal('hide');
                 $('form')[0].reset();
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    var errors = xhr.responseJSON.errors;
+                    $.each(errors, function(key, value) {
+                        $(`input[name="${key}"]`).after(`<span class="text-danger">${value[0]}</span>`);
+                    });
+                }
             }
         });
+    });
+
+	// Clear error messages when modal is closed
+    $('#add-user').on('hidden.bs.modal', function() {
+        $('.text-danger').remove();
+    });
+
+    // Clear previous error messages when typing
+    $('input').on('keyup', function() {
+        $(this).next('.text-danger').remove();
     });
 
     // Handle close button click
