@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-        <title>{{ucfirst($title)}} - {{ucfirst(config('app.name'))}}</title>
+        <title>{{ucfirst($title)}}{{ucfirst(config('app.name'))}}</title>
         <link rel="shortcut icon" href="@if(!empty(AppSettings::get('favicon'))) {{asset('storage/'.AppSettings::get('logo'))}} @else{{asset('app-assets/images/ico/favicon.ico')}} @endif" type="image/x-icon">
         <link rel="shortcut icon" type="image/x-icon" href="{{asset('app-assets/fonts/material-icons/material-icons.min.css')}}">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700" rel="stylesheet">
