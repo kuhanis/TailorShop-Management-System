@@ -45,42 +45,32 @@
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
               
-                <table class="table table-striped table-bordered dataex-html5-export">
-                  <thead>
-                    <tr>
-                        <th>Measurement Type</th>
+			<table class="table table-striped table-bordered dataex-html5-export">
+				<thead>
+					<tr>
 						<th>Measurement Part</th>
-						<th>Description</th>
-						<th>Image</th>
 						<th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @if (!empty($parts->count()))
-                        @foreach ($parts as $part)
-                          <tr>
-                            <td>{{$part->clothType->name}}</td>
+					</tr>
+				</thead>
+				<tbody>
+					@if (!empty($parts->count()))
+						@foreach ($parts as $part)
+						<tr>
 							<td>{{$part->name}}</td>
-							<td>{{$part->description}}</td>
-							<td>@if (!empty($part->image))
-								<a href="{{asset('storage/parts/'.$part->image)}}" target="_blank" rel="noopener noreferrer">
-									<img width="50" src="{{asset('storage/parts/'.$part->image)}}" alt="image">
+							<td>
+							<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+							<div class="dropdown-menu">
+								<a href="javascript:void(0)" data-id="{{$part->id}}" data-name="{{$part->name}}" class="dropdown-item editbtn">
+									<i class="la la-edit"></i>Edit
 								</a>
-							@endif </td>
-                            <td>
-                              <a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                              <div class="dropdown-menu">
-                                  <a href="javascript:void(0)" data-image="{{$part->image}}" data-type="{{$part->clothType->name}}" data-description="{{$part->description}}" data-id="{{$part->id}}" data-name="{{$part->name}}" class="dropdown-item editbtn">
-                                  <i class="la la-edit"></i>Edit
-                                </a>
-                                  <div class="dropdown-divider"></div>
-                                  <a data-id="{{$part->id}}" href="javascript:void(0)" aria-haspopup="true" data-toggle="modal"  aria-expanded="true" class="dropdown-item deletebtn">
-                                  <i class="la la-trash"></i>Delete
-                                </a>
-                              </div>
-                            </td>
-                          </tr>
-                        @endforeach
+								<div class="dropdown-divider"></div>
+								<a data-id="{{$part->id}}" href="javascript:void(0)" aria-haspopup="true" data-toggle="modal" aria-expanded="true" class="dropdown-item deletebtn">
+									<i class="la la-trash"></i>Delete
+								</a>
+							</div>
+							</td>
+						</tr>
+						@endforeach
                         <x-modals.delete :route="'measurement-parts'" :title="'Measurement Part'" />
                         
 						<!-- add set measurement modal starts here -->
@@ -99,33 +89,14 @@
 											<div class="modal-body">
 												<div class="form-body">
 													<input type="hidden" id="edit_id" name="id">
-													<div class="form-group">
-														<label>Cloth Type: </label>
-														<select name="cloth_type" class="form-control edit_type">
-															@if (!empty($categories->count()))
-															@foreach ($categories as $category)
-																<option value="{{$category->id}}">{{$category->name}}</option>
-															@endforeach
-														@endif
-														</select>
-													</div>
+													
 													<div class="form-group">
 														<label>Measurement Name</label>
 														<div class="position-relative">
 															<input type="text" class="form-control edit_name" placeholder="measurement name" name="name">
 														</div>
 													</div>
-												<div class="form-group">
-													<label>Description</label>
-													<textarea rows="3" class="form-control edit_description" name="description" placeholder="Enter description"></textarea>
-												</div>
-												<div class="form-group">
-													<label class="col-sm-3 control-label">Image</label>
-													<div class="custom-file">
-														<input name="image" type="file" class="form-control edit_image">
-													</div>
-												</div>
-												</div>
+											</div>
 											<div class="modal-footer">
 												<button type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>						
 												<button type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
@@ -158,39 +129,18 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<form method="post" enctype="multipart/form-data" action="{{route('measurement-parts')}}">
+			<form method="post" action="{{route('measurement-parts')}}">
 				@csrf
 				<div class="modal-body">
 					<div class="form-body">
-						<div class="form-group">
-							<label>Cloth Type: </label>
-							<select name="cloth_type" class="form-control">
-								@if (!empty($categories->count()))
-								@foreach ($categories as $category)
-									<option value="{{$category->id}}">{{$category->name}}</option>
-								@endforeach
-							@endif
-							</select>
-						</div>
 						<div class="form-group">
 							<label>Measurement Name</label>
 							<div class="position-relative">
 								<input type="text" class="form-control" placeholder="measurement name" name="name">
 							</div>
 						</div>
-					<div class="form-group">
-						<label for="description">Description</label>
-						<textarea id="description" rows="3" class="form-control" name="description" placeholder="Enter description"></textarea>
 					</div>
-					<div class="form-group">
-						<label for="image" class="col-sm-3 control-label">Image</label>
-						<fieldset class="form-group">
-						<div class="custom-file">
-							<input name="image" type="file" class="form-control">
-						</div>
-						</fieldset>
-					</div>
-					</div>
+				</div>
 				<div class="modal-footer">
 					<button type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>						
 					<button type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
@@ -206,19 +156,14 @@
 @push('page-js')
 <script>
   $(document).ready(function (){
-    $('.editbtn').on('click',function (){
-      $('#edit-measurement-part').modal('show');
-      var id = $(this).data('id');
-      var name = $(this).data('name');
-	  var type = $(this).data('type');
-	  var description = $(this).data('description');
-	  var image = $(this).data('image')
-      $('#edit_id').val(id);
-      $('.edit_name').val(name);
-	  $('.edit_type').val(type);
-	  $('.edit_description').val(description);
-	  $('.edit_image').val(image);
-    })
+	$('.editbtn').on('click',function (){
+		$('#edit-measurement-part').modal('show');
+		var id = $(this).data('id');
+		var name = $(this).data('name');
+		$('#edit_id').val(id);
+		$('.edit_name').val(name);
+	})
+
   })
 </script>
 @endpush
