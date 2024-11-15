@@ -30,29 +30,21 @@ class MeasurementPartController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'cloth_type'=>'required',
+            // 'cloth_type'=>'required',
             'name'=>'required|max:200',
-            'description'=>'max:200',
-            'image'=>'file|image|mimes:jpg,jpeg,png,gif',
         ]);
-        $imageName = null;
-        if($request->image != null){
-            $imageName = time().'.'.$request->image->extension();
-            $request->image->move(public_path('storage/parts'), $imageName);
-        } 
+        
         MeasurementPart::create([
             'cloth_type_id'=>$request->cloth_type,
             'name'=>$request->name,
-            'description'=>$request->description,
-            'image'=>$imageName,
         ]);
+
         $notification = array(
             'message'=>"Measurement part added successfully!!",
             'alert-type'=>'success'
         );
         return back()->with($notification);
     }
-
     /**
      * Display the specified resource.
      *
