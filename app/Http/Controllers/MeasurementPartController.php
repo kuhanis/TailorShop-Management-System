@@ -66,7 +66,7 @@ class MeasurementPartController extends Controller
     public function update(Request $request)
     {
         $this->validate($request,[
-            'cloth_type'=>'required',
+           // 'cloth_type'=>'required',
             'name'=>'required|max:200',
             'description'=>'max:200',
             'image'=>'file|image|mimes:jpg,jpeg,png,gif',

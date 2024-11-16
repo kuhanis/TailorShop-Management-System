@@ -8,11 +8,6 @@ use Illuminate\Http\Request;
 
 class StaffController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $title = "staff";
@@ -21,15 +16,8 @@ class StaffController extends Controller
         return view('staff',compact('title','designations','staff'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-
         $this->validate($request,[
             'designation'=>'required',
             'fullname'=>'required',
@@ -39,13 +27,14 @@ class StaffController extends Controller
             'salary'=>'required',
             'avatar'=>'file|image|mimes:jpg,jpeg,png,gif',
         ]);   
+
         $imageName = null;
         if($request->avatar != null){
             $imageName = time().'.'.$request->avatar->extension();
             $request->avatar->move(public_path('storage/avatars'), $imageName);
         }  
 
-        Staff::create([
+        $staff = Staff::create([
             'designation_id'=>$request->designation,
             'fullname'=>$request->fullname,
             'address'=>$request->address,
@@ -54,42 +43,24 @@ class StaffController extends Controller
             'salary'=>$request->salary,
             'avatar'=>$imageName,
         ]);
-        $notification = array(
-            'message'=>"Staff added successfully!!",
-            'alert-type'=>'success'
-        );
-        return back()->with($notification);
+
+        return response()->json($staff->load('designation'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit($id)
     {
-        //
+        $staff = Staff::find($id);
+        return response()->json($staff);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        $staff = Staff::find($id);
+        $staff->update($request->all());
+        
+        return response()->json(['success' => true]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         $staff = Staff::find($request->id);
@@ -101,3 +72,4 @@ class StaffController extends Controller
         return back()->with($notification);
     }
 }
+

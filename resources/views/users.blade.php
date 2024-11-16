@@ -76,9 +76,9 @@
 					</thead>
 					<tbody>
 					@if (!empty($users->count()))
-						@foreach ($users as $user)
-							<tr>
-							<td>{{$user->id}}</td>
+					@foreach ($users as $index => $user)
+						<tr>
+							<td>{{$index + 1}}</td>
 							<td>{{$user->username}}</td>
 							<td>{{$user->name}}</td>
 							<td>{{$user->email}}</td>
@@ -86,17 +86,24 @@
 							<td>
 								<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
 								<div class="dropdown-menu">
-								  	<a href="javascript:void(0)" data-id="{{$user->id}}" class="dropdown-item">
+									<a href="javascript:void(0)" 
+									data-id="{{$user->id}}"
+									data-name="{{$user->name}}"
+									data-username="{{$user->username}}"
+									data-email="{{$user->email}}"
+									data-role="{{$user->role}}"
+									class="dropdown-item editbtn">
 										<i class="la la-edit"></i>Edit
 									</a>
-								 	 <div class="dropdown-divider"></div>
-								  	<a data-id="{{$user->id}}" href="javascript:void(0)" aria-haspopup="true" data-toggle="modal" aria-expanded="true" class="dropdown-item deletebtn" data-id="{{$user->id}}">
+									<div class="dropdown-divider"></div>
+									<a data-id="{{$user->id}}" href="javascript:void(0)" class="dropdown-item deletebtn">
 										<i class="la la-trash"></i>Delete
 									</a>
 								</div>
 							</td>
-							</tr>
-						@endforeach
+						</tr>
+					@endforeach
+
 						<x-modals.delete :route="'user.destroy'" :title="'User'" />
 					@endif                    
 					</tbody>
@@ -137,12 +144,6 @@
 					<div class="form-group">
 						<input type="email" required placeholder="Enter email address" name="email" class="form-control">
 					</div>
-
-					<label>Avatar: </label>
-					<div class="form-group">
-						<input type="file" name="avatar" class="form-control">
-					</div>
-
 
 					<label>Password: </label>
 					<div class="form-group">
@@ -200,12 +201,52 @@
         </div>
     </div>
 </div>
+<!-- edit user modal starts here -->
+<div class="modal wobble text-left" id="edit-user" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title text-text-bold-600">Edit User</label>
+                <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="{{route('users.update')}}">
+                @csrf
+                @method('PUT')
+                <input type="hidden" id="edit_id" name="id">
+                <div class="modal-body">
+                    <label>FullName: </label>
+                    <div class="form-group">
+                        <input type="text" id="edit_name" name="name" class="form-control">
+                    </div>
+                    
+                    <label>UserName: </label>
+                    <div class="form-group">
+                        <input type="text" id="edit_username" name="username" class="form-control">
+                    </div>
+
+                    <label>Email: </label>
+                    <div class="form-group">
+                        <input type="email" id="edit_email" name="email" class="form-control">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-primary btn-lg">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- edit user modal ends here -->
 
 
 @push('page-js')
 <script>
 $(document).ready(function() {
-    $('form').on('submit', function(e) {
+	$('#add-user form').on('submit', function(e) {
         e.preventDefault();
         
         $.ajax({
@@ -231,7 +272,25 @@ $(document).ready(function() {
             }
         });
     });
+		
+	$('#credentials-display').on('hidden.bs.modal', function () {
+		location.reload();
+	});
 
+	$('.editbtn').on('click', function() {
+        $('#edit-user').modal('show');
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let username = $(this).data('username');
+        let email = $(this).data('email');
+        let role = $(this).data('role');
+
+        $('#edit_id').val(id);
+        $('#edit_name').val(name);
+        $('#edit_username').val(username);
+        $('#edit_email').val(email);
+        $('#edit_role').val(role);
+    });
 	// Clear error messages when modal is closed
     $('#add-user').on('hidden.bs.modal', function() {
         $('.text-danger').remove();

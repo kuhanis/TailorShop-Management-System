@@ -56,6 +56,10 @@ Route::group(['middleware'=>['auth']],function (){
     Route::get('user-profile',[UserController::class,'profile'])->name('user-profile');
     Route::put('user-profile',[UserController::class,'updateProfile']);
     Route::post('user-profile',[UserController::class,'updatePassword']);
+    Route::put('users', [UserController::class, 'update'])->name('users.update');
+    Route::get('users',[UserController::class,'index'])->name('users');
+    Route::delete('users',[UserController::class,'destroy'])->name('user.destroy');
+    Route::post('add-user',[UserController::class,'store'])->name('add-user');
 
 
     Route::get('designations',[DesignationController::class,'index'])->name('designations');
@@ -67,6 +71,9 @@ Route::group(['middleware'=>['auth']],function (){
     Route::post('staff',[StaffController::class,'store']);
     Route::put('staff',[StaffController::class,'update']);
     Route::delete('staff',[StaffController::class,'destroy'])->name('staff.destroy');
+    Route::get('/staff/{id}/edit', [StaffController::class, 'edit']);
+    Route::put('/staff/{id}', [StaffController::class, 'update']);
+    Route::delete('/staff/{id}', [StaffController::class, 'destroy']);
 
     Route::get('expense-categories',[ExpenseCategoryController::class,'index'])->name('expense-categories');
     Route::post('expense-categories',[ExpenseCategoryController::class,'store']);
