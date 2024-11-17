@@ -148,7 +148,54 @@ $(document).ready(function() {
   </section>
   <!--/ HTML5 export buttons table -->
 
-  <div class="modal wobble text-left" id="add-staff" tabindex="-1" role="dialog" aria-labelledby="AddCustomer" aria-hidden="true">
+<!-- First Step Modal -->
+<div class="modal wobble text-left" id="add-staff" tabindex="-1" role="dialog" aria-labelledby="AddCustomer" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title text-text-bold-600">Step 1: Create User Account</label>
+                <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="user-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>FullName: </label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>UserName: </label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email: </label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password: </label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password: </label>
+                        <input type="password" name="password_confirmation" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+                    <button type="button" id="next-step" class="btn btn-outline-primary btn-lg">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Second Step Modal -->
+<div class="modal wobble text-left" id="add-staff-details" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -406,20 +453,32 @@ $(document).ready(function() {
 @push('page-js')
 <script>
 $(document).ready(function() {
-	$('#add-staff form').on('submit', function(e) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+
+    $('#next-step').click(function(e) {
         e.preventDefault();
         
+        // First create the user
         $.ajax({
-            url: $(this).attr('action'),
+            url: "{{route('add-user')}}",
             method: 'POST',
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
+            data: $('#user-form').serialize(),
             success: function(response) {
-			$('#add-staff').modal('hide');
-			location.reload();
-		},
-
+                // Hide first modal and show second
+                $('#add-staff').modal('hide');
+                $('#add-staff-details').modal('show');
+                
+                // Store the user ID for the staff creation
+                localStorage.setItem('new_user_id', response.user_id);
+                
+                // Show success message
+                toastr.success('User account created successfully');
+            },
             error: function(xhr) {
                 if (xhr.status === 422) {
                     let errors = xhr.responseJSON.errors;
@@ -430,27 +489,38 @@ $(document).ready(function() {
             }
         });
     });
-    // Edit button click handler
-    $('.editbtn').on('click', function() {
-        $('#edit-staff').modal('show');
-        let id = $(this).data('id');
-        let fullname = $(this).data('fullname');
-        let address = $(this).data('address');
-        let phone = $(this).data('phone');
-        let gender = $(this).data('gender');
-        let designation = $(this).data('designation');
-        let salary = $(this).data('salary');
 
-        $('#edit_id').val(id);
-        $('#edit_fullname').val(fullname);
-        $('#edit_address').val(address);
-        $('#edit_phone').val(phone);
-        $('#edit_gender').val(gender);
-        $('#edit_designation').val(designation);
-        $('#edit_salary').val(salary);
+    // Handle staff form submission
+    $('#staff-form').submit(function(e) {
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+        formData.append('user_id', localStorage.getItem('new_user_id'));
+        
+        $.ajax({
+            url: "{{ route('staff') }}",
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#add-staff-details').modal('hide');
+                localStorage.removeItem('new_user_id');
+                location.reload();
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    Object.keys(errors).forEach(function(key) {
+                        toastr.error(errors[key][0]);
+                    });
+                }
+            }
+        });
     });
 });
 </script>
 @endpush
+
 
 
