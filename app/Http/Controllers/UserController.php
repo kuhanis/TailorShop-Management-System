@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -32,11 +33,20 @@ class UserController extends Controller
             'password'=>Hash::make($plainPassword),
         ]);
 
+        // Automatically create staff entry
+        Staff::create([
+            'user_id' => $user->id,
+            'address' => '', // You might want to add these fields in the user creation form
+            'phone' => '',
+            'salary' => 0
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'New user added successfully!',
             'username' => $user->username,
-            'password' => $plainPassword
+            'password' => $plainPassword,
+            'user_id' => $user->id // Add this to help with staff creation in frontend
         ]);
     }
 

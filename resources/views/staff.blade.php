@@ -38,8 +38,8 @@ $(document).ready(function() {
             $('#edit_fullname').val(data.fullname);
             $('#edit_address').val(data.address);
             $('#edit_phone').val(data.phone);
-            $('#edit_gender').val(data.gender);
-            $('#edit_designation').val(data.designation_id);
+            //$('#edit_gender').val(data.gender);
+          //  $('#edit_designation').val(data.designation_id);
             $('#edit_salary').val(data.salary);
         });
     });
@@ -89,56 +89,36 @@ $(document).ready(function() {
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
               
+                <!-- Table headers -->
                 <table class="table table-striped table-bordered dataex-html5-export">
-                  <thead>
-                    <tr>
-                        <th>Designation</th>
-						<th>FullName</th>
-						<th>Address</th>
-						<th>Phone Number</th>
-						<th>Gender</th>
-						<th>Salary</th>
-						<th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @if (!empty($staff->count()))
-                        @foreach ($staff as $staff)
-                          <tr>
-							<td>{{$staff->designation->title}}</td>
-                            <td>{{$staff->fullname}}</td>
-							<td>{{$staff->address}}</td>
-							<td>{{$staff->phone}}</td>
-							<td>{{$staff->gender}}</td>
-							<td>{{$staff->salary}}</td>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                         
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Salary</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($staff as $staffMember)
+                        <tr>
+                            <td>{{ $staffMember->user->username }}</td>
+                            <td>{{ $staffMember->user->email }}</td>
+                            <td>{{ $staffMember->user->name }}</td>
+                            
+                            <td>{{ $staffMember->address }}</td>
+                            <td>{{ $staffMember->phone }}</td>
+                            <td>{{ $staffMember->salary }}</td>
                             <td>
-                              <a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                              <div class="dropdown-menu">
-							  <a href="javascript:void(0)" 
-							  <a href="javascript:void(0)" 
-								data-id="{{$staff->id}}" 
-								data-fullname="{{$staff->fullname}}"
-								data-address="{{$staff->address}}"
-								data-phone="{{$staff->phone}}"
-								data-gender="{{$staff->gender}}"
-								data-designation="{{$staff->designation_id}}"
-								data-salary="{{$staff->salary}}"
-								class="dropdown-item editbtn">
-								<i class="la la-edit"></i>Edit
-                            </a>
-                                  <div class="dropdown-divider"></div>
-                                  <a data-id="{{$staff->id}}" href="javascript:void(0)" aria-haspopup="true" data-toggle="modal"  aria-expanded="true" class="dropdown-item deletebtn">
-                                  <i class="la la-trash"></i>Delete
-                                </a>
-                              </div>
+                                <!-- Action buttons -->
                             </td>
-                          </tr>
+                        </tr>
                         @endforeach
-                        <x-modals.delete :route="'staff.destroy'" :title="'Staff'" />
-                       
-                    @endif                    
-                  </tbody>
-                  
+                    </tbody>
                 </table>
             </div>
           </div>
@@ -153,7 +133,7 @@ $(document).ready(function() {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <label class="modal-title text-text-bold-600">Step 1: Create User Account</label>
+                <label class="modal-title text-text-bold-600">Step 1: Create Staff Account</label>
                 <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -204,74 +184,29 @@ $(document).ready(function() {
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" enctype="multipart/form-data" action="{{route('staff')}}">
+            <form method="post" action="{{ route('staff') }}">
                 @csrf
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Designation</label>
-                        <select name="designation" class="select2 form-control" required>
-                            @if (!empty($designations->count()))
-                                @foreach ($designations as $designation)
-                                    <option value="{{$designation->id}}">{{$designation->title}}</option>                     
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
+                    <input type="hidden" name="user_id" id="selected_user_id">
                     
                     <div class="form-group">
-                        <label>Full Name: </label>
-                        <div class="position-relative has-icon-left">
-                            <input type="text" class="form-control" name="fullname" required>
-                            <div class="form-control-position">
-                                <i class="ft-user"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="address">Address</label>
-                        <div class="position-relative has-icon-left">
-                            <input type="text" class="form-control" name="address" required>
-                            <div class="form-control-position">
-                                <i class="la la-map-marker"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <select name="gender" class="select2 form-control" required>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
+                        <input type="text" class="form-control" name="address" required>
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <div class="position-relative has-icon-left">
-                            <input type="text" class="form-control" name="phone" required>
-                            <div class="form-control-position">
-                                <i class="ft-phone"></i>
-                            </div>
-                        </div>
+                        <input type="text" class="form-control" name="phone" required>
                     </div>
 
                     <div class="form-group">
                         <label>Salary</label>
-                        <div class="input-group mt-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">$</span>
-                            </div>
-                            <input type="number" class="form-control" name="salary" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text">.00</span>
-                            </div>
-                        </div>
+                        <input type="number" class="form-control" name="salary" required>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>                     
-                    <button type="submit" name="add_staff" class="btn btn-outline-primary btn-lg">Submit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>
@@ -291,16 +226,7 @@ $(document).ready(function() {
                 @method('PUT')
                 <input type="hidden" id="edit_id">
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Designation</label>
-                        <select name="designation" id="edit_designation" class="select2 form-control">
-                            @if (!empty($designations->count()))
-                                @foreach ($designations as $designation)
-                                    <option value="{{$designation->id}}">{{$designation->title}}</option>                     
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
+                   <input type="hidden" name="user_id" id="edit_user_id">
                     
                     <div class="form-group">
                         <label>Full Name: </label>
@@ -323,12 +249,12 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <select name="gender" id="edit_gender" class="select2 form-control">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
@@ -377,16 +303,7 @@ $(document).ready(function() {
                 @method('PUT')
                 <input type="hidden" name="id" id="edit_id">
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Designation</label>
-                        <select name="designation" id="edit_designation" class="select2 form-control" required>
-                            @if (!empty($designations->count()))
-                                @foreach ($designations as $designation)
-                                    <option value="{{$designation->id}}">{{$designation->title}}</option>                     
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
+                    
                     
                     <div class="form-group">
                         <label>Full Name: </label>
@@ -408,12 +325,12 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <div class="form-group">
+                  <!--   <div class="form-group">
                         <select name="gender" id="edit_gender" class="select2 form-control" required>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
@@ -473,8 +390,9 @@ $(document).ready(function() {
                 $('#add-staff').modal('hide');
                 $('#add-staff-details').modal('show');
                 
-                // Store the user ID for the staff creation
-                localStorage.setItem('new_user_id', response.user_id);
+                // Automatically set the user_id in the hidden input
+                $('#selected_user_id').val(response.user_id);
+
                 
                 // Show success message
                 toastr.success('User account created successfully');
@@ -491,11 +409,11 @@ $(document).ready(function() {
     });
 
     // Handle staff form submission
-    $('#staff-form').submit(function(e) {
+    $('#add-staff-details form').submit(function(e) {
         e.preventDefault();
         
         let formData = new FormData(this);
-        formData.append('user_id', localStorage.getItem('new_user_id'));
+        
         
         $.ajax({
             url: "{{ route('staff') }}",
@@ -504,8 +422,8 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                $('#add-staff-details').modal('hide');
-                localStorage.removeItem('new_user_id');
+                // Redirect to staff page
+                window.location.href = "{{ route('staff') }}";
                 location.reload();
             },
             error: function(xhr) {

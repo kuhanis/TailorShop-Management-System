@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Staff;
-use App\Models\Designation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StaffController extends Controller
@@ -11,40 +11,44 @@ class StaffController extends Controller
     public function index()
     {
         $title = "staff";
-        $designations=Designation::get();
-        $staff = Staff::get();
-        return view('staff',compact('title','designations','staff'));
+        $staff = Staff::with('user')->get();
+        return view('staff', compact('title', 'staff'));
     }
 
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'designation'=>'required',
-            'fullname'=>'required',
-            'address'=>'required',
-            'gender'=>'required',
-            'phone'=>'required',
-            'salary'=>'required',
-            'avatar'=>'file|image|mimes:jpg,jpeg,png,gif',
+        $this->validate($request, [
+            'user_id' => 'required|exists:users,id',
+            'address' => 'nullable',
+            'phone' => 'nullable',
+            'salary' => 'nullable|numeric'
         ]);   
-
-        $imageName = null;
-        if($request->avatar != null){
-            $imageName = time().'.'.$request->avatar->extension();
-            $request->avatar->move(public_path('storage/avatars'), $imageName);
-        }  
-
-        $staff = Staff::create([
-            'designation_id'=>$request->designation,
-            'fullname'=>$request->fullname,
-            'address'=>$request->address,
-            'gender'=>$request->gender,
-            'phone'=>$request->phone,
-            'salary'=>$request->salary,
-            'avatar'=>$imageName,
+    
+        // Check if staff entry already exists for this user
+        $existingStaff = Staff::where('user_id', $request->user_id)->first();
+        
+        if ($existingStaff) {
+            // Update existing staff entry
+            $staff = $existingStaff->update([
+                'address' => $request->address ?? $existingStaff->address,
+                'phone' => $request->phone ?? $existingStaff->phone,
+                'salary' => $request->salary ?? $existingStaff->salary
+            ]);
+        } else {
+            // Create new staff entry
+            $staff = Staff::create([
+                'user_id' => $request->user_id,
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'salary' => $request->salary
+            ]);
+        }
+    
+        // Return a redirect with a success message
+        return redirect()->route('staff')->with([
+            'message' => 'Staff added successfully!',
+            'alert-type' => 'success'
         ]);
-
-        return response()->json($staff->load('designation'));
     }
 
     public function edit($id)
