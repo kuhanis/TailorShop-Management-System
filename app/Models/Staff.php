@@ -11,12 +11,14 @@ class Staff extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable=[
-        'designation_id','fullname','address','gender',
-        'phone','salary','avatar'
+    protected $fillable = [
+        'user_id',  // Foreign key to users table
+        'address',
+        'phone',
+        'salary'
     ];
 
-    public function designation(){
-        return $this->belongsTo(Designation::class);
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }
