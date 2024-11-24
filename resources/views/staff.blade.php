@@ -75,7 +75,7 @@ $(document).ready(function() {
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Designations List</h4>
+            <h4 class="card-title">Staff List</h4>
             <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
             <div class="heading-elements">
               <ul class="list-inline mb-0">
@@ -94,11 +94,12 @@ $(document).ready(function() {
                     <thead>
                         <tr>
                             <th>Username</th>
+                            <th>Full Name</th>
                             <th>Email</th>
-                            <th>Name</th>
+                            
                          
-                            <th>Address</th>
                             <th>Phone</th>
+                            <th>Address</th>
                             <th>Salary</th>
                             <th>Action</th>
                         </tr>
@@ -107,17 +108,39 @@ $(document).ready(function() {
                         @foreach ($staff as $staffMember)
                         <tr>
                             <td>{{ $staffMember->user->username }}</td>
-                            <td>{{ $staffMember->user->email }}</td>
                             <td>{{ $staffMember->user->name }}</td>
+                            <td>{{ $staffMember->user->email }}</td>
                             
-                            <td>{{ $staffMember->address }}</td>
+                            
                             <td>{{ $staffMember->phone }}</td>
+                            <td>{{ $staffMember->address }}</td>
                             <td>{{ $staffMember->salary }}</td>
                             <td>
-                                <!-- Action buttons -->
+                                <a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="material-icons">more_vert</i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a href="javascript:void(0)" 
+                                    data-id="{{$staffMember->id}}"
+                                    data-name="{{$staffMember->user->name}}"
+                                    data-username="{{$staffMember->user->username}}"
+                                    data-email="{{$staffMember->user->email}}"
+                                    data-address="{{$staffMember->address}}"
+                                    data-phone="{{$staffMember->phone}}"
+                                    data-salary="{{$staffMember->salary}}"
+                                    class="dropdown-item editbtn">
+                                        <i class="la la-edit"></i>Edit
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a data-id="{{$staffMember->id}}" href="javascript:void(0)" class="dropdown-item deletebtn">
+                                        <i class="la la-trash"></i>Delete
+                                    </a>
+                                </div>
                             </td>
+
                         </tr>
                         @endforeach
+                        <x-modals.delete :route="'staff.destroy'" :title="'Staff'" />
                     </tbody>
                 </table>
             </div>
@@ -142,30 +165,54 @@ $(document).ready(function() {
                 <div class="modal-body">
                     <div class="form-group">
                         <label>FullName: </label>
-                        <input type="text" name="name" class="form-control" required>
+                        <div class="position-relative has-icon-left">
+                            <input type="text" name="name" class="form-control" required>
+                            <div class="form-control-position">
+                                <i class="ft-user"></i>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
                         <label>UserName: </label>
-                        <input type="text" name="username" class="form-control" required>
+                        <div class="position-relative has-icon-left">
+                            <input type="text" name="username" class="form-control" required>
+                            <div class="form-control-position">
+                                <i class="la la-user"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>Email: </label>
-                        <input type="email" name="email" class="form-control" required>
+                        <div class="position-relative has-icon-left">
+                            <input type="email" name="email" class="form-control" required>
+                            <div class="form-control-position">
+                                <i class="la la-envelope"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>Password: </label>
-                        <input type="password" name="password" class="form-control" required>
+                        <div class="position-relative has-icon-left">
+                            <input type="password" name="password" class="form-control" required>
+                            <div class="form-control-position">
+                                <i class="la la-lock"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>Confirm Password: </label>
-                        <input type="password" name="password_confirmation" class="form-control" required>
+                        <div class="position-relative has-icon-left">
+                            <input type="password" name="password_confirmation" class="form-control" required>
+                            <div class="form-control-position">
+                                <i class="la la-lock"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
                     <button type="button" id="next-step" class="btn btn-outline-primary btn-lg">Next</button>
@@ -179,7 +226,7 @@ $(document).ready(function() {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <label class="modal-title text-text-bold-600" id="myModalLabel33">Add Staff</label>
+                <label class="modal-title text-text-bold-600" id="myModalLabel33">Step 2: Additional Information</label>
                 <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -190,76 +237,19 @@ $(document).ready(function() {
                     <input type="hidden" name="user_id" id="selected_user_id">
                     
                     <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" name="address" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="text" class="form-control" name="phone" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Salary</label>
-                        <input type="number" class="form-control" name="salary" required>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-  <div class="modal wobble text-left" id="edit-staff" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <label class="modal-title text-text-bold-600">Edit Staff</label>
-                <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form method="post" enctype="multipart/form-data" id="edit_staff_form">
-                @csrf
-                @method('PUT')
-                <input type="hidden" id="edit_id">
-                <div class="modal-body">
-                   <input type="hidden" name="user_id" id="edit_user_id">
-                    
-                    <div class="form-group">
-                        <label>Full Name: </label>
+                        <label>Address: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="text" id="edit_fullname" class="form-control" name="fullname">
-                            <div class="form-control-position">
-                                <i class="ft-user"></i>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <div class="position-relative has-icon-left">
-                            <input type="text" id="edit_address" class="form-control" name="address">
+                            <input type="text" class="form-control" name="address" required>
                             <div class="form-control-position">
                                 <i class="la la-map-marker"></i>
                             </div>
                         </div>
                     </div>
 
-                    <!-- <div class="form-group">
-                        <select name="gender" id="edit_gender" class="select2 form-control">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div> -->
-
                     <div class="form-group">
-                        <label for="phone">Phone Number</label>
+                        <label>Phone Number: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="text" id="edit_phone" class="form-control" name="phone">
+                            <input type="text" class="form-control" name="phone" required>
                             <div class="form-control-position">
                                 <i class="ft-phone"></i>
                             </div>
@@ -267,29 +257,58 @@ $(document).ready(function() {
                     </div>
 
                     <div class="form-group">
-						<label>Salary</label>
-						<div class="input-group mt-0">
-							<div class="input-group-prepend">
-								<span class="input-group-text">RM</span>
-							</div>
-							<input type="number" class="form-control" name="salary" required>
-							<div class="input-group-append">
-								<span class="input-group-text">.00</span>
-							</div>
-						</div>
-					</div>
-
+                        <label>Salary</label>
+                        <div class="input-group mt-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">RM</span>
+                            </div>
+                            <input type="number" class="form-control" name="salary" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>                     
-                    <button type="submit" class="btn btn-outline-primary btn-lg">Update</button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" onclick="$('#add-staff-details').modal('hide'); $('#add-staff').modal('show');">Back</button>
+                    <button type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
+<div class="modal wobble text-left" id="credentials-display" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Username: </label>
+                    <div class="form-control" id="new-username"></div>
+                </div>
+                <div class="form-group">
+                    <label>Password: </label>
+                    <div class="input-group">
+                        <div class="form-control" id="new-password"></div>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary copy-btn" onclick="copyPassword()">
+                                <i class="la la-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- edit staff modal starts here -->
-<div class="modal wobble text-left" id="edit-staff" tabindex="-1" role="dialog" aria-labelledby="EditStaff" aria-hidden="true">
+<div class="modal wobble text-left" id="edit-staff" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -303,12 +322,10 @@ $(document).ready(function() {
                 @method('PUT')
                 <input type="hidden" name="id" id="edit_id">
                 <div class="modal-body">
-                    
-                    
                     <div class="form-group">
                         <label>Full Name: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="text" id="edit_fullname" class="form-control" name="fullname" required>
+                            <input type="text" id="edit_fullname" class="form-control" name="name" required>
                             <div class="form-control-position">
                                 <i class="ft-user"></i>
                             </div>
@@ -316,7 +333,27 @@ $(document).ready(function() {
                     </div>
 
                     <div class="form-group">
-                        <label for="address">Address</label>
+                        <label>Username: </label>
+                        <div class="position-relative has-icon-left">
+                            <input type="text" id="edit_username" class="form-control" name="username" required>
+                            <div class="form-control-position">
+                                <i class="la la-user"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email: </label>
+                        <div class="position-relative has-icon-left">
+                            <input type="email" id="edit_email" class="form-control" name="email" required>
+                            <div class="form-control-position">
+                                <i class="la la-envelope"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address: </label>
                         <div class="position-relative has-icon-left">
                             <input type="text" id="edit_address" class="form-control" name="address" required>
                             <div class="form-control-position">
@@ -325,15 +362,8 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                  <!--   <div class="form-group">
-                        <select name="gender" id="edit_gender" class="select2 form-control" required>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div> -->
-
                     <div class="form-group">
-                        <label for="phone">Phone Number</label>
+                        <label>Phone Number: </label>
                         <div class="position-relative has-icon-left">
                             <input type="text" id="edit_phone" class="form-control" name="phone" required>
                             <div class="form-control-position">
@@ -350,19 +380,20 @@ $(document).ready(function() {
                             </div>
                             <input type="number" id="edit_salary" class="form-control" name="salary" required>
                             <div class="input-group-append">
-                                <i class="input-group-text">.00</span>
+                                <span class="input-group-text">.00</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-outline-primary btn-lg">Update</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 <!-- edit staff modal ends here -->
 @endsection
 
@@ -376,26 +407,31 @@ $(document).ready(function() {
         }
     });
 
+    // Clear form when modal is closed
+    $('#add-staff').on('hidden.bs.modal', function () {
+        $('#user-form')[0].reset();
+    });
 
+    // Handle next button click
     $('#next-step').click(function(e) {
         e.preventDefault();
         
-        // First create the user
         $.ajax({
             url: "{{route('add-user')}}",
             method: 'POST',
             data: $('#user-form').serialize(),
             success: function(response) {
-                // Hide first modal and show second
                 $('#add-staff').modal('hide');
                 $('#add-staff-details').modal('show');
                 
-                // Automatically set the user_id in the hidden input
+                // Store user_id for the next step
                 $('#selected_user_id').val(response.user_id);
-
                 
-                // Show success message
-                toastr.success('User account created successfully');
+                // Store credentials for later use
+                window.tempCredentials = {
+                    username: response.username,
+                    password: response.password
+                };
             },
             error: function(xhr) {
                 if (xhr.status === 422) {
@@ -408,12 +444,26 @@ $(document).ready(function() {
         });
     });
 
+// Clear second form when closed
+$('#add-staff-details').on('hidden.bs.modal', function () {
+    $(this).find('form')[0].reset();
+});
+
+
+
+    // Add copy password function
+    function copyPassword() {
+        const password = document.getElementById('new-password').textContent;
+        navigator.clipboard.writeText(password);
+        $('.copy-btn').text('Copied!');
+        setTimeout(() => $('.copy-btn').html('<i class="la la-copy"></i> Copy'), 2000);
+    }
+
     // Handle staff form submission
     $('#add-staff-details form').submit(function(e) {
         e.preventDefault();
         
         let formData = new FormData(this);
-        
         
         $.ajax({
             url: "{{ route('staff') }}",
@@ -422,9 +472,11 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                // Redirect to staff page
-                window.location.href = "{{ route('staff') }}";
-                location.reload();
+                $('#add-staff-details').modal('hide');
+                $('#new-username').text(window.tempCredentials.username);
+                $('#new-password').text(window.tempCredentials.password);
+                $('#credentials-display').modal('show');
+                toastr.success('Staff added successfully');
             },
             error: function(xhr) {
                 if (xhr.status === 422) {
@@ -436,8 +488,26 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('#credentials-display').on('hidden.bs.modal', function () {
+        location.reload();
+    });
+
+    // Edit button functionality
+    $('.editbtn').on('click', function() {
+        $('#edit-staff').modal('show');
+        $('#edit_id').val($(this).data('id'));
+        $('#edit_fullname').val($(this).data('name'));
+        $('#edit_username').val($(this).data('username'));
+        $('#edit_email').val($(this).data('email'));
+        $('#edit_address').val($(this).data('address'));
+        $('#edit_phone').val($(this).data('phone'));
+        $('#edit_salary').val($(this).data('salary'));
+    });
 });
 </script>
+
+
 @endpush
 
 

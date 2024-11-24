@@ -57,23 +57,42 @@ class StaffController extends Controller
         return response()->json($staff);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $staff = Staff::find($id);
-        $staff->update($request->all());
+        $staff = Staff::find($request->id);
         
-        return response()->json(['success' => true]);
+        // Update user information
+        $staff->user->update([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => $request->email
+        ]);
+
+        // Update staff information
+        $staff->update([
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'salary' => $request->salary
+        ]);
+
+        return redirect()->route('staff')->with([
+            'message' => 'Staff updated successfully!',
+            'alert-type' => 'success'
+        ]);
     }
+
 
     public function destroy(Request $request)
     {
         $staff = Staff::find($request->id);
-        $staff->delete();
-        $notification=array(
-            'message'=>"Staff has been deleted!!!",
-            'alert-type'=>'success',
-        );
-        return back()->with($notification);
+        $staff->user()->delete(); // Delete associated user
+        $staff->delete(); // Delete staff record
+        
+        return redirect()->route('staff')->with([
+            'message' => 'Staff deleted successfully!',
+            'alert-type' => 'success'
+        ]);
     }
+    
 }
 
