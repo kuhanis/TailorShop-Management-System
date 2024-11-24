@@ -421,6 +421,7 @@ $(document).ready(function() {
             method: 'POST',
             data: $('#user-form').serialize(),
             success: function(response) {
+                console.log('Success:', response);
                 $('#add-staff').modal('hide');
                 $('#add-staff-details').modal('show');
                 
@@ -434,15 +435,26 @@ $(document).ready(function() {
                 };
             },
             error: function(xhr) {
+                console.log('Error:', xhr);
+            
                 if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    Object.keys(errors).forEach(function(key) {
-                        toastr.error(errors[key][0]);
-                    });
+                    var errors = xhr.responseJSON.errors;
+                    console.log('Validation Errors:', errors);
+                    
+                    if (errors.email) {
+                        console.log('Email Error:', errors.email[0]);
+                        toastr.warning(errors.email[0], 'Email Error');
+                    } 
+                    
+                    if (errors.username) {
+                        console.log('Username Error:', errors.username[0]);
+                        toastr.warning(errors.username[0], 'Username Error');
+                    }
                 }
             }
         });
     });
+
 
 // Clear second form when closed
 $('#add-staff-details').on('hidden.bs.modal', function () {

@@ -17,9 +17,9 @@ class UserController extends Controller
 
     public function store(Request $request){
         $this->validate($request,[
-            'username'=>'required',
+            'username'=>'required|unique:users,username',
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|max:200|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
             'avatar' =>'file|image|mimes:jpg,jpeg,png,gif',
         ]);
@@ -83,7 +83,7 @@ class UserController extends Controller
     public function updatePassword(Request $request){
         $this->validate($request,[
             'old_password'=>'required',
-            'password'=>'required|max:200|confirmed',
+            'password'=>'required|max:200|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
         ]);
         
         if (password_verify($request->old_password,auth()->user()->password)){
