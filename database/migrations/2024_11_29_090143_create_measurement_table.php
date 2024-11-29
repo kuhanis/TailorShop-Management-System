@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMeasurementPartsTable extends Migration
+class CreateMeasurementTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateMeasurementPartsTable extends Migration
      */
     public function up()
     {
-        Schema::create('measurement_parts', function (Blueprint $table) {
+        Schema::create('measurement', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ class CreateMeasurementPartsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('measurement_parts');
+        Schema::dropIfExists('measurement');
     }
 }

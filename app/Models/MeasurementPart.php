@@ -12,8 +12,7 @@ class MeasurementPart extends Model
     use HasFactory,SoftDeletes;
 
     protected $fillable=[
-        'cloth_type_id','name',
-        'description','image',
+        'name',
     ];
 
     public function clothType(){
