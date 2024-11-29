@@ -78,6 +78,18 @@ $(document).ready(function() {
 </script>
 @endpush
 
+@push('breadcrumb')
+<h3 class="content-header-title">Customer</h3>
+<div class="row breadcrumbs-top">
+	<div class="breadcrumb-wrapper col-12">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active">All Customers
+			</li>
+		</ol>
+	</div>
+</div>
+@endpush
+
 @push('breadcrumb-button')
 <x-buttons.primary :text="'Add Customer'" :target="'#add-customer'" />
 @endpush

@@ -9,10 +9,6 @@
 <div class="row breadcrumbs-top">
 	<div class="breadcrumb-wrapper col-12">
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a>
-			</li>
-			<li class="breadcrumb-item"><a href="javascript:void(0)">Measurements</a>
-			</li>
 			<li class="breadcrumb-item active">All Measurement Parts
 			</li>
 		</ol>
