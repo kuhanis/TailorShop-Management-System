@@ -1,19 +1,30 @@
 @extends('layouts.app')
 
 @push('page-css')
+<script>
+$(document).ready(function() {
+    $('.editbtn').on('click', function() {
+        let id = $(this).data('id');
 
+		$.get(`/orders/${id}/edit`, function(data) {
+            $('#edit-order').modal('show');
+            $('#edit_id').val(id);
+            $('#edit_customer').val(data.customer_id);
+            $('#edit_description').val(data.description);
+            $('#edit_received_date').val(data.recieved_on);
+            $('#edit_amount').val(data.amount_charged);
+        });
+    });
+});
+</script> 
 @endpush
 
 @push('breadcrumb')
-<h3 class="content-header-title">Measurements</h3>
+<h3 class="content-header-title">Orders</h3>
 <div class="row breadcrumbs-top">
 	<div class="breadcrumb-wrapper col-12">
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a>
-			</li>
-			<li class="breadcrumb-item"><a href="#">Measurement</a>
-			</li>
-			<li class="breadcrumb-item active">All Customer Measurements
+			<li class="breadcrumb-item active">Orders List
 			</li>
 		</ol>
 	</div>
@@ -25,8 +36,6 @@
 @endpush
 
 @section('content')
-
-<!-- HTML5 export buttons table -->
 <section id="html5">
     <div class="row">
       <div class="col-12">
@@ -45,16 +54,13 @@
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
-              
                 <table class="table table-striped table-bordered dataex-html5-export">
                   <thead>
                     <tr>
 						<th>Customer</th>
 						<th>Description</th>
-						<th>Date Received</th>
+						<th>Date Ordered</th>
 						<th>Amount</th>
-						<th>Paid</th>
-						<th>Balance</th>
 						<th>Action</th>
                     </tr>
                   </thead>
@@ -65,42 +71,42 @@
                             <td>{{$order->customer->fullname}}</td>
                             <td>{{$order->description}}</td>
 							<td>{{$order->recieved_on}}</td>
-							<td>{{$order->amount_charged}}</td>
-							<td>{{$order->amount_paid}}</td>
-							@php
-								$balance = $order->amount_charged -$order->amount_paid;
-							@endphp
-							<td>{{$balance}}</td>
+							<td>RM {{number_format($order->amount_charged, 2)}}</td>
                             <td>
-                              <a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                              <div class="dropdown-menu">
-                                  <a href="javascript:void(0)" data-id="{{$order->id}}" class="dropdown-item">
-                                  <i class="la la-edit"></i>Edit
-                                </a>
-                                  <div class="dropdown-divider"></div>
-                                  <a data-id="{{$order->id}}" href="javascript:void(0)" aria-haspopup="true" data-toggle="modal"  aria-expanded="true" class="dropdown-item deletebtn">
-                                  <i class="la la-trash"></i>Delete
-                                </a>
-                              </div>
-                            </td>
+								<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false">
+									<i class="material-icons">more_vert</i>
+								</a>
+								<div class="dropdown-menu">
+									<a href="javascript:void(0)" 
+										data-id="{{$order->id}}"
+										data-customer="{{$order->customer_id}}"
+										data-description="{{$order->description}}"
+										data-received-date="{{$order->recieved_on}}"
+										data-amount="{{$order->amount_charged}}"
+										class="dropdown-item editbtn">
+										<i class="la la-edit"></i>Edit
+									</a>
+									<div class="dropdown-divider"></div>
+									<a data-id="{{$order->id}}" href="javascript:void(0)" class="dropdown-item deletebtn">
+										<i class="la la-trash"></i>Delete
+									</a>
+								</div>
+							</td>
                           </tr>
                         @endforeach
 						<x-modals.delete :route="'order.destroy'" :title="'Customer Order'" />
                     @endif                    
                   </tbody>
-                  
                 </table>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-  <!--/ HTML5 export buttons table -->
+</section>
 
-
-<!-- add orders modal starts here -->
-<div class="modal fade text-left" id="add-order" tabindex="-1" role="dialog" aria-labelledby="AddCustomer" aria-hidden="true">
+<!-- Add Order Modal -->
+<div class="modal fade text-left" id="add-order" tabindex="-1" role="dialog" aria-labelledby="AddOrder" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -114,60 +120,164 @@
 				<div class="modal-body">
 					<label>Select Customer: </label>
 					<div class="form-group">
-						<select name="customer" title="select customer" class="select2 form-control">
-							<optgroup>								 
-								@if (!empty($customers->count()))
-									@foreach ($customers as $customer)
-									<option value="{{$customer->id}}">{{$customer->fullname}}</option>
-									@endforeach
-								@endif
-							</optgroup>
-						</select>
+						<div class="position-relative has-icon-left">
+							<select name="customer" title="select customer" class="select2 form-control" required>
+								<optgroup>								 
+									@if (!empty($customers->count()))
+										@foreach ($customers as $customer)
+										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
+										@endforeach
+									@endif
+								</optgroup>
+							</select>
+							<div class="form-control-position">
+								<i class="la la-user"></i>
+							</div>
+						</div>
 					</div>
 
 					<label>Description: </label>
 					<div class="form-group">
-						<textarea class="form-control" placeholder="enter description here" name="description"></textarea>
+						<div class="position-relative has-icon-left">
+							<textarea class="form-control" placeholder="Enter description here" name="description" required></textarea>
+							<div class="form-control-position">
+								<i class="la la-comment"></i>
+							</div>
+						</div>
 					</div>
 
-					<label>Date Received: </label>
+					<label>Date Ordered: </label>
 					<div class="form-group">
-						<input type="date" name="recieved_on" class="form-control">
-					</div>
-
-					<label>Received By: </label>
-					<div class="form-group">
-						<input type="text" placeholder="Enter receiver name" name="receiver" class="form-control">
+						<div class="position-relative has-icon-left">
+							<input type="date" name="recieved_on" class="form-control" required>
+							<div class="form-control-position">
+								<i class="la la-calendar"></i>
+							</div>
+						</div>
 					</div>
 
 					<label>Amount: </label>
 					<div class="form-group">
-						<input type="text" placeholder="Enter amount charged" name="amount_charged" class="form-control">
-					</div>
-
-					<label>Paid: </label>
-					<div class="form-group">
-						<input type="text" name="amount_paid" class="form-control" placeholder="Enter amount paid">
-					</div>
-
-					
-					<label>Date To Collect: </label>
-					<div class="form-group">
-						<input type="date" class="form-control" name="collecting_on">
+						<div class="input-group mt-0">
+							<div class="input-group-prepend">
+								<span class="input-group-text">RM</span>
+							</div>
+							<input type="number" step="0.01" class="form-control" name="amount_charged" placeholder="Enter amount" required>
+							<div class="input-group-append">
+								<span class="input-group-text">.00</span>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<input type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal" value="close">
+					<input type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal" value="Close">
 					<button class="btn btn-outline-primary btn-lg" type="submit">Submit</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
-<!-- add order modal ends here -->                   
+
+<!-- Edit Order Modal -->
+<div class="modal fade text-left" id="edit-order" tabindex="-1" role="dialog" aria-labelledby="EditOrder" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<label class="modal-title text-text-bold-600">Edit Order</label>
+				<button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form method="post" action="{{route('orders')}}">
+				@csrf
+				@method('PUT')
+				<input type="hidden" name="id" id="edit_id">
+				<div class="modal-body">
+					<label>Select Customer: </label>
+					<div class="form-group">
+						<div class="position-relative has-icon-left">
+							<select name="customer" id="edit_customer" title="select customer" class="select2 form-control" required>
+								<optgroup>								 
+									@if (!empty($customers->count()))
+										@foreach ($customers as $customer)
+										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
+										@endforeach
+									@endif
+								</optgroup>
+							</select>
+							<div class="form-control-position">
+								<i class="la la-user"></i>
+							</div>
+						</div>
+					</div>
+
+					<label>Description: </label>
+					<div class="form-group">
+						<div class="position-relative has-icon-left">
+							<textarea class="form-control" id="edit_description" placeholder="Enter description here" name="description" required></textarea>
+							<div class="form-control-position">
+								<i class="la la-comment"></i>
+							</div>
+						</div>
+					</div>
+
+					<label>Date Ordered: </label>
+					<div class="form-group">
+						<div class="position-relative has-icon-left">
+							<input type="date" id="edit_received_date" name="recieved_on" class="form-control" required>
+							<div class="form-control-position">
+								<i class="la la-calendar"></i>
+							</div>
+						</div>
+					</div>
+
+					<label>Amount: </label>
+					<div class="form-group">
+						<div class="input-group mt-0">
+							<div class="input-group-prepend">
+								<span class="input-group-text">RM</span>
+							</div>
+							<input type="number" step="0.01" id="edit_amount" class="form-control" name="amount_charged" placeholder="Enter amount" required>
+							<div class="input-group-append">
+								<span class="input-group-text">.00</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-outline-primary btn-lg">Update</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 @endsection
 
-
 @push('page-js')
+<script>
+$(document).ready(function() {
+    $('.editbtn').on('click', function() {
+        let id = $(this).data('id');
+        let customerId = $(this).data('customer');
+        let description = $(this).data('description');
+        let receivedDate = $(this).data('received-date');
+        let amount = $(this).data('amount');
 
+        $('#edit-order').modal('show');
+        $('#edit_id').val(id);
+        $('#edit_customer').val(customerId).trigger('change');
+        $('#edit_description').val(description);
+        $('#edit_received_date').val(receivedDate);
+        $('#edit_amount').val(amount);
+    });
+
+    $('.deletebtn').on('click', function() {
+        $('#delete-modal').modal('show');
+        $('#delete-id').val($(this).data('id'));
+    });
+});
+</script>
 @endpush
+
+

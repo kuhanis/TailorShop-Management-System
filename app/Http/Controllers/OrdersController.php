@@ -8,11 +8,6 @@ use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $title = "Orders";
@@ -21,71 +16,63 @@ class OrdersController extends Controller
         return view('orders',compact('title','customers','orders'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validate($request,[
             'customer'=>'required',
             'description'=>'max:200',
-            'recieved_on'=>'required',
-            'receiver'=>'string|max:100',
-            'amount_charged'=>'required',
-            'amount_paid'=>'required',
-            'collecting_on'=>'required',
+            'recieved_on'=>'required|date',
+            'amount_charged'=>'required|numeric|min:0',
         ]);
+
         Orders::create([
             'customer_id'=>$request->customer,
             'description'=>$request->description,
             'recieved_on'=>$request->recieved_on,
-            'recieved_by'=>$request->receiver,
             'amount_charged'=>$request->amount_charged,
-            'amount_paid'=>$request->amount_paid,
-            'collecting_on'=>$request->collecting_on,
         ]);
-        $notification =array(
+
+        $notification = array(
             'message'=>"Customer order has been added",
             'alert-type'=>"success"
         );
         return back()->with($notification);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit($id)
     {
-        //
+        $order = Orders::findOrFail($id);
+        return response()->json($order);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $this->validate($request,[
+            'id'=>'required|exists:orders,id',
+            'customer'=>'required',
+            'description'=>'max:200',
+            'recieved_on'=>'required|date',
+            'amount_charged'=>'required|numeric|min:0',
+        ]);
+
+        $order = Orders::findOrFail($request->id);
+        $order->update([
+            'customer_id'=>$request->customer,
+            'description'=>$request->description,
+            'recieved_on'=>$request->recieved_on,
+            'amount_charged'=>$request->amount_charged,
+        ]);
+
+        $notification = array(
+            'message'=>"Customer order has been updated",
+            'alert-type'=>"success"
+        );
+        return back()->with($notification);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
-        $order =Orders::find($request->id);
+        $order = Orders::find($request->id);
         $order->delete();
         $notification = array(
             'message'=>"Customer order deleted successfully!!",
