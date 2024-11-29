@@ -52,10 +52,6 @@ $(document).ready(function() {
 <div class="row breadcrumbs-top">
 	<div class="breadcrumb-wrapper col-12">
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a>
-			</li>
-			<li class="breadcrumb-item"><a href="javascript:void(0)">Staff</a>
-			</li>
 			<li class="breadcrumb-item active">All Staff
 			</li>
 		</ol>
@@ -166,7 +162,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label>FullName: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="text" name="name" class="form-control" required>
+                            <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
                             <div class="form-control-position">
                                 <i class="ft-user"></i>
                             </div>
@@ -176,7 +172,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label>UserName: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="text" name="username" class="form-control" required>
+                            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
                             <div class="form-control-position">
                                 <i class="la la-user"></i>
                             </div>
@@ -186,7 +182,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label>Email: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="email" name="email" class="form-control" required>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email address" required>
                             <div class="form-control-position">
                                 <i class="la la-envelope"></i>
                             </div>
@@ -196,7 +192,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label>Password: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="password" name="password" class="form-control" required>
+                            <input type="password" name="password" class="form-control" placeholder="Enter password" required>
                             <div class="form-control-position">
                                 <i class="la la-lock"></i>
                             </div>
@@ -206,7 +202,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label>Confirm Password: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="password" name="password_confirmation" class="form-control" required>
+                            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm password" required>
                             <div class="form-control-position">
                                 <i class="la la-lock"></i>
                             </div>
@@ -239,7 +235,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label>Address: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="text" class="form-control" name="address" required>
+                            <input type="text" class="form-control" name="address" placeholder="Enter full address" required>
                             <div class="form-control-position">
                                 <i class="la la-map-marker"></i>
                             </div>
@@ -249,7 +245,7 @@ $(document).ready(function() {
                     <div class="form-group">
                         <label>Phone Number: </label>
                         <div class="position-relative has-icon-left">
-                            <input type="text" class="form-control" name="phone" required>
+                            <input type="text" class="form-control" name="phone" placeholder="Enter phone number" required>
                             <div class="form-control-position">
                                 <i class="ft-phone"></i>
                             </div>
@@ -262,7 +258,7 @@ $(document).ready(function() {
                             <div class="input-group-prepend">
                                 <span class="input-group-text">RM</span>
                             </div>
-                            <input type="number" class="form-control" name="salary" required>
+                            <input type="number" class="form-control" name="salary" placeholder="Enter salary amount" required>
                             <div class="input-group-append">
                                 <span class="input-group-text">.00</span>
                             </div>
