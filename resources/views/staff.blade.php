@@ -456,10 +456,10 @@ $(document).ready(function() {
     });
 
 
-// Clear second form when closed
-$('#add-staff-details').on('hidden.bs.modal', function () {
-    $(this).find('form')[0].reset();
-});
+    // Clear second form when closed
+    $('#add-staff-details').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    });
 
 
 
