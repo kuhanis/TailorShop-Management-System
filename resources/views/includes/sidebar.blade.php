@@ -32,14 +32,14 @@
                 </a>
             </li>
 
-
-                <li class="{{ Request::routeIs('staff') ? 'active' : '' }}">
-                    <a href="{{route('staff')}}">
+            @if(auth()->user()->staff && auth()->user()->staff->role !== 'staff')
+                <li class="{{ Request::routeIs('users') ? 'active' : '' }}">
+                    <a href="{{route('users')}}">
                         <i class="material-icons">people_outline</i>
-                        <span class="menu-title" data-i18n="Staff">Staff Management</span>
+                        <span class="menu-title" data-i18n="Users">Staff Management</span>
                     </a>
                 </li>
-            
+            @endif
 
             <li class="{{ Request::routeIs('customers') ? 'active' : '' }} nav-item">
                 <a href="{{route('customers')}}">
@@ -55,20 +55,23 @@
                 </a>
             </li>
 
+            @if(auth()->user()->staff && auth()->user()->staff->role !== 'staff')
+                <li class=" nav-item">
+                    <a href="{{route('measurement-parts')}}">
+                        <i class="material-icons">face</i>
+                        <span class="menu-title" data-i18n="Measurement Settings">Measurement Settings</span>
+                    </a>
+                </li>
+            @endif
 
-            <li class=" nav-item">
-                <a href="{{route('measurement-parts')}}">
-                    <i class="material-icons">face</i>
-                    <span class="menu-title" data-i18n="Measurement Settings">Measurement Settings</span>
-                </a>
-            </li>
-
-            <li class="nav-item {{ Request::routeIs('settings') ? 'active' : '' }}">
-                <a href="{{route('settings')}}">
-                    <i class="material-icons">settings</i>
-                    <span class="menu-title" data-i18n="Setting">Settings</span>
-                </a>
-            </li>
+            @if(auth()->user()->staff && auth()->user()->staff->role !== 'staff')
+                <li class="nav-item {{ Request::routeIs('settings') ? 'active' : '' }}">
+                    <a href="{{route('settings')}}">
+                        <i class="material-icons">settings</i>
+                        <span class="menu-title" data-i18n="Setting">Settings</span>
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 </div>
