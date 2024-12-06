@@ -77,7 +77,7 @@ class UserController extends Controller
             'message'=>"User profile updated successfully!!",
             'alert-type'=>'success'
         );
-        return back()->with($notification);
+        return back()->with($notification); 
     }
 
     public function updatePassword(Request $request){
