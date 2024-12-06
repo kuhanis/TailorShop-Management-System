@@ -136,7 +136,7 @@ class UserController extends Controller
 
         auth()->user()->update([
             'password' => Hash::make($request->password),
-            'first_login' => true
+            'first_login' => false  
         ]);
 
         return redirect()->route('dashboard')->with([
