@@ -15,5 +15,11 @@ class Customer extends Model
         'phone',
         'email'
     ];
+
+    public function bodyMeasurements()
+    {
+        return $this->hasMany(BodyMeasurement::class);
+    }
+
 }
 

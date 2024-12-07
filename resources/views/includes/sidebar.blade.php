@@ -41,11 +41,26 @@
                 </li>
             @endif
 
-            <li class="{{ Request::routeIs('customers') ? 'active' : '' }} nav-item">
-                <a href="{{route('customers')}}">
+            <li class=" nav-item">
+                <a href="#">
                     <i class="ft ft-users"></i>
-                    <span class="menu-title" data-i18n="Customers">Customers</span>
+                    <span class="menu-title" data-i18n="Measurement Settings">Customer Details</span>
                 </a>
+                <ul class="menu-content">
+                    <li class="{{ Request::routeIs('customers') ? 'active' : '' }} nav-item">
+                        <a href="{{route('customers')}}">
+                            <i class="material-icons"></i>
+                            <span data-i18n="Customers">Basic Info</span>
+                        </a>
+                    </li>
+        
+                    <li class="{{ Request::routeIs('measurement-parts') ? 'active' : '' }}">
+                        <a class="menu-item" href="{{route('measurement-parts')}}">
+                            <i class="material-icons"></i>
+                            <span data-i18n="Measurement Parts">Body Measurements</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <li class="{{ Request::routeIs('orders') ? 'active' : '' }} nav-item">

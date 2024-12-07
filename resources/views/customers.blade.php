@@ -208,6 +208,58 @@ $(document).ready(function() {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-lg" id="next-btn">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- STEP 2: Add new modal for body measurements -->
+<div class="modal wobble text-left" id="body-measurements-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Body Measurements</h3>
+                <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="body-measurements-form">
+                @csrf
+                <input type="hidden" id="customer_id" name="customer_id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" name="body_name" class="form-control" placeholder="Body name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="shoulder" class="form-control" placeholder="Shoulder" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="chest" class="form-control" placeholder="Chest" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="waist" class="form-control" placeholder="Waist" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="hips" class="form-control" placeholder="Hips" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="dress_length" class="form-control" placeholder="Dress lenght" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="wrist" class="form-control" placeholder="Wrist" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="skirt_length" class="form-control" placeholder="Skirt length" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" step="0.01" name="armpit" class="form-control" placeholder="Armpit" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-info btn-lg" id="add-body-btn">Add Body</button>
                     <button type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
                 </div>
             </form>
@@ -283,6 +335,114 @@ $(document).ready(function() {
 @push('page-js')
 <script>
 $(document).ready(function() {
+    // Add this CSRF setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // Handle Next button click
+    $('#next-btn').click(function(e) {
+        e.preventDefault();
+        
+        let form = $('#add-customer form');
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: new FormData(form[0]),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Customer created:', response); // Debug log
+                if(response.customer_id) {
+                    $('#customer_id').val(response.customer_id);
+                    $('#add-customer').modal('hide');
+                    $('#body-measurements-modal').modal('show');
+                } else {
+                    toastr.error('Customer ID not received');
+                }
+            },
+            error: function(xhr) {
+                console.log('Error:', xhr); // Debug log
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    Object.keys(errors).forEach(function(key) {
+                        toastr.error(errors[key][0]);
+                    });
+                }
+            }
+        });
+    });
+
+    // Handle Add Body button click
+    $('#add-body-btn').click(function(e) {
+        e.preventDefault();
+        
+        let customerId = $('#customer_id').val();
+        console.log('Customer ID before submit:', customerId); // Debug log
+        
+        if(!customerId) {
+            toastr.error('No customer ID found');
+            return;
+        }
+        
+        let formData = new FormData($('#body-measurements-form')[0]);
+        console.log('Form data:', Object.fromEntries(formData)); // Debug log
+        
+        $.ajax({
+            url: "{{ route('body.measurements.store') }}",
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Success:', response); // Debug log
+                toastr.success('Body measurements added successfully!');
+                $('#body-measurements-form')[0].reset();
+                $('#customer_id').val($('#customer_id').val()); // Preserve customer_id
+            },
+            error: function(xhr) {
+                console.log('Error:', xhr); // Debug log
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    Object.keys(errors).forEach(function(key) {
+                        toastr.error(errors[key][0]);
+                    });
+                } else {
+                    toastr.error('An error occurred. Please try again.');
+                }
+            }
+        });
+    });
+
+
+    // Handle final submit
+    $('#body-measurements-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: "{{ route('body.measurements.store') }}",
+            method: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                toastr.success('Body measurements added successfully!');
+                $('#body-measurements-modal').modal('hide');
+                window.location.reload();
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    Object.keys(errors).forEach(function(key) {
+                        toastr.error(errors[key][0]);
+                    });
+                }
+            }
+        });
+    });
+
     // Edit button functionality
     $('.editbtn').on('click', function() {
         $('#edit-customer').modal('show');
