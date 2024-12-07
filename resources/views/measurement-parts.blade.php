@@ -40,73 +40,64 @@
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
-              
-			<table class="table table-striped table-bordered dataex-html5-export">
-				<thead>
-					<tr>
-						<th>Measurement Part</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					@if (!empty($parts->count()))
-						@foreach ($parts as $part)
+				<table class="table table-striped table-bordered dataex-html5-export">
+					<thead>
 						<tr>
-							<td>{{$part->name}}</td>
+							<th>Customer Name</th>
+							<th>Body Name</th>
+							<th>Shoulder</th>
+							<th>Chest</th>
+							<th>Waist</th>
+							<th>Hip</th>
+							<th>Dress length</th>
+							<th>Wrist</th>
+							<th>Skirt length</th>
+							<th>Armpit</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($bodyMeasurements as $measurement)
+						<tr>
+							<td>{{$measurement->customer->fullname}}</td>
+							<td>{{$measurement->body_name}}</td>
+							<td>{{$measurement->neck}}</td>
+							<td>{{$measurement->shoulder_width}}</td>
+							<td>{{$measurement->chest}}</td>
+							<td>{{$measurement->waist}}</td>
+							<td>{{$measurement->hip}}</td>
+							<td>{{$measurement->arm_length}}</td>
+							<td>{{$measurement->sleeve}}</td>
+							<td>{{$measurement->torso_length}}</td>
 							<td>
-							<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-							<div class="dropdown-menu">
-								<a href="javascript:void(0)" data-id="{{$part->id}}" data-name="{{$part->name}}" class="dropdown-item editbtn">
-									<i class="la la-edit"></i>Edit
+								<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false">
+									<i class="material-icons">more_vert</i>
 								</a>
-								<div class="dropdown-divider"></div>
-								<a data-id="{{$part->id}}" href="javascript:void(0)" aria-haspopup="true" data-toggle="modal" aria-expanded="true" class="dropdown-item deletebtn">
-									<i class="la la-trash"></i>Delete
-								</a>
-							</div>
+								<div class="dropdown-menu">
+									<a href="javascript:void(0)" 
+										data-id="{{$measurement->id}}"
+										data-body-name="{{$measurement->body_name}}"
+										data-neck="{{$measurement->neck}}"
+										data-shoulder="{{$measurement->shoulder_width}}" 
+										data-chest="{{$measurement->chest}}"
+										data-waist="{{$measurement->waist}}"
+										data-hip="{{$measurement->hip}}"
+										data-arm-length="{{$measurement->arm_length}}"
+										data-sleeve="{{$measurement->sleeve}}"
+										data-torso="{{$measurement->torso_length}}"
+										class="dropdown-item editbtn">
+										<i class="la la-edit"></i>Edit
+									</a>
+									<div class="dropdown-divider"></div>
+									<a data-id="{{$measurement->id}}" href="javascript:void(0)" class="dropdown-item deletebtn">
+										<i class="la la-trash"></i>Delete
+									</a>
+								</div>
 							</td>
 						</tr>
 						@endforeach
-                        <x-modals.delete :route="'measurement-parts'" :title="'Measurement Part'" />
-                        
-						<!-- add set measurement modal starts here -->
-							<div class="modal zoomIn text-left" id="edit-measurement-part" tabindex="-1" role="dialog" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<label class="modal-title text-text-bold-600" id="myModalLabel33">Set Measurement Parts</label>
-											<button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-											</button>
-										</div>
-										<form method="post" enctype="multipart/form-data" action="{{route('measurement-parts')}}">
-											@csrf
-											@method("PUT")
-											<div class="modal-body">
-												<div class="form-body">
-													<input type="hidden" id="edit_id" name="id">
-													
-													<div class="form-group">
-														<label>Measurement Name</label>
-														<div class="position-relative">
-															<input type="text" class="form-control edit_name" placeholder="measurement name" name="name">
-														</div>
-													</div>
-											</div>
-											<div class="modal-footer">
-												<button type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>						
-												<button type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-							<!-- edit measurement part modal ends here -->
-						
-                    @endif                    
-                  </tbody>
-                  
-                </table>
+					</tbody>
+				</table>
             </div>
           </div>
         </div>
@@ -159,6 +150,10 @@
 		$('#edit_id').val(id);
 		$('.edit_name').val(name);
 	})
+	$('.deletebtn').on('click', function() {
+		var id = $(this).data('id');
+		// Your delete logic here
+	});
 
   })
 </script>

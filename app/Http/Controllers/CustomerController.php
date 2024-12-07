@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Models\BodyMeasurement;
 use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
@@ -19,20 +20,43 @@ class CustomerController extends Controller
     {
         $this->validate($request, [
             'fullname' => 'required|max:100',
-            'address' => 'required|max:200',
             'phone' => 'required|max:15|unique:customers,phone',
-            'email' => 'required|email|max:100'
+            'email' => 'required|email|max:100',
+            'address' => 'required|max:200',
         ]);
 
-        Customer::create($request->all());
+        $customer = Customer::create($request->all());
         
-        $notification = [
+        return response()->json([
             'message' => "Customer has been added successfully!!",
-            'alert-type' => 'success'
-        ];
-        
-        return back()->with($notification);
+            'status' => 'success',
+            'customer_id' => $customer->id  // Make sure this is included
+        ]);
     }
+
+    public function storeBodyMeasurement(Request $request)
+    {
+        $this->validate($request, [
+            'customer_id' => 'required|exists:customers,id',
+            'body_name' => 'required|string',
+            'shoulder' => 'required|numeric',
+            'chest' => 'required|numeric',
+            'waist' => 'required|numeric',
+            'hips' => 'required|numeric',
+            'dress_length' => 'required|numeric',
+            'wrist' => 'required|numeric',
+            'skirt_length' => 'required|numeric',
+            'armpit' => 'required|numeric',
+        ]);
+
+        BodyMeasurement::create($request->all());
+
+        return response()->json([
+            'message' => 'Body measurements added successfully!',
+            'status' => 'success'
+        ]);
+    }
+
 
     public function update(Request $request)
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClothType;
 use Illuminate\Http\Request;
+use App\Models\BodyMeasurement;
 use App\Models\MeasurementPart;
 
 class MeasurementPartController extends Controller
@@ -15,10 +16,9 @@ class MeasurementPartController extends Controller
      */
     public function index()
     {
-        $title="measurement Parts";
-        $parts=MeasurementPart::get();
-        $categories = ClothType::get();
-        return view('measurement-parts',compact('title','parts','categories'));
+        $title = "Body Measurements";
+        $bodyMeasurements = BodyMeasurement::with('customer')->get();
+        return view('measurement-parts', compact('title', 'bodyMeasurements'));
     }
 
     /**

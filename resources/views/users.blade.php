@@ -309,7 +309,13 @@ $(document).ready(function() {
 
 function copyPassword() {
     const password = document.getElementById('new-password').textContent;
-    navigator.clipboard.writeText(password);
+    const tempInput = document.createElement('textarea');
+    tempInput.value = password;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    
     $('.copy-btn').text('Copied!');
     setTimeout(() => $('.copy-btn').html('<i class="la la-copy"></i> Copy'), 2000);
 }
