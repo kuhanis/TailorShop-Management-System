@@ -25,3 +25,4 @@ class Orders extends Model
         return $this->access_token ? route('orders.view', $this->access_token) : null;
     }
 }
+,,
