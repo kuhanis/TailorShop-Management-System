@@ -1,0 +1,9 @@
+.table .table {
+    background-color: transparent;
+    font-size: 0.9em;
+}
+
+.table .table td, 
+.table .table th {
+    padding: 0.5rem;
+}

@@ -20,6 +20,9 @@
         <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css')}}">
         <!-- END: Vendor CSS-->
 
+        <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/custom-styles.css')}}">
+    
+
         <!-- BEGIN: Theme CSS-->
         <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/material.min.css')}}">
          <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/components.min.css')}}">
