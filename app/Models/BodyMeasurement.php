@@ -10,14 +10,14 @@ class BodyMeasurement extends Model
     protected $fillable = [
         'customer_id',
         'body_name',
-        'neck',
-        'shoulder_width',
+        'shoulder',
         'chest',
         'waist',
-        'hip',
-        'arm_length',
-        'sleeve',
-        'torso_length'
+        'hips',
+        'dress_length',
+        'wrist',
+        'skirt_length',
+        'armpit'
     ];
 
     public function customer()
