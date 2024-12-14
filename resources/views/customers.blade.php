@@ -394,7 +394,6 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log('Customer created:', response); // Debug log
                 if(response.customer_id) {
                     $('#customer_id').val(response.customer_id);
                     $('#add-customer').modal('hide');
@@ -404,12 +403,38 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr) {
-                console.log('Error:', xhr); // Debug log
                 if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    Object.keys(errors).forEach(function(key) {
-                        toastr.error(errors[key][0]);
-                    });
+                    if (xhr.responseJSON.status === 'warning') {
+                        // Show warning using SweetAlert2
+                        Swal.fire({
+                            title: 'Customer Already Exists',
+                            text: xhr.responseJSON.message,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Use Existing',
+                            cancelButtonText: 'Close'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Use existing customer data
+                                let customer = xhr.responseJSON.customer;
+                                $('#customer_id').val(customer.id);
+                                $('#add-customer').modal('hide');
+                                $('#body-measurements-modal').modal('show');
+                            } else {
+                                // Close all active modals
+                                $('.modal').modal('hide');
+                            }
+                            // If canceled, do nothing and let them modify the form
+                        });
+                    } else {
+                        // Handle other validation errors
+                        let errors = xhr.responseJSON.errors;
+                        Object.keys(errors).forEach(function(key) {
+                            toastr.error(errors[key][0]);
+                        });
+                    }
                 }
             }
         });

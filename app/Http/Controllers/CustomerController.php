@@ -18,11 +18,23 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'fullname' => 'required|max:100',
-            'phone' => 'required|max:15|unique:customers,phone',
-            'email' => 'required|email|max:100',
-            'address' => 'required|max:200',
+        // Check if customer exists by fullname
+        $existingCustomer = Customer::where('fullname', $request->fullname)->first();
+        
+        if ($existingCustomer) {
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'Customer already exists. Please use the existing data.',
+                'customer' => $existingCustomer
+            ], 422);
+        }
+
+        // Your existing validation rules, but remove unique from phone
+        $request->validate([
+            'fullname' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',  // removed unique:customers
+            'email' => 'required|email|unique:customers',
+            'address' => 'required|string'
         ]);
 
         $customer = Customer::create($request->all());
