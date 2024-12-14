@@ -44,58 +44,53 @@
 					<thead>
 						<tr>
 							<th>Customer Name</th>
+							<th>Body Name</th>
+							<th>Shoulder</th>
+							<th>Chest</th>
+							<th>Waist</th>
+							<th>Hip</th>
+							<th>Dress length</th>
+							<th>Wrist</th>
+							<th>Skirt length</th>
+							<th>Armpit</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
 						@foreach($measurements as $customerId => $customerMeasurements)
-							<tr>
-								<td>{{ $customerMeasurements->first()->customer->fullname }}</td>
-								<td>
-									<table class="table table-bordered mb-0">
-										<thead>
-											<tr>
-												<th>Body Name</th>
-												<th>Shoulder</th>
-												<th>Chest</th>
-												<th>Waist</th>
-												<th>Hip</th>
-												<th>Dress length</th>
-												<th>Wrist</th>
-												<th>Skirt length</th>
-												<th>Armpit</th>
-												<th>Action</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach($customerMeasurements as $measurement)
-												<tr>
-													<td>{{ $measurement->body_name }}</td>
-													<td>{{ $measurement->shoulder }}</td>
-													<td>{{ $measurement->chest }}</td>
-													<td>{{ $measurement->waist }}</td>
-													<td>{{ $measurement->hips }}</td>
-													<td>{{ $measurement->dress_length }}</td>
-													<td>{{ $measurement->wrist }}</td>
-													<td>{{ $measurement->skirt_length }}</td>
-													<td>{{ $measurement->armpit }}</td>
-												</tr>
-											@endforeach
-										</tbody>
-									</table>
-								</td>
-								<td>
-									<a href="#" class="float-md-right" data-toggle="dropdown">
-										<i class="material-icons">more_vert</i>
-									</a>
-									<div class="dropdown-menu">
-										<a href="javascript:void(0)" 
-										data-customer-id="{{ $customerId }}" 
-										class="dropdown-item add-measurement">
-											<i class="la la-plus"></i>Add Measurement
-										</a>
-									</div>
-								</td>
-							</tr>
+							@php
+								$rowCount = count($customerMeasurements);
+							@endphp
+							@foreach($customerMeasurements as $index => $measurement)
+								<tr>
+									@if($index === 0)
+										<td rowspan="{{ $rowCount }}">{{ $measurement->customer->fullname }}</td>
+									@endif
+									<td>{{ $measurement->body_name }}</td>
+									<td>{{ $measurement->shoulder }}</td>
+									<td>{{ $measurement->chest }}</td>
+									<td>{{ $measurement->waist }}</td>
+									<td>{{ $measurement->hips }}</td>
+									<td>{{ $measurement->dress_length }}</td>
+									<td>{{ $measurement->wrist }}</td>
+									<td>{{ $measurement->skirt_length }}</td>
+									<td>{{ $measurement->armpit }}</td>
+									@if($index === 0)
+										<td rowspan="{{ $rowCount }}">
+											<a href="#" class="float-md-right" data-toggle="dropdown">
+												<i class="material-icons">more_vert</i>
+											</a>
+											<div class="dropdown-menu">
+												<a href="javascript:void(0)" 
+												data-customer-id="{{ $customerId }}" 
+												class="dropdown-item add-measurement">
+													<i class="la la-plus"></i>Add Measurement
+												</a>
+											</div>
+										</td>
+									@endif
+								</tr>
+							@endforeach
 						@endforeach
 					</tbody>
 				</table>
