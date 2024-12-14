@@ -132,5 +132,12 @@ Route::group(['middleware'=>['auth']], function (){
     // ... existing routes ...
 });
 
+Route::get('orders/view/{token}', [OrdersController::class, 'view'])
+    ->name('orders.view')
+    ->middleware('public.order');
+
+Route::put('/measurements/update', [MeasurementPartController::class, 'update'])->name('measurements.update');
+Route::delete('/measurements/destroy', [MeasurementPartController::class, 'destroy'])->name('measurements.destroy');
+
 
 

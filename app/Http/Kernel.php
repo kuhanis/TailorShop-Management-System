@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check.staff' => \App\Http\Middleware\CheckStaffRole::class,
+        'public.order' => \App\Http\Middleware\PublicOrderAccess::class,
     ];
 }

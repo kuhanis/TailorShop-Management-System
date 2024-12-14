@@ -67,29 +67,22 @@ class MeasurementPartController extends Controller
      */
     public function update(Request $request)
     {
-        $this->validate($request,[
-           // 'cloth_type'=>'required',
-            'name'=>'required|max:200',
-            'description'=>'max:200',
-            'image'=>'file|image|mimes:jpg,jpeg,png,gif',
+        $request->validate([
+            'body_name' => 'required',
+            'shoulder' => 'required|numeric',
+            'chest' => 'required|numeric',
+            'waist' => 'required|numeric',
+            'hips' => 'required|numeric',
+            'dress_length' => 'required|numeric',
+            'wrist' => 'required|numeric',
+            'skirt_length' => 'required|numeric',
+            'armpit' => 'required|numeric',
         ]);
-        $imageName = null;
-        if($request->image != null){
-            $imageName = time().'.'.$request->image->extension();
-            $request->image->move(public_path('storage/parts'), $imageName);
-        } 
-        $part = MeasurementPart::find($request->id);
-        $part->update([
-            'cloth_type_id'=>$request->cloth_type,
-            'name'=>$request->name,
-            'description'=>$request->description,
-            'image'=>$imageName,
-        ]);
-        $notification=array(
-            'message'=>"Measurement part has been updated !!!",
-            'alert-type'=>'success'
-        );
-        return back()->with($notification);
+
+        $measurement = BodyMeasurement::findOrFail($request->id);
+        $measurement->update($request->all());
+
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -100,12 +93,9 @@ class MeasurementPartController extends Controller
      */
     public function destroy(Request $request)
     {
-        $part = MeasurementPart::find($request->id);
-        $part->delete();
-        $notification=array(
-            'message'=>"Measurement part has been deleted !!!",
-            'alert-type'=>'success'
-        );
-        return back()->with($notification);
+        $measurement = BodyMeasurement::findOrFail($request->id);
+        $measurement->delete();
+        
+        return response()->json(['success' => true]);
     }
 }
