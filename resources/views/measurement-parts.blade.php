@@ -70,14 +70,14 @@
 											@foreach($customerMeasurements as $measurement)
 												<tr>
 													<td>{{ $measurement->body_name }}</td>
-													<td>{{ $measurement->neck }}</td>
-													<td>{{ $measurement->shoulder_width }}</td>
+													<td>{{ $measurement->shoulder }}</td>
 													<td>{{ $measurement->chest }}</td>
 													<td>{{ $measurement->waist }}</td>
-													<td>{{ $measurement->hip }}</td>
-													<td>{{ $measurement->arm_length }}</td>
-													<td>{{ $measurement->sleeve }}</td>
-													<td>{{ $measurement->torso_length }}</td>
+													<td>{{ $measurement->hips }}</td>
+													<td>{{ $measurement->dress_length }}</td>
+													<td>{{ $measurement->wrist }}</td>
+													<td>{{ $measurement->skirt_length }}</td>
+													<td>{{ $measurement->armpit }}</td>
 												</tr>
 											@endforeach
 										</tbody>
