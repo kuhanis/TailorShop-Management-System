@@ -17,8 +17,10 @@ class MeasurementPartController extends Controller
     public function index()
     {
         $title = "Body Measurements";
-        $bodyMeasurements = BodyMeasurement::with('customer')->get();
-        return view('measurement-parts', compact('title', 'bodyMeasurements'));
+        $measurements = BodyMeasurement::with('customer')
+            ->get()
+            ->groupBy('customer_id');
+        return view('measurement-parts', compact('title', 'measurements'));
     }
 
     /**
