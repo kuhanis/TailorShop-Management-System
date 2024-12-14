@@ -11,7 +11,7 @@ $(document).ready(function() {
             $('#edit_id').val(id);
             $('#edit_customer').val(data.customer_id);
             $('#edit_description').val(data.description);
-            $('#edit_received_date').val(data.recieved_on);
+            $('#edit_received_date').val(data.received_on);
             $('#edit_amount').val(data.amount_charged);
         });
     });
@@ -62,6 +62,7 @@ $(document).ready(function() {
 						<th>Date Ordered</th>
 						<th>Amount</th>
 						<th>Action</th>
+						<th>Order Link</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -70,7 +71,7 @@ $(document).ready(function() {
                           <tr>
                             <td>{{$order->customer->fullname}}</td>
                             <td>{{$order->description}}</td>
-							<td>{{$order->recieved_on}}</td>
+							<td>{{$order->received_on}}</td>
 							<td>RM {{number_format($order->amount_charged, 2)}}</td>
                             <td>
 								<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false">
@@ -81,7 +82,7 @@ $(document).ready(function() {
 										data-id="{{$order->id}}"
 										data-customer="{{$order->customer_id}}"
 										data-description="{{$order->description}}"
-										data-received-date="{{$order->recieved_on}}"
+										data-received-date="{{$order->received_on}}"
 										data-amount="{{$order->amount_charged}}"
 										class="dropdown-item editbtn">
 										<i class="la la-edit"></i>Edit
@@ -92,6 +93,13 @@ $(document).ready(function() {
 									</a>
 								</div>
 							</td>
+                            <td>
+                                @if($order->access_token)
+                                    <a href="{{ $order->order_link }}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="la la-link"></i> View Order
+                                    </a>
+                                @endif
+                            </td>
                           </tr>
                         @endforeach
 						<x-modals.delete :route="'order.destroy'" :title="'Customer Order'" />
@@ -149,7 +157,7 @@ $(document).ready(function() {
 					<label>Date Ordered: </label>
 					<div class="form-group">
 						<div class="position-relative has-icon-left">
-							<input type="date" name="recieved_on" class="form-control" required>
+							<input type="date" name="received_on" class="form-control" required>
 							<div class="form-control-position">
 								<i class="la la-calendar"></i>
 							</div>
@@ -224,7 +232,7 @@ $(document).ready(function() {
 					<label>Date Ordered: </label>
 					<div class="form-group">
 						<div class="position-relative has-icon-left">
-							<input type="date" id="edit_received_date" name="recieved_on" class="form-control" required>
+							<input type="date" id="edit_received_date" name="received_on" class="form-control" required>
 							<div class="form-control-position">
 								<i class="la la-calendar"></i>
 							</div>

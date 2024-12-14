@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Orders;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OrdersController extends Controller
 {
@@ -21,15 +22,16 @@ class OrdersController extends Controller
         $this->validate($request,[
             'customer'=>'required',
             'description'=>'max:200',
-            'recieved_on'=>'required|date',
+            'received_on'=>'required|date',
             'amount_charged'=>'required|numeric|min:0',
         ]);
 
-        Orders::create([
+        $order = Orders::create([
             'customer_id'=>$request->customer,
             'description'=>$request->description,
-            'recieved_on'=>$request->recieved_on,
+            'received_on'=>$request->received_on,
             'amount_charged'=>$request->amount_charged,
+            'access_token'=>Str::random(32),
         ]);
 
         $notification = array(
@@ -73,11 +75,20 @@ class OrdersController extends Controller
     public function destroy(Request $request)
     {
         $order = Orders::find($request->id);
+        $order->update(['access_token' => null]);
         $order->delete();
+        
         $notification = array(
             'message'=>"Customer order deleted successfully!!",
             'alert-type'=>'success'
         );
         return back()->with($notification);
+    }
+
+    public function view($token)
+    {
+        $title = "Order Details";
+        $order = Orders::where('access_token', $token)->firstOrFail();
+        return view('order-details', compact('order', 'title'));
     }
 }

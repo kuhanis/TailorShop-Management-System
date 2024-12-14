@@ -12,11 +12,16 @@ class Orders extends Model
 
     protected $fillable =[
         'customer_id','description',
-        'recieved_on','recieved_by','amount_charged',
-        'amount_paid','collecting_on',
-     ];
+        'received_on','received_by','amount_charged',
+        'amount_paid','collecting_on','access_token'
+    ];
  
      public function customer(){
          return $this->belongsTo(Customer::class);
      }
+
+    public function getOrderLinkAttribute()
+    {
+        return $this->access_token ? route('orders.view', $this->access_token) : null;
+    }
 }
