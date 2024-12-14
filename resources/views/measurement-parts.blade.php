@@ -17,7 +17,7 @@
 @endpush
 
 @push('breadcrumb-button')
-<x-buttons.primary :text="'Set Measurement Part'" :target="'#add-measurement-part'" />
+<x-buttons.primary :text="'Add Body'" :target="'#add-measurement-part'" />
 @endpush
 
 @section('content')
@@ -124,25 +124,67 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<label class="modal-title text-text-bold-600" id="myModalLabel33">Set Measurement Parts</label>
+				<label class="modal-title text-text-bold-600" id="myModalLabel33">Add Body Measurement</label>
 				<button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<form method="post" action="{{route('measurement-parts')}}">
+			<form method="post" action="{{route('body.measurements.store')}}">
 				@csrf
 				<div class="modal-body">
 					<div class="form-body">
 						<div class="form-group">
-							<label>Measurement Name</label>
-							<div class="position-relative">
-								<input type="text" class="form-control" placeholder="measurement name" name="name">
-							</div>
+							<label>Customer Name</label>
+							<select class="form-control" name="customer_id" required>
+								<option value="">Select Customer</option>
+								@foreach($measurements->keys() as $customerId)
+									@php
+										$customerName = $measurements[$customerId]->first()->customer->fullname;
+									@endphp
+									<option value="{{ $customerId }}">{{ $customerName }}</option>
+								@endforeach
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Body Name</label>
+							<input type="text" class="form-control" placeholder="Enter body name" name="body_name" required>
+						</div>
+						<div class="form-group">
+							<label>Shoulder</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter shoulder measurement" name="shoulder" required>
+						</div>
+						<div class="form-group">
+							<label>Chest</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter chest measurement" name="chest" required>
+						</div>
+						<div class="form-group">
+							<label>Waist</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter waist measurement" name="waist" required>
+						</div>
+						<div class="form-group">
+							<label>Hip</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter hip measurement" name="hips" required>
+						</div>
+						<div class="form-group">
+							<label>Dress Length</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter dress length" name="dress_length" required>
+						</div>
+						<div class="form-group">
+							<label>Wrist</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter wrist measurement" name="wrist" required>
+						</div>
+						<div class="form-group">
+							<label>Skirt Length</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter skirt length" name="skirt_length" required>
+						</div>
+						<div class="form-group">
+							<label>Armpit</label>
+							<input type="number" step="0.01" class="form-control" placeholder="Enter armpit measurement" name="armpit" required>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>						
+					<button type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
 					<button type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
 				</div>
 			</form>
@@ -245,6 +287,32 @@ $(document).ready(function() {
 			success: function(response) {
 				toastr.success('Measurement updated successfully!');
 				$('#edit-measurement').modal('hide');
+				window.location.reload();
+			},
+			error: function(xhr) {
+				if (xhr.status === 422) {
+					let errors = xhr.responseJSON.errors;
+					Object.keys(errors).forEach(function(key) {
+						toastr.error(errors[key][0]);
+					});
+				}
+			}
+		});
+	});
+
+	// Add measurement form submission
+	$('#add-measurement-part form').on('submit', function(e) {
+		e.preventDefault();
+		
+		$.ajax({
+			url: $(this).attr('action'),
+			method: 'POST',
+			data: new FormData(this),
+			processData: false,
+			contentType: false,
+			success: function(response) {
+				toastr.success('Body measurement added successfully!');
+				$('#add-measurement-part').modal('hide');
 				window.location.reload();
 			},
 			error: function(xhr) {
