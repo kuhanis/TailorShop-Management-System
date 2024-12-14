@@ -74,6 +74,46 @@ $(document).ready(function() {
     $('#edit-customer').on('hidden.bs.modal', function () {
         $(this).find('form')[0].reset();
     });
+
+    $('.deletebtn').on('click', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will delete the customer and all their measurements! This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('customer.destroy') }}",
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: id
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Customer and related measurements have been deleted.',
+                            'success'
+                        ).then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
 });
 </script>
 @endpush
@@ -143,7 +183,7 @@ $(document).ready(function() {
                         </td>
                       </tr>
                     @endforeach
-                    <x-modals.delete :route="'customer.destroy'" :title="'Customer'" />
+                    
                   </tbody>
                 </table>
             </div>

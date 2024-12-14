@@ -86,13 +86,8 @@ class CustomerController extends Controller
     public function destroy(Request $request)
     {
         $customer = Customer::find($request->id);
+        $customer->bodyMeasurements()->delete();
         $customer->delete();
-        
-        $notification = [
-            'message' => "Customer deleted successfully!!!",
-            'alert-type' => 'success',
-        ];
-        
-        return back()->with($notification);
+        return response()->json(['success' => true]);
     }
 }

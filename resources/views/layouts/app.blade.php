@@ -46,6 +46,8 @@
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
          <!-- END: Custom CSS-->
 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     </head>
     <!-- END: Head-->
 
