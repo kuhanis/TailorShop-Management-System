@@ -96,10 +96,11 @@
                                    class="dropdown-item editbtn">
                                   <i class="la la-edit"></i>Edit
                                 </a>
-                                <a href="javascript:void(0)" 
-                                   data-customer-id="{{ $customerId }}" 
-                                   class="dropdown-item add-measurement">
-                                  <i class="la la-plus"></i>Add Measurement
+                                <div class="dropdown-divider"></div>
+                                <a href="javascript:void(0)"
+                                   data-id="{{ $measurement->id }}"
+                                   class="dropdown-item deletebtn text-danger">
+                                  <i class="la la-trash"></i>Delete
                                 </a>
                               </div>
                             </td>
@@ -324,6 +325,29 @@ $(document).ready(function() {
 				}
 			}
 		});
+	});
+
+	// Delete button click handler
+	$('.deletebtn').on('click', function() {
+		let id = $(this).data('id');
+		
+		if(confirm('Are you sure you want to delete this measurement?')) {
+			$.ajax({
+				url: "{{ route('measurements.destroy') }}",
+				method: 'DELETE',
+				data: {
+					_token: '{{ csrf_token() }}',
+					id: id
+				},
+				success: function(response) {
+					toastr.success('Measurement deleted successfully!');
+					window.location.reload();
+				},
+				error: function(xhr) {
+					toastr.error('An error occurred while deleting the measurement.');
+				}
+			});
+		}
 	});
 });
 </script>

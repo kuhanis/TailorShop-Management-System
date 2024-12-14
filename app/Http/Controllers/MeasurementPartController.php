@@ -93,12 +93,9 @@ class MeasurementPartController extends Controller
      */
     public function destroy(Request $request)
     {
-        $part = MeasurementPart::find($request->id);
-        $part->delete();
-        $notification=array(
-            'message'=>"Measurement part has been deleted !!!",
-            'alert-type'=>'success'
-        );
-        return back()->with($notification);
+        $measurement = BodyMeasurement::findOrFail($request->id);
+        $measurement->delete();
+        
+        return response()->json(['success' => true]);
     }
 }
