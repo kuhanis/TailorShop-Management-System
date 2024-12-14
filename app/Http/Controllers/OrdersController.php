@@ -89,6 +89,6 @@ class OrdersController extends Controller
     {
         $title = "Order Details";
         $order = Orders::where('access_token', $token)->firstOrFail();
-        return view('order-details', compact('order', 'title'));
+        return view('public.order-details', compact('order', 'title'));
     }
 }

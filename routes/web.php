@@ -132,7 +132,9 @@ Route::group(['middleware'=>['auth']], function (){
     // ... existing routes ...
 });
 
-Route::get('orders/view/{token}', [OrdersController::class, 'view'])->name('orders.view');
+Route::get('orders/view/{token}', [OrdersController::class, 'view'])
+    ->name('orders.view')
+    ->middleware('public.order');
 
 
 
