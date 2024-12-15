@@ -127,6 +127,9 @@ class OrdersController extends Controller
     public function retention()
     {
         $retentions = Retention::with(['order.customer'])->get();
-        return view('orders.retention', compact('retentions'));
+        return view('orders.retention', [
+            'title' => 'Order Retention',
+            'retentions' => $retentions
+        ]);
     }
 }
