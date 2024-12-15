@@ -159,12 +159,15 @@ $(document).ready(function() {
 					<div class="form-group">
 						<div class="position-relative has-icon-left">
 							<select name="customer" title="select customer" class="select2 form-control" required>
-								<optgroup>								 
-									@if (!empty($customers->count()))
-										@foreach ($customers as $customer)
+								<optgroup label="New Customers">                             
+									@foreach ($customers->where('has_orders', false) as $customer)
 										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
-										@endforeach
-									@endif
+									@endforeach
+								</optgroup>
+								<optgroup label="From Retention">
+									@foreach ($customers->where('has_orders', true) as $customer)
+										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
+									@endforeach
 								</optgroup>
 							</select>
 							<div class="form-control-position">

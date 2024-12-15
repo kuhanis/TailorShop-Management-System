@@ -18,9 +18,7 @@ class OrdersController extends Controller
             ->whereNull('deleted_at')
             ->get();
         
-        // Get all customers who either:
-        // 1. Have no orders at all
-        // 2. Only have paid orders (in retention)
+        // Get all eligible customers and mark if they have any orders
         $customers = Customer::where(function($query) {
             $query->whereNotExists(function($q) {
                 $q->select('customer_id')
@@ -34,7 +32,13 @@ class OrdersController extends Controller
                     ->where('status', '!=', 'paid')
                     ->whereNull('deleted_at');
             });
-        })->get();
+        })
+        ->get()
+        ->map(function($customer) {
+            // Check if customer has any orders in history
+            $customer->has_orders = OrderHistory::where('customer_id', $customer->id)->exists();
+            return $customer;
+        });
         
         return view('orders', compact('title', 'customers', 'orders'));
     }
