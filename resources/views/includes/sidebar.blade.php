@@ -63,11 +63,26 @@
                 </ul>
             </li>
 
-            <li class="{{ Request::routeIs('orders') ? 'active' : '' }} nav-item">
-                <a href="{{route('orders')}}">
+            <li class="nav-item">
+                <a href="#">
                     <i class="ft ft-shopping-cart"></i>
                     <span class="menu-title" data-i18n="Order">Orders</span>
                 </a>
+                <ul class="menu-content">
+                    <li class="{{ Request::routeIs('orders') ? 'active' : '' }}">
+                        <a href="{{route('orders')}}">
+                            <i class="material-icons"></i>
+                            <span data-i18n="Orders">Orders List</span>
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::routeIs('orders.retention') ? 'active' : '' }}">
+                        <a href="{{route('orders.retention')}}">
+                            <i class="material-icons"></i>
+                            <span data-i18n="Retention">Retention</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             @if(auth()->user()->staff && auth()->user()->staff->role !== 'staff')

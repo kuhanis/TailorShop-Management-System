@@ -342,9 +342,16 @@ $(document).ready(function() {
                 status: status
             },
             success: function(response) {
-                // Toggle active class on just this button
-                button.toggleClass('active font-weight-bold');
-                toastr.success('Status updated successfully');
+                if (status === 'paid') {
+                    // Fade out and remove the row
+                    button.closest('tr').fadeOut(400, function() {
+                        $(this).remove();
+                    });
+                    toastr.success('Order moved to retention');
+                } else {
+                    button.toggleClass('active font-weight-bold');
+                    toastr.success('Status updated successfully');
+                }
             },
             error: function(xhr) {
                 toastr.error('Failed to update status');

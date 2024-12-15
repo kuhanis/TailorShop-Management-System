@@ -141,5 +141,7 @@ Route::delete('/measurements/destroy', [MeasurementPartController::class, 'destr
 
 Route::post('/orders/{order}/status', [OrdersController::class, 'updateStatus'])->name('orders.status.update');
 
+Route::get('orders/retention', [OrdersController::class, 'retention'])->name('orders.retention');
+
 
 
