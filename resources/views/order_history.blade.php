@@ -29,6 +29,7 @@
                         <th>Date Ordered</th>
                         <th>Amount</th>
                         <th>Status</th>
+                        <th>Processed By</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -40,6 +41,7 @@
                         <td>
                             <span class="badge badge-success">Paid</span>
                         </td>
+                        <td>{{$order->staff ? $order->staff->name : 'Admin'}}</td>
                       </tr>
                     @endforeach
                   </tbody>

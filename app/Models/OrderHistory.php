@@ -11,10 +11,16 @@ class OrderHistory extends Model
         'description',
         'received_on',
         'amount_charged',
+        'staff_id'
     ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(User::class, 'staff_id');
     }
 } 
