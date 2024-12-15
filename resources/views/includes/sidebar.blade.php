@@ -82,6 +82,13 @@
                             <span data-i18n="Retention">Retention</span>
                         </a>
                     </li>
+
+                    <li class="{{ Request::routeIs('orders.history') ? 'active' : '' }}">
+                        <a href="{{route('orders.history')}}">
+                            <i class="material-icons"></i>
+                            <span data-i18n="History">Order History</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 

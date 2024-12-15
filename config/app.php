@@ -230,4 +230,6 @@ return [
 
     ],
 
+    'link_retention_days' => env('LINK_RETENTION_DAYS', 400),
+
 ];

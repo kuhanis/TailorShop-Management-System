@@ -144,5 +144,7 @@ Route::post('/orders/{order}/status', [OrdersController::class, 'updateStatus'])
 
 Route::get('orders/retention', [OrdersController::class, 'retention'])->name('orders.retention');
 
+Route::get('orders/history', [OrdersController::class, 'history'])->name('orders.history');
+
 
 
