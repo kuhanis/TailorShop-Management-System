@@ -61,8 +61,8 @@ $(document).ready(function() {
 						<th>Description</th>
 						<th>Date Ordered</th>
 						<th>Amount</th>
-						<th>Action</th>
 						<th>Order Link</th>
+						<th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -73,6 +73,13 @@ $(document).ready(function() {
                             <td>{{$order->description}}</td>
 							<td>{{$order->received_on}}</td>
 							<td>RM {{number_format($order->amount_charged, 2)}}</td>
+                            <td>
+                                @if($order->access_token)
+                                    <a href="{{ $order->order_link }}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="la la-link"></i> View Order
+                                    </a>
+                                @endif
+                            </td>
                             <td>
 								<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false">
 									<i class="material-icons">more_vert</i>
@@ -93,13 +100,6 @@ $(document).ready(function() {
 									</a>
 								</div>
 							</td>
-                            <td>
-                                @if($order->access_token)
-                                    <a href="{{ $order->order_link }}" target="_blank" class="btn btn-sm btn-info">
-                                        <i class="la la-link"></i> View Order
-                                    </a>
-                                @endif
-                            </td>
                           </tr>
                         @endforeach
 						<x-modals.delete :route="'order.destroy'" :title="'Customer Order'" />
