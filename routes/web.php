@@ -139,9 +139,12 @@ Route::get('orders/view/{token}', [OrdersController::class, 'view'])
 Route::put('/measurements/update', [MeasurementPartController::class, 'update'])->name('measurements.update');
 Route::delete('/measurements/destroy', [MeasurementPartController::class, 'destroy'])->name('measurements.destroy');
 
-Route::post('/orders/{order}/status', [OrdersController::class, 'updateStatus'])->name('orders.status.update');
+Route::post('/orders/{order}/status', [OrdersController::class, 'updateStatus'])
+    ->name('orders.status.update');
 
 Route::get('orders/retention', [OrdersController::class, 'retention'])->name('orders.retention');
+
+Route::get('orders/history', [OrdersController::class, 'history'])->name('orders.history');
 
 
 
