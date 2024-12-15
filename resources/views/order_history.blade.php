@@ -26,6 +26,7 @@
                   <thead>
                     <tr>
                         <th>Customer</th>
+                        <th>Description</th>
                         <th>Date Ordered</th>
                         <th>Amount</th>
                         <th class="text-center">Status</th>
@@ -36,6 +37,7 @@
                     @foreach ($orders as $order)
                       <tr>
                         <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
+                        <td>{{$order->description}}</td>
                         <td>{{$order->received_on}}</td>
                         <td>RM {{number_format($order->amount_charged, 2)}}</td>
                         <td class="text-center" style="width: 100px;">
