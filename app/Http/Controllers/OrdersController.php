@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Orders;
 use App\Models\Customer;
+use App\Models\Retention;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -12,7 +13,7 @@ class OrdersController extends Controller
     public function index()
     {
         $title = "Orders";
-        $orders = Orders::get();
+        $orders = Orders::where('status', '!=', 'paid')->orWhereNull('status')->get();
         $customers = Customer::get();
         return view('orders',compact('title','customers','orders'));
     }
@@ -92,13 +93,24 @@ class OrdersController extends Controller
         return view('public.order-details', compact('order', 'title'));
     }
 
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(Request $request, Orders $order)
     {
         $validated = $request->validate([
             'status' => 'required|in:paid,to_collect',
         ]);
 
-        $order->update(['status' => $validated['status']]);
+        $order->update([
+            'status' => $validated['status'],
+            'received_on' => $validated['status'] === 'paid' ? now() : $order->received_on
+        ]);
+
+        // Create retention record when order is marked as paid
+        if ($validated['status'] === 'paid') {
+            Retention::create([
+                'order_id' => $order->id,
+                'link_expire' => now()->addDays(30)
+            ]);
+        }
 
         return response()->json(['success' => true]);
     }
@@ -106,8 +118,7 @@ class OrdersController extends Controller
     public function retention()
     {
         $title = "Retention Orders";
-        $orders = Orders::where('status', 'paid')->get();
-        $customers = Customer::get();
-        return view('orders.retention', compact('title', 'customers', 'orders'));
+        $retentions = Retention::with('order.customer')->get();
+        return view('orders.retention', compact('title', 'retentions'));
     }
 }

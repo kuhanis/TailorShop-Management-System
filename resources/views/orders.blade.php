@@ -358,6 +358,32 @@ $(document).ready(function() {
             }
         });
     });
+
+    // After successful order addition
+    $('form').on('submit', function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let customerId = form.find('select[name="customer"]').val();
+        
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                $('#add-order').modal('hide');
+                // Trigger custom event
+                $(document).trigger('orderAdded', [customerId]);
+                // Remove the customer option from select
+                $('select[name="customer"] option[value="' + customerId + '"]').remove();
+                toastr.success('Order added successfully');
+                // Reload the page or update the table as needed
+                location.reload();
+            },
+            error: function(xhr) {
+                toastr.error('Failed to add order');
+            }
+        });
+    });
 });
 </script>
 @endpush
