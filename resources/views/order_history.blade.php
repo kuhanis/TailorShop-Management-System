@@ -28,8 +28,8 @@
                         <th>Customer</th>
                         <th>Date Ordered</th>
                         <th>Amount</th>
-                        <th>Status</th>
-                        <th>Processed By</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Processed By</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -38,10 +38,10 @@
                         <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
                         <td>{{$order->received_on}}</td>
                         <td>RM {{number_format($order->amount_charged, 2)}}</td>
-                        <td>
-                            <span class="badge badge-success">Paid</span>
+                        <td class="text-center" style="width: 100px;">
+                            <span class="badge badge-success" style="display: inline-flex; align-items: center; justify-content: center; min-width: 60px; height: 24px;">Paid</span>
                         </td>
-                        <td>{{$order->staff ? $order->staff->name : 'Admin'}}</td>
+                        <td class="text-center">{{$order->staff ? $order->staff->name : 'Admin'}}</td>
                       </tr>
                     @endforeach
                   </tbody>
