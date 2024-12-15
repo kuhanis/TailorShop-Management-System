@@ -91,4 +91,15 @@ class OrdersController extends Controller
         $order = Orders::where('access_token', $token)->firstOrFail();
         return view('public.order-details', compact('order', 'title'));
     }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:paid,to_collect',
+        ]);
+
+        $order->update(['status' => $validated['status']]);
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -61,6 +61,7 @@ $(document).ready(function() {
 						<th>Description</th>
 						<th>Date Ordered</th>
 						<th>Amount</th>
+						<th>Status</th>
 						<th>Order Link</th>
 						<th>Action</th>
                     </tr>
@@ -73,11 +74,39 @@ $(document).ready(function() {
                             <td>{{$order->description}}</td>
 							<td>{{$order->received_on}}</td>
 							<td>RM {{number_format($order->amount_charged, 2)}}</td>
-                            <td>
+                            <td class="text-center" style="min-width: 100px; padding: 8px;">
+                                <div class="d-flex flex-column align-items-center" style="gap: 4px;">
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-success status-btn"
+                                            data-status="paid"
+                                            data-order-id="{{ $order->id }}"
+                                            style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
+                                        Paid
+                                    </button>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-warning status-btn"
+                                            data-status="to_collect"
+                                            data-order-id="{{ $order->id }}"
+                                            style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
+                                        <i class="la la-clock"></i> To Collect
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="text-center" style="min-width: 160px; padding: 8px;">
                                 @if($order->access_token)
-                                    <a href="{{ $order->order_link }}" target="_blank" class="btn btn-sm btn-info">
-                                        <i class="la la-link"></i> View Order
-                                    </a>
+                                    <div class="d-flex align-items-center justify-content-center" style="gap: 4px;">
+                                        <a href="{{ $order->order_link }}" 
+                                           target="_blank" 
+                                           class="btn btn-sm btn-info"
+                                           style="min-width: 70px; font-size: 12px; padding: 4px 8px;">
+                                            <i class="la la-link"></i> View
+                                        </a>
+                                        <button class="btn btn-sm btn-secondary copy-link"
+                                                data-link="{{ $order->order_link }}"
+                                                style="min-width: 70px; font-size: 12px; padding: 4px 8px;">
+                                            <i class="la la-copy"></i> Copy
+                                        </button>
+                                    </div>
                                 @endif
                             </td>
                             <td>
@@ -283,6 +312,44 @@ $(document).ready(function() {
     $('.deletebtn').on('click', function() {
         $('#delete-modal').modal('show');
         $('#delete-id').val($(this).data('id'));
+    });
+
+    // Add new copy link functionality
+    $('.copy-link').on('click', function() {
+        const link = $(this).data('link');
+        navigator.clipboard.writeText(link).then(function() {
+            // Optional: Show success message
+            toastr.success('Link copied to clipboard!');
+        }).catch(function(err) {
+            // Optional: Show error message
+            toastr.error('Failed to copy link');
+            console.error('Failed to copy link: ', err);
+        });
+    });
+
+    // Add status button functionality
+    $('.status-btn').on('click', function() {
+        const button = $(this);
+        const orderId = button.data('order-id');
+        const status = button.data('status');
+        
+        // Send AJAX request to update status
+        $.ajax({
+            url: `/orders/${orderId}/status`,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: status
+            },
+            success: function(response) {
+                // Toggle active class on just this button
+                button.toggleClass('active font-weight-bold');
+                toastr.success('Status updated successfully');
+            },
+            error: function(xhr) {
+                toastr.error('Failed to update status');
+            }
+        });
     });
 });
 </script>
