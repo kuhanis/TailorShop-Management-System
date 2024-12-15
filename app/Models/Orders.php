@@ -13,7 +13,8 @@ class Orders extends Model
     protected $fillable =[
         'customer_id','description',
         'received_on','received_by','amount_charged',
-        'amount_paid','collecting_on','access_token'
+        'amount_paid','collecting_on','access_token',
+        'status'
     ];
  
      public function customer(){

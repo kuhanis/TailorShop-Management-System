@@ -354,7 +354,8 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr) {
-                toastr.error('Failed to update status');
+                console.error('Error:', xhr);
+                toastr.error(xhr.responseJSON?.message || 'Failed to update status');
             }
         });
     });

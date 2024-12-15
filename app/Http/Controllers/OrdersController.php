@@ -92,7 +92,7 @@ class OrdersController extends Controller
         return view('public.order-details', compact('order', 'title'));
     }
 
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(Request $request, Orders $order)
     {
         $validated = $request->validate([
             'status' => 'required|in:paid,to_collect',
@@ -108,6 +108,6 @@ class OrdersController extends Controller
         $title = "Retention Orders";
         $orders = Orders::where('status', 'paid')->get();
         $customers = Customer::get();
-        return view('orders.retention', compact('title', 'customers', 'orders'));
+        return view('retention', compact('title', 'customers', 'orders'));
     }
 }
