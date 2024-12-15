@@ -146,5 +146,7 @@ Route::get('orders/retention', [OrdersController::class, 'retention'])->name('or
 
 Route::get('orders/history', [OrdersController::class, 'history'])->name('orders.history');
 
+Route::get('/orders/retention', [OrdersController::class, 'retention'])->name('orders.retention');
+
 
 
