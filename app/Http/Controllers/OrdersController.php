@@ -8,6 +8,8 @@ use App\Models\OrderHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrdersController extends Controller
 {
@@ -133,6 +135,12 @@ class OrdersController extends Controller
         $order = Orders::where('access_token', $token)
             ->where('link_status', 'active')
             ->firstOrFail();
+
+        // If order is paid, show thank you page
+        if ($order->status === 'paid') {
+            return view('orders.thank-you', compact('order', 'title'));
+        }
+
         return view('public.order-details', compact('order', 'title'));
     }
 
@@ -152,9 +160,12 @@ class OrdersController extends Controller
                     'amount_charged' => $order->amount_charged,
                 ]);
 
-                // Update status to paid
+                // Update status to paid and set paid_at timestamp
                 Orders::where('customer_id', $order->customer_id)
-                    ->update(['status' => 'paid']);
+                    ->update([
+                        'status' => 'paid',
+                        'paid_at' => now()
+                    ]);
             });
         } else {
             $order->update(['status' => $validated['status']]);
