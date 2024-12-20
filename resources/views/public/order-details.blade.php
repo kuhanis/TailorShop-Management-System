@@ -28,6 +28,22 @@
                                     <strong>Amount:</strong>
                                     <p>RM {{ number_format($order->amount_charged, 2) }}</p>
                                 </div>
+                                <div class="form-group">
+                                    <strong>Status:</strong>
+                                    <div class="mt-1">
+                                        @if($order->status === 'to_collect')
+                                            @if($order->is_ready_to_collect)
+                                                <span class="badge badge-success" style="font-size: 14px; padding: 8px 16px;">
+                                                    Ready to Collect
+                                                </span>
+                                            @else
+                                                <span class="badge badge-warning" style="font-size: 14px; padding: 8px 16px;">
+                                                    In Progress
+                                                </span>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <!-- Add your order image/content here -->

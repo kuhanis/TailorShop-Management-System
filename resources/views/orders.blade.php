@@ -84,7 +84,7 @@ $(document).ready(function() {
                                         Paid
                                     </button>
                                     <button type="button" 
-                                            class="btn btn-sm btn-outline-warning status-btn"
+                                            class="btn btn-sm btn-outline-warning status-btn {{ $order->is_ready_to_collect ? 'active' : '' }}"
                                             data-status="to_collect"
                                             data-order-id="{{ $order->id }}"
                                             style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
@@ -336,34 +336,77 @@ $(document).ready(function() {
         const orderId = button.data('order-id');
         const status = button.data('status');
         
-        // Send AJAX request to update status
+        // If status is 'paid', show confirmation first
+        if (status === 'paid') {
+            Swal.fire({
+                title: 'Confirm Payment',
+                text: "Are you sure this order has been paid? This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, mark as paid',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    updateOrderStatus(button, orderId, status);
+                }
+            });
+        } else {
+            updateOrderStatus(button, orderId, status);
+        }
+    });
+
+    // Function to handle the status update
+    function updateOrderStatus(button, orderId, status) {
+        // Disable the button while processing
+        button.prop('disabled', true);
+        
         $.ajax({
             url: `/orders/${orderId}/status`,
             type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             data: {
-                _token: '{{ csrf_token() }}',
                 status: status
             },
             success: function(response) {
-                if (status === 'paid') {
-                    // Fade out and remove the row
-                    button.closest('tr').fadeOut(400, function() {
-                        $(this).remove();
-                    });
-                    toastr.success('Order moved to retention');
+                if (response.success) {
+                    if (status === 'paid') {
+                        button.closest('tr').fadeOut(400, function() {
+                            $(this).remove();
+                        });
+                        toastr.success('Order moved to retention');
+                    } else {
+                        button.addClass('active');
+                        toastr.success('Status updated successfully');
+                    }
                 } else {
-                    button.toggleClass('active font-weight-bold');
-                    toastr.success('Status updated successfully');
+                    toastr.error(response.message || 'Failed to update status');
                 }
             },
             error: function(xhr) {
                 console.error('Error:', xhr);
-                toastr.error(xhr.responseJSON?.message || 'Failed to update status');
+                toastr.error('Failed to update status. Please try again.');
+            },
+            complete: function() {
+                // Re-enable the button
+                button.prop('disabled', false);
             }
         });
-    });
+    }
 });
 </script>
 @endpush
+
+<style>
+    .status-btn.active {
+        font-weight: bold !important;
+        background-color: #ffc107 !important;  /* Yellow background */
+        color: #000 !important;
+        border-color: #ffc107 !important;
+    }
+</style>
 
 

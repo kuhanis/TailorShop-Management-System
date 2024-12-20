@@ -16,7 +16,9 @@ class Orders extends Model
         'received_on','received_by','amount_charged',
         'amount_paid','collecting_on','access_token',
         'status', 'link_activated_at',
-        'link_status'
+        'link_status',
+        'is_ready_to_collect',
+        'paid_at'
     ];
  
      public function customer(){

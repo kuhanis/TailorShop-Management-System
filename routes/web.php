@@ -140,7 +140,8 @@ Route::put('/measurements/update', [MeasurementPartController::class, 'update'])
 Route::delete('/measurements/destroy', [MeasurementPartController::class, 'destroy'])->name('measurements.destroy');
 
 Route::post('/orders/{order}/status', [OrdersController::class, 'updateStatus'])
-    ->name('orders.status.update');
+    ->name('orders.status.update')
+    ->middleware('auth');
 
 Route::get('orders/retention', [OrdersController::class, 'retention'])->name('orders.retention');
 
