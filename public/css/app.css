@@ -1,1 +1,19 @@
+/* Add this CSS for the role text styling */
+.role-text {
+    color: #000000 !important; /* Changed to black */
+    font-family: 'Quicksand', sans-serif;
+    font-size: 14px;
+    font-weight: 600; /* Made it bold */
+    margin-top: 8px;
+    text-align: center;
+}
 
+.user-profile {
+    padding: 15px 0;
+}
+
+.user-profile img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}

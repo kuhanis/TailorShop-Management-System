@@ -1,26 +1,20 @@
 <!-- BEGIN: Main Menu-->
 
 <div class="main-menu material-menu menu-fixed menu-light menu-accordion menu-shadow " data-scroll-to-active="true">
-    <div class="user-profile">
-        <div class="user-info text-center pt-1 pb-1"><img class="user-img img-fluid rounded-circle" src="@if(!empty(auth()->user()->avatar)){{asset('storage/avatars/'.auth()->user()->avatar)}}@else {{asset('app-assets/images/portrait/small/avatar-s-1.png')}} @endif"/>
-            <div class="name-wrapper d-block dropdown">
-                <a class="white dropdown-toggle ml-2" id="user-account" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="user-name">{{auth()->user()->name}}</span>
-                </a>
-                <div class="text-light">{{ucfirst(auth()->user()->role)}}</div>
-                <div class="dropdown-menu arrow" aria-labelledby="dropdownMenuLink">
-                    <a href="{{route('user-profile')}}" class="dropdown-item">
-                        <i class="material-icons align-middle mr-1">person</i>
-                        <span class="align-middle">Profile</span>
-                    </a>
-
-
-                    <a href="{{route('logout')}}" class="dropdown-item">
-                        <i class="material-icons align-middle mr-1">power_settings_new</i>
-                        <span class="align-middle">Log Out</span>
-                    </a>
-                </div>
-            </div>
+    <div class="user-profile text-center">
+        <img class="user-img img-fluid rounded-circle" 
+             src="@if(!empty(auth()->user()->avatar))
+                    {{asset('storage/avatars/'.auth()->user()->avatar)}}
+                 @else 
+                    {{asset('app-assets/images/portrait/small/avatar-s-1.png')}} 
+                 @endif"
+        />
+        <div class="role-text">
+            @if(auth()->user()->name === 'admin')
+                Super admin
+            @else
+                Staff
+            @endif
         </div>
     </div>
     <div class="main-menu-content">
