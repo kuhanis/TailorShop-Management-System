@@ -119,12 +119,11 @@ $(document).ready(function() {
 @endpush
 
 @push('breadcrumb')
-<h3 class="content-header-title">Customer</h3>
+<h3 class="content-header-title">Customers</h3>
 <div class="row breadcrumbs-top">
 	<div class="breadcrumb-wrapper col-12">
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item active">All Customers
-			</li>
+			<li class="breadcrumb-item active">Customers List</li>
 		</ol>
 	</div>
 </div>
@@ -144,7 +143,7 @@ $(document).ready(function() {
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
-                <table class="table table-striped table-bordered dataex-html5-export">
+                <table class="table table-striped table-bordered">
                   <thead>
                     <tr>
                         <th>Full Name</th>

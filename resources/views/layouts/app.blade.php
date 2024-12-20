@@ -65,20 +65,6 @@
         <!-- END: Main Menu-->
         <!-- BEGIN: Content-->
         <div class="app-content content">
-            <div class="content-header row">
-                <div class="content-header-light col-12">
-                    <div class="row">
-                        <div class="content-header-left col-md-9 col-12 mb-2">
-                            @stack('breadcrumb')
-                        </div>
-                        <div class="content-header-right col-md-3 col-12">
-                            <div class="btn-group float-md-right" role="group" aria-label="Button group with nested dropdown">
-                                @stack('breadcrumb-button')
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="content-overlay"></div>
             <div class="content-wrapper">
                 @if ($errors->any())

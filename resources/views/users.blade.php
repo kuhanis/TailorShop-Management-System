@@ -21,26 +21,6 @@
 
 @endpush
 
-@push('breadcrumb')
-<h3 class="content-header-title">Users</h3>
-<div class="row breadcrumbs-top">
-    <div class="breadcrumb-wrapper col-12">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Home</a>
-            </li>
-            <li class="breadcrumb-item"><a href="#">Users</a>
-            </li>
-            <li class="breadcrumb-item active">All Users
-            </li>
-        </ol>
-    </div>
-</div>
-@endpush
-
-@push('breadcrumb-button')
-<x-buttons.primary :text="'Add User'" :target="'#add-user'" />
-@endpush
-
 @section('content')
 
 <!-- HTML5 export buttons table -->
@@ -63,7 +43,7 @@
 			<div class="card-content collapse show">
 			<div class="card-body card-dashboard">
 				
-				<table class="table table-striped table-bordered dataex-html5-export">
+				<table class="table table-striped table-bordered">
 					<thead>
 					<tr>
 						<th>#</th>

@@ -17,3 +17,40 @@
     height: 80px;
     margin-bottom: 10px;
 }
+
+/* Remove all breadcrumb-related elements */
+.content-header-title,
+.breadcrumbs-top,
+.breadcrumb-wrapper,
+.breadcrumb,
+.breadcrumb-item,
+.content-header-left,
+.content-header-right,
+.content-header-light,
+.content-header.row,
+[class*="breadcrumb"],
+[class*="content-header"],
+div[class*="content-header"],
+.content-header,
+.breadcrumb-wrapper {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -1 !important;
+}
+
+/* Ensure proper spacing after removing breadcrumb */
+.content-wrapper {
+    padding-top: 1rem !important;
+}
+
+/* Hide any remaining breadcrumb containers */
+div[class*="breadcrumb"],
+div[class*="content-header"] {
+    display: none !important;
+}

@@ -42,18 +42,6 @@ $(document).ready(function() {
 </script> 
 @endpush
 
-@push('breadcrumb')
-<h3 class="content-header-title">Orders</h3>
-<div class="row breadcrumbs-top">
-	<div class="breadcrumb-wrapper col-12">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item active">Orders List
-			</li>
-		</ol>
-	</div>
-</div>
-@endpush
-
 @push('breadcrumb-button')
 <x-buttons.primary :text="'Add Order'" :target="'#add-order'" />
 @endpush
@@ -77,7 +65,7 @@ $(document).ready(function() {
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
-                <table class="table table-striped table-bordered dataex-html5-export">
+                <table class="table table-striped table-bordered">
                   <thead>
                     <tr>
 						<th>Customer</th>

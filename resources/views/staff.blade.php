@@ -47,22 +47,6 @@ $(document).ready(function() {
 </script>
 @endpush
 
-@push('breadcrumb')
-<h3 class="content-header-title">Staff</h3>
-<div class="row breadcrumbs-top">
-	<div class="breadcrumb-wrapper col-12">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item active">All Staff
-			</li>
-		</ol>
-	</div>
-</div>
-@endpush
-
-@push('breadcrumb-button')
-<x-buttons.primary :text="'Add Staff'" :target="'#add-staff'" />
-@endpush
-
 @section('content')
 	
 <!-- HTML5 export buttons table -->
@@ -86,7 +70,7 @@ $(document).ready(function() {
             <div class="card-body card-dashboard">
               
                 <!-- Table headers -->
-                <table class="table table-striped table-bordered dataex-html5-export">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>Username</th>
