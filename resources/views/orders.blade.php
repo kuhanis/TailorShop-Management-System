@@ -5,14 +5,37 @@
 $(document).ready(function() {
     $('.editbtn').on('click', function() {
         let id = $(this).data('id');
-
-		$.get(`/orders/${id}/edit`, function(data) {
+        
+        // Fetch order data via AJAX
+        $.get(`/orders/${id}/edit`, function(data) {
+            console.log('Order data:', data); // For debugging
+            
             $('#edit-order').modal('show');
-            $('#edit_id').val(id);
-            $('#edit_customer').val(data.customer_id);
+            $('#edit_id').val(data.id);
+            
+            // Set customer name and ID
+            if (data.customer) {
+                $('#edit_customer_name').val(data.customer.fullname);
+                $('#edit_customer').val(data.customer.id);
+            }
+            
+            // Fill in other order details
             $('#edit_description').val(data.description);
             $('#edit_received_date').val(data.received_on);
             $('#edit_amount').val(data.amount_charged);
+            
+            // Update image preview if exists
+            const previewContainer = $('#edit-image-preview');
+            const imageLabel = $('#edit-order .custom-file-label');
+            
+            if (data.image_path) {
+                previewContainer.find('img').attr('src', `/storage/${data.image_path}`);
+                previewContainer.show();
+                imageLabel.text(data.image_path.split('/').pop());
+            } else {
+                previewContainer.hide();
+                imageLabel.text('Choose file');
+            }
         });
     });
 });
@@ -138,10 +161,6 @@ $(document).ready(function() {
 								<div class="dropdown-menu">
 									<a href="javascript:void(0)" 
 										data-id="{{$order->id}}"
-										data-customer="{{$order->customer_id}}"
-										data-description="{{$order->description}}"
-										data-received-date="{{$order->received_on}}"
-										data-amount="{{$order->amount_charged}}"
 										class="dropdown-item editbtn">
 										<i class="la la-edit"></i>Edit
 									</a>
@@ -263,26 +282,20 @@ $(document).ready(function() {
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<form method="post" action="{{route('orders')}}">
+			<form method="post" action="{{route('orders')}}" enctype="multipart/form-data">
 				@csrf
 				@method('PUT')
 				<input type="hidden" name="id" id="edit_id">
 				<div class="modal-body">
-					<label>Select Customer: </label>
+					<label>Customer: </label>
 					<div class="form-group">
 						<div class="position-relative has-icon-left">
-							<select name="customer" id="edit_customer" title="select customer" class="select2 form-control" required>
-								<optgroup label="New Customers">                             
-									@foreach ($newCustomers as $customer)
-										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
-									@endforeach
-								</optgroup>
-								<optgroup label="From Retention">
-									@foreach ($retentionCustomers as $customer)
-										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
-									@endforeach
-								</optgroup>
-							</select>
+							<input type="text" 
+								   id="edit_customer_name" 
+								   class="form-control" 
+								   readonly 
+								   style="background-color: #f8f9fa; cursor: not-allowed;">
+							<input type="hidden" name="customer" id="edit_customer">
 							<div class="form-control-position">
 								<i class="la la-user"></i>
 							</div>
@@ -295,6 +308,19 @@ $(document).ready(function() {
 							<textarea class="form-control" id="edit_description" placeholder="Enter description here" name="description" required></textarea>
 							<div class="form-control-position">
 								<i class="la la-comment"></i>
+							</div>
+						</div>
+					</div>
+
+					<label>Image: </label>
+					<div class="form-group">
+						<div class="position-relative">
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="edit-order-image" name="image" accept="image/*">
+								<label class="custom-file-label" for="edit-order-image">Choose file</label>
+							</div>
+							<div id="edit-image-preview" class="mt-2" style="display: none;">
+								<img src="" alt="Preview" style="max-width: 200px; max-height: 200px;">
 							</div>
 						</div>
 					</div>
@@ -411,21 +437,6 @@ function showImageModal(imageUrl, description) {
 }
 
 $(document).ready(function() {
-    $('.editbtn').on('click', function() {
-        let id = $(this).data('id');
-        let customerId = $(this).data('customer');
-        let description = $(this).data('description');
-        let receivedDate = $(this).data('received-date');
-        let amount = $(this).data('amount');
-
-        $('#edit-order').modal('show');
-        $('#edit_id').val(id);
-        $('#edit_customer').val(customerId).trigger('change');
-        $('#edit_description').val(description);
-        $('#edit_received_date').val(receivedDate);
-        $('#edit_amount').val(amount);
-    });
-
     $('.deletebtn').on('click', function() {
         $('#delete-modal').modal('show');
         $('#delete-id').val($(this).data('id'));
@@ -546,6 +557,72 @@ $(document).ready(function() {
             preview.style.display = 'none';
         }
     });
+
+    // Add image preview handler for edit form
+    document.getElementById('edit-order-image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('edit-image-preview');
+        const previewImg = preview.querySelector('img');
+        const label = document.querySelector('#edit-order .custom-file-label');
+
+        if (file) {
+            label.textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            label.textContent = 'Choose file';
+            preview.style.display = 'none';
+        }
+    });
+
+    // Add this edit button handler
+    $(document).on('click', '.editbtn', function() {
+        let id = $(this).data('id');
+        console.log('Edit button clicked, ID:', id); // Debug log
+        
+        $.ajax({
+            url: `/orders/${id}/edit`,
+            type: 'GET',
+            success: function(data) {
+                console.log('Received data:', data); // Debug log
+                
+                $('#edit-order').modal('show');
+                $('#edit_id').val(data.id);
+                
+                // Set customer name and ID
+                if (data.customer) {
+                    $('#edit_customer_name').val(data.customer.fullname);
+                    $('#edit_customer').val(data.customer.id);
+                }
+                
+                // Fill in other order details
+                $('#edit_description').val(data.description);
+                $('#edit_received_date').val(data.received_on);
+                $('#edit_amount').val(data.amount_charged);
+                
+                // Update image preview if exists
+                const previewContainer = $('#edit-image-preview');
+                const imageLabel = $('#edit-order .custom-file-label');
+                
+                if (data.image_path) {
+                    previewContainer.find('img').attr('src', `/storage/${data.image_path}`);
+                    previewContainer.show();
+                    imageLabel.text(data.image_path.split('/').pop());
+                } else {
+                    previewContainer.hide();
+                    imageLabel.text('Choose file');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching order:', error);
+                toastr.error('Failed to load order details');
+            }
+        });
+    });
 });
 </script>
 @endpush
@@ -625,6 +702,17 @@ $(document).ready(function() {
 
     .status-btn.disabled:hover {
         opacity: 1 !important;
+    }
+
+    /* Add this to your existing styles */
+    #edit_customer_name {
+        opacity: 0.8;
+        pointer-events: none;
+    }
+    
+    #edit_customer_name:focus {
+        outline: none;
+        box-shadow: none;
     }
 </style>
 

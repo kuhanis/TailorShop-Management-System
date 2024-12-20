@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class OrdersController extends Controller
 {
@@ -132,33 +133,45 @@ class OrdersController extends Controller
 
     public function edit($id)
     {
-        $order = Orders::findOrFail($id);
+        $order = Orders::with('customer')->findOrFail($id);
         return response()->json($order);
     }
 
     public function update(Request $request)
     {
-        $this->validate($request,[
-            'id'=>'required|exists:orders,id',
-            'customer'=>'required',
-            'description'=>'max:200',
-            'recieved_on'=>'required|date',
-            'amount_charged'=>'required|numeric|min:0',
+        $this->validate($request, [
+            'id' => 'required|exists:orders,id',
+            'customer' => 'required',
+            'description' => 'max:200',
+            'received_on' => 'required|date',
+            'amount_charged' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $order = Orders::findOrFail($request->id);
+        
+        // Handle image upload
+        $imagePath = $order->image_path;
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($order->image_path && Storage::disk('public')->exists($order->image_path)) {
+                Storage::disk('public')->delete($order->image_path);
+            }
+            $imagePath = $request->file('image')->store('order-images', 'public');
+        }
+
         $order->update([
-            'customer_id'=>$request->customer,
-            'description'=>$request->description,
-            'recieved_on'=>$request->recieved_on,
-            'amount_charged'=>$request->amount_charged,
+            'customer_id' => $request->customer,
+            'description' => $request->description,
+            'received_on' => $request->received_on,
+            'amount_charged' => $request->amount_charged,
+            'image_path' => $imagePath
         ]);
 
-        $notification = array(
-            'message'=>"Customer order has been updated",
-            'alert-type'=>"success"
-        );
-        return back()->with($notification);
+        return back()->with([
+            'message' => "Customer order has been updated",
+            'alert-type' => "success"
+        ]);
     }
 
     public function destroy(Request $request)
