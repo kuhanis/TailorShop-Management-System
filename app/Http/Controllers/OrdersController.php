@@ -63,13 +63,21 @@ class OrdersController extends Controller
                 'customer' => 'required|exists:customers,id',
                 'description' => 'required',
                 'received_on' => 'required|date',
-                'amount_charged' => 'required|numeric'
+                'amount_charged' => 'required|numeric',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
             \Log::info('Attempting to create order with data:', $request->all());
 
             // Start transaction
             return DB::transaction(function() use ($request) {
+                // Handle image upload
+                $imagePath = null;
+                if ($request->hasFile('image')) {
+                    $image = $request->file('image');
+                    $imagePath = $image->store('order-images', 'public');
+                }
+
                 // First, check if customer has any previous orders (including deleted ones)
                 $previousOrder = Orders::withTrashed()
                     ->where('customer_id', $request->customer)
@@ -96,7 +104,8 @@ class OrdersController extends Controller
                     'status' => 'to_collect',
                     'link_status' => 'active',
                     'link_activated_at' => now(),
-                    'is_ready_to_collect' => false
+                    'is_ready_to_collect' => false,
+                    'image_path' => $imagePath
                 ]);
 
                 \Log::info('Order created successfully:', ['order_id' => $order->id]);

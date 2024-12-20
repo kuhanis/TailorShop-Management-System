@@ -18,7 +18,8 @@ class Orders extends Model
         'status', 'link_activated_at',
         'link_status',
         'is_ready_to_collect',
-        'paid_at'
+        'paid_at',
+        'image_path'
     ];
  
      public function customer(){

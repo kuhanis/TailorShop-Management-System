@@ -59,6 +59,7 @@ $(document).ready(function() {
                     <tr>
 						<th>Customer</th>
 						<th>Description</th>
+						<th>Image</th>
 						<th>Date Ordered</th>
 						<th>Amount</th>
 						<th>Status</th>
@@ -72,8 +73,20 @@ $(document).ready(function() {
                           <tr>
                             <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
                             <td>{{$order->description}}</td>
-							<td>{{$order->received_on}}</td>
-							<td>RM {{number_format($order->amount_charged, 2)}}</td>
+                            <td class="text-center">
+                                @if($order->image_path)
+                                    <img src="{{ asset('storage/' . $order->image_path) }}" 
+                                         alt="Order Image" 
+                                         class="img-thumbnail order-image"
+                                         style="max-width: 100px; max-height: 100px; cursor: pointer"
+                                         onclick="showImageModal('{{ asset('storage/' . $order->image_path) }}', '{{ $order->description }}')"
+                                    >
+                                @else
+                                    <span class="text-muted">No image</span>
+                                @endif
+                            </td>
+                            <td>{{$order->received_on}}</td>
+                            <td>RM {{number_format($order->amount_charged, 2)}}</td>
                             <td class="text-center" style="min-width: 100px; padding: 8px;">
                                 <div class="d-flex flex-column align-items-center" style="gap: 4px;">
                                     <button type="button" 
@@ -83,13 +96,22 @@ $(document).ready(function() {
                                             style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
                                         Paid
                                     </button>
-                                    <button type="button" 
-                                            class="btn btn-sm btn-outline-warning status-btn {{ $order->is_ready_to_collect ? 'active' : '' }}"
-                                            data-status="to_collect"
-                                            data-order-id="{{ $order->id }}"
-                                            style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
-                                        <i class="la la-clock"></i> To Collect
-                                    </button>
+                                    @if($order->is_ready_to_collect)
+                                        <button type="button" 
+                                                class="btn btn-sm btn-success status-btn disabled"
+                                                style="min-width: 90px; font-size: 12px; padding: 4px 8px; opacity: 1;"
+                                                disabled>
+                                            <i class="la la-check"></i> Ready
+                                        </button>
+                                    @else
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-warning status-btn"
+                                                data-status="to_collect"
+                                                data-order-id="{{ $order->id }}"
+                                                style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
+                                            <i class="la la-clock"></i> To Collect
+                                        </button>
+                                    @endif
                                 </div>
                             </td>
                             <td class="text-center" style="min-width: 160px; padding: 8px;">
@@ -152,7 +174,7 @@ $(document).ready(function() {
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<form method="post" action="{{route('orders')}}" id="add-order-form">
+			<form method="post" action="{{route('orders')}}" id="add-order-form" enctype="multipart/form-data">
 				@csrf
 				<div class="modal-body">
 					<label>Select Customer: </label>
@@ -182,6 +204,19 @@ $(document).ready(function() {
 							<textarea class="form-control" placeholder="Enter description here" name="description" required></textarea>
 							<div class="form-control-position">
 								<i class="la la-comment"></i>
+							</div>
+						</div>
+					</div>
+
+					<label>Upload Image: </label>
+					<div class="form-group">
+						<div class="position-relative">
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="order-image" name="image" accept="image/*">
+								<label class="custom-file-label" for="order-image">Choose file</label>
+							</div>
+							<div id="image-preview" class="mt-2" style="display: none;">
+								<img src="" alt="Preview" style="max-width: 200px; max-height: 200px;">
 							</div>
 						</div>
 					</div>
@@ -295,10 +330,86 @@ $(document).ready(function() {
 		</div>
 	</div>
 </div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="orderImageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Image</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="image-container">
+                    <img src="" alt="Order Image" class="modal-image">
+                </div>
+                <div class="mt-3">
+                    <p class="order-description mb-0"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Confirmation Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Payment Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>are you sure you want to mark as paid ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+                <button type="button" class="btn btn-danger confirm-payment">PAID</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- To Collect Confirmation Modal -->
+<div class="modal fade" id="collectModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">To Collect Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>are you sure you want to mark as ready to collect ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+                <button type="button" class="btn btn-warning confirm-collect">TO COLLECT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('page-js')
 <script>
+// Define showImageModal function globally
+function showImageModal(imageUrl, description) {
+    const modal = $('#orderImageModal');
+    modal.find('.modal-body img').attr('src', imageUrl);
+    modal.find('.order-description').text(description);
+    modal.modal('show');
+}
+
 $(document).ready(function() {
     $('.editbtn').on('click', function() {
         let id = $(this).data('id');
@@ -333,36 +444,45 @@ $(document).ready(function() {
         });
     });
 
-    // Add status button functionality
+    // Update the status button functionality
     $('.status-btn').on('click', function() {
         const button = $(this);
         const orderId = button.data('order-id');
         const status = button.data('status');
         
-        // If status is 'paid', show confirmation first
         if (status === 'paid') {
-            Swal.fire({
-                title: 'Confirm Payment',
-                text: "Are you sure this order has been paid? This action cannot be undone.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, mark as paid',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    updateOrderStatus(button, orderId, status);
-                }
-            });
-        } else {
-            updateOrderStatus(button, orderId, status);
+            $('#paymentModal').data('orderButton', button);
+            $('#paymentModal').modal('show');
+        } else if (status === 'to_collect') {
+            $('#collectModal').data('orderButton', button);
+            $('#collectModal').modal('show');
         }
     });
 
-    // Function to handle the status update
+    // Add payment confirmation handler
+    $('.confirm-payment').on('click', function() {
+        const modal = $('#paymentModal');
+        const button = modal.data('orderButton');
+        const orderId = button.data('order-id');
+        const status = button.data('status');
+        
+        modal.modal('hide');
+        updateOrderStatus(button, orderId, status);
+    });
+
+    // Add collect confirmation handler
+    $('.confirm-collect').on('click', function() {
+        const modal = $('#collectModal');
+        const button = modal.data('orderButton');
+        const orderId = button.data('order-id');
+        const status = button.data('status');
+        
+        modal.modal('hide');
+        updateOrderStatus(button, orderId, status);
+    });
+
+    // Keep the updateOrderStatus function as is
     function updateOrderStatus(button, orderId, status) {
-        // Disable the button while processing
         button.prop('disabled', true);
         
         $.ajax({
@@ -382,23 +502,50 @@ $(document).ready(function() {
                         });
                         toastr.success('Order moved to retention');
                     } else {
-                        button.addClass('active');
+                        // Replace the "To Collect" button with "Ready" button
+                        const newButton = $(`
+                            <button type="button" 
+                                    class="btn btn-sm btn-success status-btn disabled"
+                                    style="min-width: 90px; font-size: 12px; padding: 4px 8px; opacity: 1;"
+                                    disabled>
+                                <i class="la la-check"></i> Ready
+                            </button>
+                        `);
+                        button.replaceWith(newButton);
                         toastr.success('Status updated successfully');
                     }
                 } else {
                     toastr.error(response.message || 'Failed to update status');
+                    button.prop('disabled', false);
                 }
             },
             error: function(xhr) {
                 console.error('Error:', xhr);
                 toastr.error('Failed to update status. Please try again.');
-            },
-            complete: function() {
-                // Re-enable the button
                 button.prop('disabled', false);
             }
         });
     }
+
+    document.getElementById('order-image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('image-preview');
+        const previewImg = preview.querySelector('img');
+        const label = document.querySelector('.custom-file-label');
+
+        if (file) {
+            label.textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            label.textContent = 'Choose file';
+            preview.style.display = 'none';
+        }
+    });
 });
 </script>
 @endpush
@@ -406,9 +553,78 @@ $(document).ready(function() {
 <style>
     .status-btn.active {
         font-weight: bold !important;
-        background-color: #ffc107 !important;  /* Yellow background */
+        background-color: #ffc107 !important;
         color: #000 !important;
         border-color: #ffc107 !important;
+    }
+    .order-image {
+        transition: transform 0.2s;
+        max-width: 100px;
+        max-height: 100px;
+        cursor: pointer;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    .order-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    #orderImageModal .modal-body {
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+    #orderImageModal .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+        max-height: 70vh;
+        overflow: hidden;
+    }
+    #orderImageModal .modal-image {
+        max-width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+    }
+    #orderImageModal .order-description {
+        color: #666;
+        font-size: 16px;
+        margin-top: 15px;
+    }
+    #orderImageModal .modal-footer .btn-secondary {
+        color: #fff !important;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+    #paymentModal .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    #paymentModal .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+    #collectModal .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+    }
+    #collectModal .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+    .status-btn.disabled {
+        cursor: not-allowed !important;
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
+        color: white !important;
+    }
+
+    .status-btn.disabled:hover {
+        opacity: 1 !important;
     }
 </style>
 
