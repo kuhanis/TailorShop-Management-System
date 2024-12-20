@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Body Measurements')
 
 @push('page-css')
 
@@ -21,13 +22,13 @@
 @endpush
 
 @section('content')
-<div class="content-wrapper">
+<div class="content-wrapper" style="margin: 0 -1rem;">
   <div class="content-body">
     <!-- HTML5 export buttons table -->
     <section id="html5">
         <div class="row">
           <div class="col-12">
-            <div class="card">
+            <div class="card" style="margin: 0 1rem;">
               <div class="card-header">
                 <h4 class="card-title">Measurement Parts List</h4>
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
@@ -41,43 +42,51 @@
                 </div>
               </div>
               <div class="card-content collapse show">
-                <div class="card-body card-dashboard">
-                  <table class="table table-striped table-bordered dataex-html5-export">
+                <div class="card-body card-dashboard px-0">
+                  <table class="table table-striped table-bordered">
                     <thead>
                       <tr>
-                        <th>Customer Name</th>
-                        <th>Body Name</th>
-                        <th>Shoulder</th>
-                        <th>Chest</th>
-                        <th>Waist</th>
-                        <th>Hip</th>
-                        <th>Dress length</th>
-                        <th>Wrist</th>
-                        <th>Skirt length</th>
-                        <th>Armpit</th>
-                        <th>Action</th>
+                        <th style="width: 40px;">#</th>
+                        <th style="width: 80px;">Customer</th>
+                        <th style="width: 80px;">Body</th>
+                        <th style="width: 65px;">Shoulder</th>
+                        <th style="width: 65px;">Chest</th>
+                        <th style="width: 65px;">Waist</th>
+                        <th style="width: 65px;">Hips</th>
+                        <th style="width: 65px;">Dress L.</th>
+                        <th style="width: 65px;">Wrist</th>
+                        <th style="width: 65px;">Skirt L.</th>
+                        <th style="width: 65px;">Armpit</th>
+                        <th style="width: 60px;">Action</th>
                       </tr>
                     </thead>
                     <tbody>
+                      @php $counter = 1; @endphp
                       @foreach($measurements as $customerId => $customerMeasurements)
                         @php
                           $rowCount = count($customerMeasurements);
                         @endphp
+                        @php $firstRow = true; @endphp
                         @foreach($customerMeasurements as $index => $measurement)
                           <tr>
                             @if($index === 0)
-                              <td rowspan="{{ $rowCount }}">{{ $measurement->customer->fullname }}</td>
+                              <td rowspan="{{ $rowCount }}" class="text-center">{{$loop->parent->iteration}}</td>
+                              <td rowspan="{{ $rowCount }}" class="align-middle" style="font-size: 13px;">
+                                {{ $measurement->customer->fullname }}
+                              </td>
                             @endif
-                            <td>{{ $measurement->body_name }}</td>
-                            <td>{{ $measurement->shoulder }}</td>
-                            <td>{{ $measurement->chest }}</td>
-                            <td>{{ $measurement->waist }}</td>
-                            <td>{{ $measurement->hips }}</td>
-                            <td>{{ $measurement->dress_length }}</td>
-                            <td>{{ $measurement->wrist }}</td>
-                            <td>{{ $measurement->skirt_length }}</td>
-                            <td>{{ $measurement->armpit }}</td>
-                            <td>
+                            <td style="font-size: 13px;">
+                              {{ $measurement->body_name }}
+                            </td>
+                            <td class="text-center p-1">{{ $measurement->shoulder }}</td>
+                            <td class="text-center p-1">{{ $measurement->chest }}</td>
+                            <td class="text-center p-1">{{ $measurement->waist }}</td>
+                            <td class="text-center p-1">{{ $measurement->hips }}</td>
+                            <td class="text-center p-1">{{ $measurement->dress_length }}</td>
+                            <td class="text-center p-1">{{ $measurement->wrist }}</td>
+                            <td class="text-center p-1">{{ $measurement->skirt_length }}</td>
+                            <td class="text-center p-1">{{ $measurement->armpit }}</td>
+                            <td class="text-center">
                               <a href="#" class="float-md-right" data-toggle="dropdown">
                                 <i class="material-icons">more_vert</i>
                               </a>

@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Order Retention')
 
 @section('content')
 <section id="html5">
@@ -19,7 +20,7 @@
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
-                <table class="table table-striped table-bordered dataex-html5-export">
+                <table class="table table-striped table-bordered">
                   <thead>
                     <tr>
                         <th>#</th>

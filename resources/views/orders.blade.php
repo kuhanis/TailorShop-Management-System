@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Orders')
 
 @push('page-css')
 <script>

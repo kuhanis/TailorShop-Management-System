@@ -1,5 +1,6 @@
-
 @extends('layouts.auth')
+@section('title', 'Login')
+
 @section('card-subtitle')
 Enter Username And Password To Login
 @endsection

@@ -54,3 +54,15 @@ div[class*="breadcrumb"],
 div[class*="content-header"] {
     display: none !important;
 }
+
+/* Make measurement table use full width */
+.card-body.card-dashboard.px-0 .table {
+    margin: 0;
+    width: 100%;
+}
+
+/* Adjust table cell padding for better fit */
+.card-body.card-dashboard.px-0 .table td,
+.card-body.card-dashboard.px-0 .table th {
+    padding: 0.5rem 0.25rem;
+}

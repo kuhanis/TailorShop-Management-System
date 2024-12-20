@@ -1,11 +1,13 @@
 @extends('layouts.public')
 
+@section('title', 'Order Success')
+
 @section('content')
 <div class="container mt-5">
     <div class="card">
         <div class="card-body text-center">
-            <h1 class="display-4 text-success mb-4">Thank You!</h1>
-            <p class="lead">Thank you for your business with Tukang Jahit Nadimah!</p>
+            <h1 class="display-4 text-success mb-4">Thank You, {{ $order->customer->fullname }}!</h1>
+            <p class="lead">Thank you for your order with Nadimah Tailor!</p>
             
             <div class="mt-4 mb-4">
                 <h4>Order Details</h4>

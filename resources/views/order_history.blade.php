@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Order History')
 
 @push('breadcrumb')
 <h3 class="content-header-title">Orders</h3>
@@ -22,9 +23,10 @@
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
-                <table class="table table-striped table-bordered dataex-html5-export">
+                <table class="table table-striped table-bordered">
                   <thead>
                     <tr>
+                        <th>#</th>
                         <th>Customer</th>
                         <th>Description</th>
                         <th>Date Ordered</th>
@@ -34,8 +36,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($orders as $order)
+                    @foreach ($orders as $index => $order)
                       <tr>
+                        <td>{{$index + 1}}</td>
                         <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
                         <td>{{$order->description}}</td>
                         <td>{{$order->received_on}}</td>
