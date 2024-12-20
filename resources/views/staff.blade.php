@@ -73,6 +73,7 @@ $(document).ready(function() {
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Username</th>
                             <th>Full Name</th>
                             <th>Email</th>
@@ -85,8 +86,9 @@ $(document).ready(function() {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($staff as $staffMember)
+                        @foreach ($staff as $index => $staffMember)
                         <tr>
+                            <td>{{ $index + 1 }}</td>
                             <td>{{ $staffMember->user->username }}</td>
                             <td>{{ $staffMember->user->name }}</td>
                             <td>{{ $staffMember->user->email }}</td>

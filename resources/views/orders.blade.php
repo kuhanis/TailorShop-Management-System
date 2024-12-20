@@ -68,6 +68,7 @@ $(document).ready(function() {
                 <table class="table table-striped table-bordered">
                   <thead>
                     <tr>
+						<th>#</th>
 						<th>Customer</th>
 						<th>Description</th>
 						<th>Image</th>
@@ -80,8 +81,9 @@ $(document).ready(function() {
                   </thead>
                   <tbody>
                     @if (!empty($orders->count()))
-                        @foreach ($orders as $order)
+                        @foreach ($orders as $index => $order)
                           <tr>
+                            <td>{{$index + 1}}</td>
                             <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
                             <td>{{$order->description}}</td>
                             <td class="text-center">

@@ -146,6 +146,7 @@ $(document).ready(function() {
                 <table class="table table-striped table-bordered">
                   <thead>
                     <tr>
+                        <th>#</th>
                         <th>Full Name</th>
                         <th>Phone Number</th>
                         <th>Email</th>
@@ -154,8 +155,9 @@ $(document).ready(function() {
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($customers as $customer)
+                    @foreach ($customers as $index => $customer)
                       <tr>
+                        <td>{{$index + 1}}</td>
                         <td>{{$customer->fullname}}</td>
                         <td>{{$customer->phone}}</td>
                         <td>{{$customer->email}}</td>

@@ -22,6 +22,7 @@
                 <table class="table table-striped table-bordered dataex-html5-export">
                   <thead>
                     <tr>
+                        <th>#</th>
                         <th>Customer</th>
                         <th>Description</th>
                         <th>Date Ordered</th>
@@ -33,8 +34,9 @@
                   </thead>
                   <tbody>
                     @if (!empty($orders->count()))
-                        @foreach ($orders as $order)
+                        @foreach ($orders as $index => $order)
                           <tr>
+                            <td>{{$index + 1}}</td>
                             <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
                             <td>{{$order->description}}</td>
                             <td>{{$order->received_on}}</td>
