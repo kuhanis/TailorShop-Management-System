@@ -20,43 +20,71 @@ class OrdersController extends Controller
             ->whereNull('deleted_at')
             ->get();
         
-        // Get all eligible customers and mark if they have any orders
-        $customers = Customer::where(function($query) {
-            $query->whereNotExists(function($q) {
-                $q->select('customer_id')
-                    ->from('orders')
-                    ->whereColumn('customers.id', 'orders.customer_id')
-                    ->whereNull('deleted_at');
-            })->orWhereNotExists(function($q) {
-                $q->select('customer_id')
-                    ->from('orders')
-                    ->whereColumn('customers.id', 'orders.customer_id')
-                    ->where('status', '!=', 'paid')
-                    ->whereNull('deleted_at');
-            });
-        })
-        ->get()
-        ->map(function($customer) {
-            // Check if customer has any orders in history
-            $customer->has_orders = OrderHistory::where('customer_id', $customer->id)->exists();
-            return $customer;
-        });
-        
-        return view('orders', compact('title', 'customers', 'orders'));
+        // Get new customers (who have never had any orders or history)
+        $newCustomers = Customer::whereNotExists(function($q) {
+            $q->select('customer_id')
+                ->from('orders')
+                ->whereColumn('customers.id', 'orders.customer_id');
+        })->whereNotExists(function($q) {
+            $q->select('customer_id')
+                ->from('order_histories')
+                ->whereColumn('customers.id', 'order_histories.customer_id');
+        })->get();
+
+        // Get retention customers (who have completed orders but no active orders)
+        $retentionCustomers = Customer::whereExists(function($q) {
+            // Has orders in history OR has paid orders
+            $q->select('customer_id')
+                ->from('order_histories')
+                ->whereColumn('customers.id', 'order_histories.customer_id')
+                ->orWhereExists(function($sq) {
+                    $sq->select('customer_id')
+                        ->from('orders')
+                        ->whereColumn('customers.id', 'orders.customer_id')
+                        ->where('status', '=', 'paid');
+                });
+        })->whereNotExists(function($q) {
+            // Exclude customers with active orders
+            $q->select('customer_id')
+                ->from('orders')
+                ->whereColumn('customers.id', 'orders.customer_id')
+                ->whereNull('deleted_at')
+                ->where('status', '!=', 'paid');
+        })->get();
+
+        return view('orders', compact('title', 'orders', 'newCustomers', 'retentionCustomers'));
     }
 
     public function store(Request $request)
     {
         try {
-            return \DB::transaction(function() use ($request) {
-                // Get existing order with token
-                $existingOrder = Orders::withTrashed()
+            // Validate request
+            $request->validate([
+                'customer' => 'required|exists:customers,id',
+                'description' => 'required',
+                'received_on' => 'required|date',
+                'amount_charged' => 'required|numeric'
+            ]);
+
+            \Log::info('Attempting to create order with data:', $request->all());
+
+            // Start transaction
+            return DB::transaction(function() use ($request) {
+                // First, check if customer has any previous orders (including deleted ones)
+                $previousOrder = Orders::withTrashed()
                     ->where('customer_id', $request->customer)
                     ->whereNotNull('access_token')
+                    ->latest()
                     ->first();
 
-                // Generate token
-                $token = $existingOrder ? $existingOrder->access_token : (string) Str::uuid();
+                // If previous order exists, use its token, otherwise generate new one
+                $token = $previousOrder ? $previousOrder->access_token : (string) Str::uuid();
+
+                // Before creating new order, nullify access_token in any existing orders
+                Orders::withTrashed()
+                    ->where('customer_id', $request->customer)
+                    ->whereNotNull('access_token')
+                    ->update(['access_token' => null]);
 
                 // Create new order
                 $order = Orders::create([
@@ -67,20 +95,28 @@ class OrdersController extends Controller
                     'access_token' => $token,
                     'status' => 'to_collect',
                     'link_status' => 'active',
-                    'link_activated_at' => now()
+                    'link_activated_at' => now(),
+                    'is_ready_to_collect' => false
                 ]);
 
-                return back()->with([
-                    'message' => "Customer order has been added",
-                    'alert-type' => "success"
+                \Log::info('Order created successfully:', ['order_id' => $order->id]);
+
+                return redirect()->back()->with([
+                    'message' => 'Customer order has been added',
+                    'alert-type' => 'success'
                 ]);
             });
+
         } catch (\Exception $e) {
-            \Log::error('Order creation failed: ' . $e->getMessage());
-            
-            return back()->with([
-                'message' => "Failed to add order. Please try again.",
-                'alert-type' => "error"
+            \Log::error('Failed to create order:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+
+            return redirect()->back()->with([
+                'message' => 'Failed to add order: ' . $e->getMessage(),
+                'alert-type' => 'error'
             ])->withInput();
         }
     }
@@ -188,12 +224,36 @@ class OrdersController extends Controller
     public function retention()
     {
         $title = "Retention Orders";
-        $orders = Orders::select('orders.*')
-            ->where('status', 'paid')
-            ->where('link_status', 'active')
-            ->whereNull('deleted_at')
-            ->get()
-            ->unique('customer_id');
+        
+        // Get latest paid orders for each customer
+        $orders = Orders::join('customers', 'orders.customer_id', '=', 'customers.id')
+            ->whereExists(function($q) {
+                // Has orders in history
+                $q->select('customer_id')
+                    ->from('order_histories')
+                    ->whereColumn('orders.customer_id', 'order_histories.customer_id');
+            })
+            ->whereNotExists(function($q) {
+                // Does NOT have any active orders
+                $q->select('customer_id')
+                    ->from('orders as o')
+                    ->whereColumn('orders.customer_id', 'o.customer_id')
+                    ->whereNull('o.deleted_at')
+                    ->where('o.status', '!=', 'paid');
+            })
+            ->where('orders.link_status', 'active')
+            ->whereNull('orders.deleted_at')
+            ->where('orders.status', 'paid')
+            ->whereIn('orders.id', function($query) {
+                // Subquery to get only the latest order ID for each customer
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('orders')
+                    ->where('status', 'paid')
+                    ->whereNull('deleted_at')
+                    ->groupBy('customer_id');
+            })
+            ->select('orders.*')
+            ->get();
         
         return view('retention', compact('title', 'orders'));
     }

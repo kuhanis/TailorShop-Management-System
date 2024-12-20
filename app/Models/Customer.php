@@ -21,5 +21,15 @@ class Customer extends Model
         return $this->hasMany(BodyMeasurement::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Orders::class, 'customer_id');
+    }
+
+    public function orderHistories()
+    {
+        return $this->hasMany(OrderHistory::class, 'customer_id');
+    }
+
 }
 

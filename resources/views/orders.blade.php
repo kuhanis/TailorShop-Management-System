@@ -152,7 +152,7 @@ $(document).ready(function() {
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<form method="post" action="{{route('orders')}}">
+			<form method="post" action="{{route('orders')}}" id="add-order-form">
 				@csrf
 				<div class="modal-body">
 					<label>Select Customer: </label>
@@ -160,12 +160,12 @@ $(document).ready(function() {
 						<div class="position-relative has-icon-left">
 							<select name="customer" title="select customer" class="select2 form-control" required>
 								<optgroup label="New Customers">                             
-									@foreach ($customers->where('has_orders', false) as $customer)
+									@foreach ($newCustomers as $customer)
 										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
 									@endforeach
 								</optgroup>
 								<optgroup label="From Retention">
-									@foreach ($customers->where('has_orders', true) as $customer)
+									@foreach ($retentionCustomers as $customer)
 										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
 									@endforeach
 								</optgroup>
@@ -210,8 +210,8 @@ $(document).ready(function() {
 					</div>
 				</div>
 				<div class="modal-footer">
-					<input type="reset" class="btn btn-outline-secondary btn-lg" data-dismiss="modal" value="Close">
-					<button class="btn btn-outline-primary btn-lg" type="submit">Submit</button>
+					<button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
 				</div>
 			</form>
 		</div>
@@ -237,12 +237,15 @@ $(document).ready(function() {
 					<div class="form-group">
 						<div class="position-relative has-icon-left">
 							<select name="customer" id="edit_customer" title="select customer" class="select2 form-control" required>
-								<optgroup>								 
-									@if (!empty($customers->count()))
-										@foreach ($customers as $customer)
+								<optgroup label="New Customers">                             
+									@foreach ($newCustomers as $customer)
 										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
-										@endforeach
-									@endif
+									@endforeach
+								</optgroup>
+								<optgroup label="From Retention">
+									@foreach ($retentionCustomers as $customer)
+										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
+									@endforeach
 								</optgroup>
 							</select>
 							<div class="form-control-position">

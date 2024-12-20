@@ -105,37 +105,38 @@
 
     </body>
     <!-- END: Body-->
-     <!-- BEGIN: Vendor JS-->
-     <script src="{{asset('app-assets/vendors/js/material-vendors.min.js')}}"> </script>
-     <!-- BEGIN Vendor JS-->
+    <!-- BEGIN: Vendor JS-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{asset('app-assets/vendors/js/material-vendors.min.js')}}"> </script>
+    <!-- BEGIN Vendor JS-->
 
-     <!-- BEGIN: Page Vendor JS-->
-     <script src="{{asset('app-assets/vendors/js/animation/jquery.appear.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/datatable/datatables.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/jszip.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/pdfmake.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/vfs_fonts.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/buttons.html5.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/buttons.print.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/tables/buttons.colVis.min.js')}}"></script>
-     <script src="{{asset('app-assets/vendors/js/extensions/toastr.min.js')}}"></script>
-     <!-- END: Page Vendor JS-->
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="{{asset('app-assets/vendors/js/animation/jquery.appear.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/datatable/datatables.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/jszip.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/pdfmake.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/vfs_fonts.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/buttons.print.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/tables/buttons.colVis.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/extensions/toastr.min.js')}}"></script>
+    <!-- END: Page Vendor JS-->
 
-     <!-- BEGIN: Theme JS-->
-     <script src="{{asset('app-assets/js/core/app-menu.min.js')}}"></script>
-     <script src="{{asset('app-assets/js/core/app.min.js')}}"></script>
-     <script src="{{asset('app-assets/js/scripts/customizer.min.js')}}"></script>
-     <script src="{{asset('app-assets/js/scripts/footer.min.js')}}"></script>
-     <!-- END: Theme JS-->
+    <!-- BEGIN: Theme JS-->
+    <script src="{{asset('app-assets/js/core/app-menu.min.js')}}"></script>
+    <script src="{{asset('app-assets/js/core/app.min.js')}}"></script>
+    <script src="{{asset('app-assets/js/scripts/customizer.min.js')}}"></script>
+    <script src="{{asset('app-assets/js/scripts/footer.min.js')}}"></script>
+    <!-- END: Theme JS-->
 
-     <!-- BEGIN: Page JS-->
-     <script src="{{asset('app-assets/js/scripts/animation/animation.js')}}"></script>
-     <script src="{{asset('app-assets/js/scripts/pages/material-app.min.js')}}"></script>
-     <script src="{{asset('app-assets/js/scripts/tables/datatables-extensions/datatable-button/datatable-html5.min.js')}}"></script>
-     <script src="{{asset('app-assets/js/scripts/extensions/toastr.min.js')}}"></script>
-     <script>
+    <!-- BEGIN: Page JS-->
+    <script src="{{asset('app-assets/js/scripts/animation/animation.js')}}"></script>
+    <script src="{{asset('app-assets/js/scripts/pages/material-app.min.js')}}"></script>
+    <script src="{{asset('app-assets/js/scripts/tables/datatables-extensions/datatable-button/datatable-html5.min.js')}}"></script>
+    <script src="{{asset('app-assets/js/scripts/extensions/toastr.min.js')}}"></script>
+    <script>
         @if(Session::has('message'))
             var type = "{{ Session::get('alert-type', '') }}";
             switch (type) {
@@ -181,4 +182,5 @@
      <!-- Custom JS-->
      <script src="{{asset('js/app.js')}}"></script>
      <!-- END: Custom JS-->
+
 </html>
