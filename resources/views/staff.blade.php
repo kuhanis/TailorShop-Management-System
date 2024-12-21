@@ -60,6 +60,11 @@ $(document).ready(function() {
             <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
             <div class="heading-elements">
               <ul class="list-inline mb-0">
+                <li>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-staff">
+                        <i class="ft-plus"></i> Add Staff
+                    </button>
+                </li>
                 <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
                 <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
                 <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
