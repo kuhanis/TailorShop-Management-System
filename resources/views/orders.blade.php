@@ -359,7 +359,7 @@ $(document).ready(function() {
 
 <!-- Image Preview Modal -->
 <div class="modal fade" id="orderImageModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Order Image</h5>
@@ -367,11 +367,11 @@ $(document).ready(function() {
                     <span>&times;</span>
                 </button>
             </div>
-            <div class="modal-body text-center">
+            <div class="modal-body text-center p-2">
                 <div class="image-container">
-                    <img src="" alt="Order Image" class="modal-image">
+                    <img src="" alt="Order Image" class="modal-image img-fluid">
                 </div>
-                <div class="mt-3">
+                <div class="mt-2">
                     <p class="order-description mb-0"></p>
                 </div>
             </div>
@@ -717,6 +717,44 @@ $(document).ready(function() {
     }
 
     /* Rest of your existing styles... */
+
+    /* Add these new styles */
+    #orderImageModal .modal-dialog {
+        max-width: 500px;
+        margin: 1.75rem auto;
+    }
+
+    #orderImageModal .modal-body {
+        padding: 1rem;
+        max-height: calc(100vh - 210px);
+        overflow: hidden;
+    }
+
+    #orderImageModal .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #orderImageModal .modal-image {
+        max-width: 100%;
+        max-height: calc(100vh - 250px);
+        object-fit: contain;
+    }
+
+    #orderImageModal .modal-content {
+        border-radius: 8px;
+    }
+
+    #orderImageModal .modal-header {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    #orderImageModal .order-description {
+        font-size: 0.9rem;
+        color: #666;
+    }
 </style>
 
 
