@@ -2,7 +2,69 @@
 @section('title', 'Body Measurements')
 
 @push('page-css')
+<style>
+    .card-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    #search-input {
+        height: 32px;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        box-shadow: none;
+    }
+    
+    #search-input:focus {
+        border-color: #7367f0;
+        box-shadow: none;
+    }
+    
+    .dataTables_filter {
+        display: none;
+    }
+    
+    .dataTables_length {
+        display: none;
+    }
 
+    /* Add these new styles for the table */
+    .card-body.card-dashboard {
+        padding: 1rem;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .table th, .table td {
+        padding: 0.5rem;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+
+    /* Make the table scrollable horizontally if needed */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Wrap the table in a responsive container */
+    .card-body.card-dashboard .table-responsive {
+        margin: 0 -1rem;  /* Compensate for card padding */
+        padding: 0 1rem;  /* Add back padding for spacing */
+    }
+</style>
 @endpush
 
 @push('breadcrumb')
@@ -30,94 +92,97 @@
           <div class="col-12">
             <div class="card" style="margin: 0 1rem;">
               <div class="card-header">
-                <h4 class="card-title">Measurement Parts List</h4>
-                <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                <div class="heading-elements">
-                  <ul class="list-inline mb-0">
-                    <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                    <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
-                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-                    <li><a data-action="close"><i class="ft-x"></i></a></li>
-                  </ul>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <h4 class="card-title mb-0">Measurement Parts List</h4>
                 </div>
               </div>
               <div class="card-content collapse show">
-                <div class="card-body card-dashboard px-0">
-                  <table class="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th style="width: 40px;">#</th>
-                        <th style="width: 80px;">Customer</th>
-                        <th style="width: 80px;">Body</th>
-                        <th style="width: 65px;">Shoulder</th>
-                        <th style="width: 65px;">Chest</th>
-                        <th style="width: 65px;">Waist</th>
-                        <th style="width: 65px;">Hips</th>
-                        <th style="width: 65px;">Dress L.</th>
-                        <th style="width: 65px;">Wrist</th>
-                        <th style="width: 65px;">Skirt L.</th>
-                        <th style="width: 65px;">Armpit</th>
-                        <th style="width: 60px;">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @php $counter = 1; @endphp
-                      @foreach($measurements as $customerId => $customerMeasurements)
-                        @php
-                          $rowCount = count($customerMeasurements);
-                        @endphp
-                        @php $firstRow = true; @endphp
-                        @foreach($customerMeasurements as $index => $measurement)
-                          <tr>
-                            @if($index === 0)
-                              <td rowspan="{{ $rowCount }}" class="text-center">{{$loop->parent->iteration}}</td>
-                              <td rowspan="{{ $rowCount }}" class="align-middle" style="font-size: 13px;">
-                                {{ $measurement->customer->fullname }}
+                <div class="card-body card-dashboard">
+                  <!-- Search box above table -->
+                  <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                    <div style="width: 250px;">
+                      <input type="text" id="search-input" class="form-control form-control-sm" placeholder="Search...">
+                    </div>
+                  </div>
+                  
+                  <!-- Wrap table in responsive container -->
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width: 40px;">#</th>
+                          <th style="width: 80px;">Customer</th>
+                          <th style="width: 80px;">Body</th>
+                          <th style="width: 65px;">Shoulder</th>
+                          <th style="width: 65px;">Chest</th>
+                          <th style="width: 65px;">Waist</th>
+                          <th style="width: 65px;">Hips</th>
+                          <th style="width: 65px;">Dress L.</th>
+                          <th style="width: 65px;">Wrist</th>
+                          <th style="width: 65px;">Skirt L.</th>
+                          <th style="width: 65px;">Armpit</th>
+                          <th style="width: 60px;">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @php $counter = 1; @endphp
+                        @foreach($measurements as $customerId => $customerMeasurements)
+                          @php
+                            $rowCount = count($customerMeasurements);
+                          @endphp
+                          @php $firstRow = true; @endphp
+                          @foreach($customerMeasurements as $index => $measurement)
+                            <tr>
+                              @if($index === 0)
+                                <td rowspan="{{ $rowCount }}" class="text-center">{{$loop->parent->iteration}}</td>
+                                <td rowspan="{{ $rowCount }}" class="align-middle" style="font-size: 13px;">
+                                  {{ $measurement->customer->fullname }}
+                                </td>
+                              @endif
+                              <td style="font-size: 13px;">
+                                {{ $measurement->body_name }}
                               </td>
-                            @endif
-                            <td style="font-size: 13px;">
-                              {{ $measurement->body_name }}
-                            </td>
-                            <td class="text-center p-1">{{ $measurement->shoulder }}</td>
-                            <td class="text-center p-1">{{ $measurement->chest }}</td>
-                            <td class="text-center p-1">{{ $measurement->waist }}</td>
-                            <td class="text-center p-1">{{ $measurement->hips }}</td>
-                            <td class="text-center p-1">{{ $measurement->dress_length }}</td>
-                            <td class="text-center p-1">{{ $measurement->wrist }}</td>
-                            <td class="text-center p-1">{{ $measurement->skirt_length }}</td>
-                            <td class="text-center p-1">{{ $measurement->armpit }}</td>
-                            <td class="text-center">
-                              <a href="#" class="float-md-right" data-toggle="dropdown">
-                                <i class="material-icons">more_vert</i>
-                              </a>
-                              <div class="dropdown-menu">
-                                <a href="javascript:void(0)" 
-                                   data-id="{{ $measurement->id }}"
-                                   data-body-name="{{ $measurement->body_name }}"
-                                   data-shoulder="{{ $measurement->shoulder }}"
-                                   data-chest="{{ $measurement->chest }}"
-                                   data-waist="{{ $measurement->waist }}"
-                                   data-hips="{{ $measurement->hips }}"
-                                   data-dress-length="{{ $measurement->dress_length }}"
-                                   data-wrist="{{ $measurement->wrist }}"
-                                   data-skirt-length="{{ $measurement->skirt_length }}"
-                                   data-armpit="{{ $measurement->armpit }}"
-                                   class="dropdown-item editbtn">
-                                  <i class="la la-edit"></i>Edit
+                              <td class="text-center p-1">{{ $measurement->shoulder }}</td>
+                              <td class="text-center p-1">{{ $measurement->chest }}</td>
+                              <td class="text-center p-1">{{ $measurement->waist }}</td>
+                              <td class="text-center p-1">{{ $measurement->hips }}</td>
+                              <td class="text-center p-1">{{ $measurement->dress_length }}</td>
+                              <td class="text-center p-1">{{ $measurement->wrist }}</td>
+                              <td class="text-center p-1">{{ $measurement->skirt_length }}</td>
+                              <td class="text-center p-1">{{ $measurement->armpit }}</td>
+                              <td class="text-center">
+                                <a href="#" class="float-md-right" data-toggle="dropdown">
+                                  <i class="material-icons">more_vert</i>
                                 </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="javascript:void(0)"
-                                   data-id="{{ $measurement->id }}"
-                                   class="dropdown-item deletebtn text-danger">
-                                  <i class="la la-trash"></i>Delete
-                                </a>
-                              </div>
-                            </td>
-                          </tr>
+                                <div class="dropdown-menu">
+                                  <a href="javascript:void(0)" 
+                                     data-id="{{ $measurement->id }}"
+                                     data-body-name="{{ $measurement->body_name }}"
+                                     data-shoulder="{{ $measurement->shoulder }}"
+                                     data-chest="{{ $measurement->chest }}"
+                                     data-waist="{{ $measurement->waist }}"
+                                     data-hips="{{ $measurement->hips }}"
+                                     data-dress-length="{{ $measurement->dress_length }}"
+                                     data-wrist="{{ $measurement->wrist }}"
+                                     data-skirt-length="{{ $measurement->skirt_length }}"
+                                     data-armpit="{{ $measurement->armpit }}"
+                                     class="dropdown-item editbtn">
+                                    <i class="la la-edit"></i>Edit
+                                  </a>
+                                  <div class="dropdown-divider"></div>
+                                  <a href="javascript:void(0)"
+                                     data-id="{{ $measurement->id }}"
+                                     class="dropdown-item deletebtn text-danger">
+                                    <i class="la la-trash"></i>Delete
+                                  </a>
+                                </div>
+                              </td>
+                            </tr>
+                          @endforeach
                         @endforeach
-                      @endforeach
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -267,6 +332,39 @@
 @push('page-js')
 <script>
 $(document).ready(function() {
+	// Simple search functionality
+	$('#search-input').on('keyup', function() {
+		var searchText = $(this).val().toLowerCase();
+		
+		// First hide all rows
+		var allRows = $('.table tbody tr');
+		allRows.hide();
+		
+		// Show rows that match the search
+		allRows.each(function() {
+			var row = $(this);
+			var customerCell = row.find('td:eq(1)');
+			
+			// If this row has a customer cell (rowspan), get all related rows
+			if (customerCell.attr('rowspan')) {
+				var customerName = customerCell.text().toLowerCase();
+				var nextRows = row.nextAll().slice(0, parseInt(customerCell.attr('rowspan')) - 1);
+				var allGroupRows = row.add(nextRows);
+				
+				// Check all cells in this group for matches
+				var groupText = allGroupRows.text().toLowerCase();
+				if (groupText.indexOf(searchText) > -1) {
+					allGroupRows.show();
+				}
+			}
+		});
+		
+		// If search is empty, show all rows
+		if (searchText === '') {
+			allRows.show();
+		}
+	});
+
 	// Edit button click handler
 	$('.editbtn').on('click', function() {
 		$('#edit-measurement').modal('show');

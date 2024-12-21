@@ -49,6 +49,38 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+        <style>
+            .dataTables_filter, .dataTables_info { 
+                display: none; 
+            }
+            
+            #search-input {
+                margin-bottom: 1rem;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                padding: 0.5rem 1rem;
+            }
+            
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            .dataTables_wrapper .dataTables_paginate {
+                margin-top: 1rem;
+            }
+            
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem 1.5rem;
+            }
+            
+            .table th {
+                font-weight: 600;
+            }
+        </style>
+
     </head>
     <!-- END: Head-->
 

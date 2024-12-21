@@ -3,6 +3,25 @@
 @push('page-js')
 <script>
 $(document).ready(function() {
+    // Initialize DataTable
+    var table = $('.table').DataTable({
+        dom: 'rt<"bottom"p><"clear">',
+        ordering: true,
+        searching: true,
+        pageLength: 10,
+        language: {
+            paginate: {
+                previous: "&lt;",
+                next: "&gt;"
+            }
+        }
+    });
+
+    // Custom search box functionality
+    $('#search-input').on('keyup', function() {
+        table.search(this.value).draw();
+    });
+
     // Clear form when modal is closed
     $('#add-customer').on('hidden.bs.modal', function () {
           $(this).find('form')[0].reset();
@@ -139,15 +158,22 @@ $(document).ready(function() {
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Customers List</h4>
-            <div class="heading-elements">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-customer">
-                <i class="la la-plus"></i> Add Customer
-              </button>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h4 class="card-title mb-0">Customers List</h4>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-customer">
+                    <i class="la la-plus"></i> Add Customer
+                </button>
             </div>
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
+                <!-- Search box above table -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                    <div style="width: 250px;">
+                        <input type="text" id="search-input" class="form-control form-control-sm" placeholder="Search...">
+                    </div>
+                </div>
+                
                 <table class="table table-striped table-bordered">
                   <thead>
                     <tr>
@@ -527,25 +553,43 @@ $(document).ready(function() {
 </script>
 @endpush
 
+@push('page-css')
 <style>
-    .heading-elements {
-        display: flex;
-        align-items: center;
-    }
-    
-    .heading-elements .btn-primary {
-        margin-right: 15px;
-        padding: 0.6rem 1rem;
-        font-size: 0.975rem;
-    }
-    
-    .heading-elements .btn-primary i {
-        margin-right: 5px;
-    }
-    
     .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ddd;  /* This adds the line separator */
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    #search-input {
+        height: 32px;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        box-shadow: none;
+    }
+    
+    #search-input:focus {
+        border-color: #7367f0;
+        box-shadow: none;
+    }
+    
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .dataTables_filter {
+        display: none;
+    }
+    
+    .dataTables_length {
+        display: none;
     }
 </style>
+@endpush

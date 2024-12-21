@@ -48,6 +48,47 @@ $(document).ready(function() {
 </script>
 @endpush
 
+@push('page-css')
+<style>
+    .card-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    #search-input {
+        height: 32px;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        box-shadow: none;
+    }
+    
+    #search-input:focus {
+        border-color: #7367f0;
+        box-shadow: none;
+    }
+    
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .dataTables_filter {
+        display: none;
+    }
+    
+    .dataTables_length {
+        display: none;
+    }
+</style>
+@endpush
+
 @section('content')
 	
 <!-- HTML5 export buttons table -->
@@ -56,25 +97,22 @@ $(document).ready(function() {
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Staff List</h4>
-            <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-            <div class="heading-elements">
-              <ul class="list-inline mb-0">
-                <li>
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-staff">
-                        <i class="ft-plus"></i> Add Staff
-                    </button>
-                </li>
-                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
-                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-                <li><a data-action="close"><i class="ft-x"></i></a></li>
-              </ul>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h4 class="card-title mb-0">Staff List</h4>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-staff">
+                    <i class="ft-plus"></i> Add Staff
+                </button>
             </div>
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
-              
+                <!-- Search box above table -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                    <div style="width: 250px;">
+                        <input type="text" id="search-input" class="form-control form-control-sm" placeholder="Search...">
+                    </div>
+                </div>
+                
                 <!-- Table headers -->
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -503,6 +541,25 @@ $(document).ready(function() {
         $('#edit_address').val($(this).data('address'));
         $('#edit_phone').val($(this).data('phone'));
         $('#edit_salary').val($(this).data('salary'));
+    });
+
+    // Initialize DataTable
+    var table = $('.table').DataTable({
+        dom: 'rt<"bottom"p><"clear">',  // Only show table and pagination
+        ordering: true,
+        searching: true,
+        pageLength: 10,
+        language: {
+            paginate: {
+                previous: "&lt;",
+                next: "&gt;"
+            }
+        }
+    });
+
+    // Custom search box functionality
+    $('#search-input').on('keyup', function() {
+        table.search($(this).val()).draw();
     });
 });
 </script>

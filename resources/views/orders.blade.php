@@ -50,129 +50,136 @@ $(document).ready(function() {
 @section('content')
 <section id="html5">
     <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-			<h4 class="card-title">Orders List</h4>
-            <div class="heading-elements">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-order">
-                <i class="la la-plus"></i> Add Order
-              </button>
-              <ul class="list-inline mb-0 ml-2">
-                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
-                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-                <li><a data-action="close"><i class="ft-x"></i></a></li>
-              </ul>
+        <div class="col-12">
+            <div class="card">
+                <!-- Title and Add Order button -->
+                <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #ddd;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="font-size: 1.1rem; margin: 0;">Orders List</h4>
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-order">
+                            <i class="la la-plus"></i> Add Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search box and table -->
+                <div class="card-header">
+                    <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%;">
+                        <div style="width: 250px;">
+                            <input type="text" id="search-input" class="form-control form-control-sm" placeholder="Search...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-content collapse show">
+                    <div class="card-body card-dashboard">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Customer</th>
+                                        <th>Description</th>
+                                        <th>Image</th>
+                                        <th>Date Ordered</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Order Link</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (!empty($orders->count()))
+                                        @foreach ($orders as $index => $order)
+                                            <tr>
+                                                <td>{{$index + 1}}</td>
+                                                <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
+                                                <td>{{$order->description}}</td>
+                                                <td class="text-center">
+                                                    @if($order->image_path)
+                                                        <img src="{{ asset('storage/' . $order->image_path) }}" 
+                                                             alt="Order Image" 
+                                                             class="img-thumbnail order-image"
+                                                             style="max-width: 100px; max-height: 100px; cursor: pointer"
+                                                             onclick="showImageModal('{{ asset('storage/' . $order->image_path) }}', '{{ $order->description }}')"
+                                                        >
+                                                    @else
+                                                        <span class="text-muted">No image</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{$order->received_on}}</td>
+                                                <td>RM {{number_format($order->amount_charged, 2)}}</td>
+                                                <td class="text-center" style="min-width: 100px; padding: 8px;">
+                                                    <div class="d-flex flex-column align-items-center" style="gap: 4px;">
+                                                        <button type="button" 
+                                                                class="btn btn-sm btn-outline-success status-btn"
+                                                                data-status="paid"
+                                                                data-order-id="{{ $order->id }}"
+                                                                style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
+                                                            Paid
+                                                        </button>
+                                                        @if($order->is_ready_to_collect)
+                                                            <button type="button" 
+                                                                    class="btn btn-sm btn-success status-btn disabled"
+                                                                    style="min-width: 90px; font-size: 12px; padding: 4px 8px; opacity: 1;"
+                                                                    disabled>
+                                                                <i class="la la-check"></i> Ready
+                                                            </button>
+                                                        @else
+                                                            <button type="button" 
+                                                                    class="btn btn-sm btn-outline-warning status-btn"
+                                                                    data-status="to_collect"
+                                                                    data-order-id="{{ $order->id }}"
+                                                                    style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
+                                                                <i class="la la-clock"></i> To Collect
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                                <td class="text-center" style="min-width: 160px; padding: 8px;">
+                                                    @if($order->access_token)
+                                                        <div class="d-flex align-items-center justify-content-center" style="gap: 4px;">
+                                                            <a href="{{ $order->order_link }}" 
+                                                               target="_blank" 
+                                                               class="btn btn-sm btn-info"
+                                                               style="min-width: 70px; font-size: 12px; padding: 4px 8px;">
+                                                                <i class="la la-link"></i> View
+                                                            </a>
+                                                            <button class="btn btn-sm btn-secondary copy-link"
+                                                                    data-link="{{ $order->order_link }}"
+                                                                    style="min-width: 70px; font-size: 12px; padding: 4px 8px;">
+                                                                <i class="la la-copy"></i> Copy
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false">
+                                                        <i class="material-icons">more_vert</i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a href="javascript:void(0)" 
+                                                            data-id="{{$order->id}}"
+                                                            class="dropdown-item editbtn">
+                                                            <i class="la la-edit"></i>Edit
+                                                        </a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a data-id="{{$order->id}}" href="javascript:void(0)" class="dropdown-item deletebtn">
+                                                            <i class="la la-trash"></i>Delete
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <x-modals.delete :route="'order.destroy'" :title="'Customer Order'" />
+                                    @endif                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="card-content collapse show">
-            <div class="card-body card-dashboard">
-                <table class="table table-striped table-bordered">
-                  <thead>
-                    <tr>
-						<th>#</th>
-						<th>Customer</th>
-						<th>Description</th>
-						<th>Image</th>
-						<th>Date Ordered</th>
-						<th>Amount</th>
-						<th>Status</th>
-						<th>Order Link</th>
-						<th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @if (!empty($orders->count()))
-                        @foreach ($orders as $index => $order)
-                          <tr>
-                            <td>{{$index + 1}}</td>
-                            <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
-                            <td>{{$order->description}}</td>
-                            <td class="text-center">
-                                @if($order->image_path)
-                                    <img src="{{ asset('storage/' . $order->image_path) }}" 
-                                         alt="Order Image" 
-                                         class="img-thumbnail order-image"
-                                         style="max-width: 100px; max-height: 100px; cursor: pointer"
-                                         onclick="showImageModal('{{ asset('storage/' . $order->image_path) }}', '{{ $order->description }}')"
-                                    >
-                                @else
-                                    <span class="text-muted">No image</span>
-                                @endif
-                            </td>
-                            <td>{{$order->received_on}}</td>
-                            <td>RM {{number_format($order->amount_charged, 2)}}</td>
-                            <td class="text-center" style="min-width: 100px; padding: 8px;">
-                                <div class="d-flex flex-column align-items-center" style="gap: 4px;">
-                                    <button type="button" 
-                                            class="btn btn-sm btn-outline-success status-btn"
-                                            data-status="paid"
-                                            data-order-id="{{ $order->id }}"
-                                            style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
-                                        Paid
-                                    </button>
-                                    @if($order->is_ready_to_collect)
-                                        <button type="button" 
-                                                class="btn btn-sm btn-success status-btn disabled"
-                                                style="min-width: 90px; font-size: 12px; padding: 4px 8px; opacity: 1;"
-                                                disabled>
-                                            <i class="la la-check"></i> Ready
-                                        </button>
-                                    @else
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-warning status-btn"
-                                                data-status="to_collect"
-                                                data-order-id="{{ $order->id }}"
-                                                style="min-width: 90px; font-size: 12px; padding: 4px 8px;">
-                                            <i class="la la-clock"></i> To Collect
-                                        </button>
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="text-center" style="min-width: 160px; padding: 8px;">
-                                @if($order->access_token)
-                                    <div class="d-flex align-items-center justify-content-center" style="gap: 4px;">
-                                        <a href="{{ $order->order_link }}" 
-                                           target="_blank" 
-                                           class="btn btn-sm btn-info"
-                                           style="min-width: 70px; font-size: 12px; padding: 4px 8px;">
-                                            <i class="la la-link"></i> View
-                                        </a>
-                                        <button class="btn btn-sm btn-secondary copy-link"
-                                                data-link="{{ $order->order_link }}"
-                                                style="min-width: 70px; font-size: 12px; padding: 4px 8px;">
-                                            <i class="la la-copy"></i> Copy
-                                        </button>
-                                    </div>
-                                @endif
-                            </td>
-                            <td>
-								<a href="#" class="float-md-right" data-toggle="dropdown" aria-expanded="false">
-									<i class="material-icons">more_vert</i>
-								</a>
-								<div class="dropdown-menu">
-									<a href="javascript:void(0)" 
-										data-id="{{$order->id}}"
-										class="dropdown-item editbtn">
-										<i class="la la-edit"></i>Edit
-									</a>
-									<div class="dropdown-divider"></div>
-									<a data-id="{{$order->id}}" href="javascript:void(0)" class="dropdown-item deletebtn">
-										<i class="la la-trash"></i>Delete
-									</a>
-								</div>
-							</td>
-                          </tr>
-                        @endforeach
-						<x-modals.delete :route="'order.destroy'" :title="'Customer Order'" />
-                    @endif                    
-                  </tbody>
-                </table>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
 </section>
 
@@ -616,98 +623,47 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Initialize DataTable
+    var table = $('.table').DataTable({
+        dom: 'rt<"bottom"p><"clear">',
+        ordering: true,
+        searching: true,
+        pageLength: 10,
+        language: {
+            paginate: {
+                previous: "&lt;",
+                next: "&gt;"
+            }
+        }
+    });
+
+    // Custom search box functionality
+    $('#search-input').on('keyup', function() {
+        table.search(this.value).draw();
+    });
 });
 </script>
 @endpush
 
 <style>
-    .status-btn.active {
-        font-weight: bold !important;
-        background-color: #ffc107 !important;
-        color: #000 !important;
-        border-color: #ffc107 !important;
-    }
-    .order-image {
-        transition: transform 0.2s;
-        max-width: 100px;
-        max-height: 100px;
-        cursor: pointer;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-    .order-image:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-    #orderImageModal .modal-body {
-        padding: 20px;
-        background-color: #f8f9fa;
-    }
-    #orderImageModal .image-container {
+    /* Card and Header styles */
+    .card-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ddd;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        min-height: 300px;
-        max-height: 70vh;
-        overflow: hidden;
-    }
-    #orderImageModal .modal-image {
-        max-width: 100%;
-        max-height: 70vh;
-        object-fit: contain;
-    }
-    #orderImageModal .order-description {
-        color: #666;
-        font-size: 16px;
-        margin-top: 15px;
-    }
-    #orderImageModal .modal-footer .btn-secondary {
-        color: #fff !important;
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
-    #paymentModal .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    #paymentModal .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-    }
-    #collectModal .btn-warning {
-        background-color: #ffc107;
-        border-color: #ffc107;
-        color: #000;
-    }
-    #collectModal .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-    }
-    .status-btn.disabled {
-        cursor: not-allowed !important;
-        background-color: #28a745 !important;
-        border-color: #28a745 !important;
-        color: white !important;
-    }
-
-    .status-btn.disabled:hover {
-        opacity: 1 !important;
-    }
-
-    /* Add this to your existing styles */
-    #edit_customer_name {
-        opacity: 0.8;
-        pointer-events: none;
     }
     
-    #edit_customer_name:focus {
-        outline: none;
-        box-shadow: none;
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
     }
 
+    /* Header elements styles */
     .heading-elements {
         display: flex;
         align-items: center;
@@ -722,12 +678,45 @@ $(document).ready(function() {
     .heading-elements .btn-primary i {
         margin-right: 5px;
     }
-    
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+
+    /* Search input styles */
+    #search-input {
+        height: 32px;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        box-shadow: none;
     }
+    
+    #search-input:focus {
+        border-color: #7367f0;
+        box-shadow: none;
+    }
+
+    /* Table styles */
+    .card-body.card-dashboard {
+        padding: 1rem;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .table th, .table td {
+        padding: 0.5rem;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+
+    /* Rest of your existing styles... */
 </style>
 
 
