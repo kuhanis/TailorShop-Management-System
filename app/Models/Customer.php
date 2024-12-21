@@ -23,7 +23,7 @@ class Customer extends Model
 
     public function orders()
     {
-        return $this->hasMany(Orders::class, 'customer_id');
+        return $this->hasMany(Order::class);
     }
 
     public function orderHistories()
