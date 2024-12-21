@@ -23,6 +23,19 @@
 @endpush
 
 @section('content')
+<div class="d-flex justify-content-between align-items-center mb-3" style="background: white; padding: 15px 25px; margin: -15px -25px 25px;">
+    <div class="d-flex align-items-center">
+        <h3 class="mb-0 mr-3">Users</h3>
+        <div class="breadcrumb mb-0" style="background: none;">
+            <a href="{{ route('home') }}" class="breadcrumb-item">Home</a>
+            <a href="#" class="breadcrumb-item">Users</a>
+            <span class="breadcrumb-item active">All Users</span>
+        </div>
+    </div>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#add-user">
+        ADD USER
+    </button>
+</div>
 
 <!-- HTML5 export buttons table -->
 <section id="html5">
@@ -31,15 +44,16 @@
 		<div class="card">
 			<div class="card-header">
 				<h4 class="card-title">Users List</h4>
-			<a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-			<div class="heading-elements">
-				<ul class="list-inline mb-0">
-				<li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-				<li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
-				<li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-				<li><a data-action="close"><i class="ft-x"></i></a></li>
-				</ul>
-			</div>
+				<a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+				<div class="heading-elements">
+					<ul class="list-inline mb-0">
+						
+						<li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+						<li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+						<li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+						<li><a data-action="close"><i class="ft-x"></i></a></li>
+					</ul>
+				</div>
 			</div>
 			<div class="card-content collapse show">
 			<div class="card-body card-dashboard">
