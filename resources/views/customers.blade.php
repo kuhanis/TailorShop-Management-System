@@ -140,6 +140,11 @@ $(document).ready(function() {
         <div class="card">
           <div class="card-header">
             <h4 class="card-title">Customers List</h4>
+            <div class="heading-elements">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-customer">
+                <i class="la la-plus"></i> Add Customer
+              </button>
+            </div>
           </div>
           <div class="card-content collapse show">
             <div class="card-body card-dashboard">
@@ -521,3 +526,26 @@ $(document).ready(function() {
 });
 </script>
 @endpush
+
+<style>
+    .heading-elements {
+        display: flex;
+        align-items: center;
+    }
+    
+    .heading-elements .btn-primary {
+        margin-right: 15px;
+        padding: 0.6rem 1rem;
+        font-size: 0.975rem;
+    }
+    
+    .heading-elements .btn-primary i {
+        margin-right: 5px;
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>

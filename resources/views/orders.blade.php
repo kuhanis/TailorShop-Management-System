@@ -54,9 +54,11 @@ $(document).ready(function() {
         <div class="card">
           <div class="card-header">
 			<h4 class="card-title">Orders List</h4>
-            <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
             <div class="heading-elements">
-              <ul class="list-inline mb-0">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-order">
+                <i class="la la-plus"></i> Add Order
+              </button>
+              <ul class="list-inline mb-0 ml-2">
                 <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
                 <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
                 <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
@@ -704,6 +706,27 @@ $(document).ready(function() {
     #edit_customer_name:focus {
         outline: none;
         box-shadow: none;
+    }
+
+    .heading-elements {
+        display: flex;
+        align-items: center;
+    }
+    
+    .heading-elements .btn-primary {
+        margin-right: 15px;
+        padding: 0.6rem 1rem;
+        font-size: 0.975rem;
+    }
+    
+    .heading-elements .btn-primary i {
+        margin-right: 5px;
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>
 
