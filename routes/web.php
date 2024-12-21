@@ -40,6 +40,7 @@ Route::group(['middleware'=>['guest']],function (){
 Route::group(['middleware'=>['auth']],function (){
     Route::get('dashboard',[DashboardController::class,'index'])->name('dashboard');
     Route::get('/',[DashboardController::class,'index']);
+    Route::get('home', [DashboardController::class, 'index'])->name('home');
     Route::get('logout',[LogoutController::class,'index'])->name('logout');
 
     Route::get('customers',[CustomerController::class,'index'])->name('customers');
@@ -112,8 +113,6 @@ Route::group(['middleware'=>['auth']],function (){
     Route::delete('measurement-parts',[MeasurementPartController::class,'destroy']);
 
     Route::get('settings',[SettingController::class,'index'])->name('settings');
-
-    
 
 });
 
