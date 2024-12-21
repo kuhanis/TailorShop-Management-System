@@ -11,8 +11,8 @@ class UserController extends Controller
 {
     public function index(){
         $title = "users";
-        $users = User::get();
-        return view('users',compact('title','users'));
+        $staff = Staff::get();
+        return view('staff',compact('title','staff'));
     }
 
     public function store(Request $request){
