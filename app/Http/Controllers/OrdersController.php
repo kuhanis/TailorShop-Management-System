@@ -102,7 +102,7 @@ class OrdersController extends Controller
                     'received_on' => $request->received_on,
                     'amount_charged' => $request->amount_charged,
                     'access_token' => $token,
-                    'status' => 'to_collect',
+                    'status' => 'in_progress',
                     'link_status' => 'active',
                     'link_activated_at' => now(),
                     'is_ready_to_collect' => false,
