@@ -393,11 +393,11 @@ $(document).ready(function() {
                 </button>
             </div>
             <div class="modal-body">
-                <p>are you sure you want to mark as paid ?</p>
+                <p class="confirmation-message">Are you sure you want to mark as paid?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-                <button type="button" class="btn btn-danger confirm-payment">PAID</button>
+                <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">CANCEL</button>
+                <button type="button" class="btn btn-danger text-white confirm-payment">PAID</button>
             </div>
         </div>
     </div>
@@ -414,11 +414,11 @@ $(document).ready(function() {
                 </button>
             </div>
             <div class="modal-body">
-                <p>are you sure you want to mark as ready to collect ?</p>
+                <p class="confirmation-message">Are you sure you want to mark as ready to collect?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-                <button type="button" class="btn btn-warning confirm-collect">TO COLLECT</button>
+                <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">CANCEL</button>
+                <button type="button" class="btn btn-warning text-white confirm-collect">TO COLLECT</button>
             </div>
         </div>
     </div>
@@ -754,6 +754,37 @@ $(document).ready(function() {
     #orderImageModal .order-description {
         font-size: 0.9rem;
         color: #666;
+    }
+
+    /* Confirmation modal styles */
+    .confirmation-message {
+        font-size: 1rem;
+        color: #333;
+        text-align: center;
+        margin: 1rem 0;
+    }
+
+    #paymentModal .modal-content,
+    #collectModal .modal-content {
+        border-radius: 8px;
+    }
+
+    #paymentModal .btn,
+    #collectModal .btn {
+        font-weight: 500;
+        padding: 8px 20px;
+    }
+
+    .btn-warning.text-white {
+        color: #ffffff !important;
+    }
+
+    .btn-danger.text-white {
+        color: #ffffff !important;
+    }
+
+    .btn-secondary.text-white {
+        color: #ffffff !important;
     }
 </style>
 
