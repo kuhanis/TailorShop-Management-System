@@ -36,15 +36,18 @@ use PHPMailer\PHPMailer\Exception;
 
 Route::group(['middleware'=>['guest']],function (){
     Route::get('login',[LoginController::class,'index'])->name('login');
-    Route::post('login',[LoginController::class,'login']);
+    Route::post('login',[LoginController::class,'login'])
+        ->middleware(['throttle:6,1']);
     Route::get('recover-password',[RecoverPasswordController::class,'index'])->name('reset-password');
-    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])
+        ->middleware(['throttle:3,1'])
+        ->name('password.email');
     Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 });
 
-Route::group(['middleware'=>['auth']],function (){
+Route::group(['middleware'=>['auth', 'prevent-back', 'force.first.password']],function (){
     Route::get('dashboard',[DashboardController::class,'index'])->name('dashboard');
     Route::get('/',[DashboardController::class,'index']);
     Route::get('home', [DashboardController::class, 'index'])->name('home');
@@ -130,7 +133,7 @@ Route::group(['middleware' => ['auth', 'check.staff']], function() {
     // Add other admin-only routes here
 });
 
-Route::group(['middleware'=>['auth']], function (){
+Route::group(['middleware'=>['auth', 'prevent-back']], function (){
     // Add these new routes
     Route::get('first-time-password', [UserController::class, 'firstTimePasswordForm'])->name('first.time.password');
     Route::post('first-time-password', [UserController::class, 'firstTimePasswordChange'])->name('first.time.password.change');

@@ -38,3 +38,17 @@ Enter Username And Password To Login
 </form>
 @endsection
 
+@section('scripts')
+<script>
+    window.onload = function() {
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, null, window.location.href);
+        };
+    }
+</script>
+@endsection
+

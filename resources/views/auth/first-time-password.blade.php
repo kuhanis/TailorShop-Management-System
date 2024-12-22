@@ -21,3 +21,23 @@ Please Change Your Password
     <button type="submit" class="btn btn-outline-info btn-block"><i class="ft-lock"></i> Change Password</button>
 </form>
 @endsection
+
+@section('scripts')
+<script>
+    window.onload = function() {
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, null, window.location.href);
+        };
+    }
+    
+    // Prevent back button
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+</script>
+@endsection
