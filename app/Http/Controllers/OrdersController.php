@@ -202,44 +202,45 @@ class OrdersController extends Controller
         return view('public.order-details', compact('order', 'title'));
     }
 
-    public function updateStatus(Request $request, Orders $order)
+    public function updateStatus(Request $request, $order)
     {
         try {
-            $status = $request->input('status');
-            
-            if ($status === 'paid') {
-                DB::transaction(function() use ($order) {
-                    // Create history record
-                    OrderHistory::create([
+            $order = DB::table('orders')->where('id', $order)->first();
+            if (!$order) {
+                return response()->json(['error' => 'Order not found'], 404);
+            }
+
+            // Start transaction
+            DB::transaction(function() use ($request, $order) {
+                $currentUser = auth()->user()->username;
+                
+                // Update order status and processor
+                DB::table('orders')
+                    ->where('id', $order->id)
+                    ->update([
+                        'status' => $request->status,
+                        'processed_by' => $currentUser,
+                        'paid_at' => $request->status === 'paid' ? now() : null
+                    ]);
+                
+                // If status is paid, create history record
+                if ($request->status === 'paid') {
+                    DB::table('order_histories')->insert([
                         'customer_id' => $order->customer_id,
                         'description' => $order->description,
                         'received_on' => $order->received_on,
                         'amount_charged' => $order->amount_charged,
+                        'processed_by' => $currentUser,
+                        'created_at' => now(),
+                        'updated_at' => now()
                     ]);
+                }
+            });
 
-                    // Update the order
-                    $order->status = 'paid';
-                    $order->paid_at = now();
-                    $order->save();
-                });
-            } else {
-                // Update to_collect status
-                $order->status = 'to_collect';
-                $order->is_ready_to_collect = true;
-                $order->save();
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => $status === 'paid' ? 'Order marked as paid' : 'Order ready to collect'
-            ]);
-
+            return response()->json(['success' => true]);
         } catch (\Exception $e) {
             \Log::error('Order status update failed: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update status'
-            ], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

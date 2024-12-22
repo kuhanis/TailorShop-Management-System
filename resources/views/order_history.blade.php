@@ -86,7 +86,7 @@
                                             <td class="text-center" style="width: 100px;">
                                                 <span class="badge badge-success" style="display: inline-flex; align-items: center; justify-content: center; min-width: 60px; height: 24px;">Paid</span>
                                             </td>
-                                            <td class="text-center">{{$order->staff ? $order->staff->name : 'Admin'}}</td>
+                                            <td class="text-center">{{$order->processed_by}}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
