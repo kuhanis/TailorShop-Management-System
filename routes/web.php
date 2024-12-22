@@ -18,6 +18,10 @@ use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\MeasurementPartController;
 use App\Http\Controllers\CustomerMeasurementController;
 use App\Http\Controllers\Auth\RecoverPasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +38,9 @@ Route::group(['middleware'=>['guest']],function (){
     Route::get('login',[LoginController::class,'index'])->name('login');
     Route::post('login',[LoginController::class,'login']);
     Route::get('recover-password',[RecoverPasswordController::class,'index'])->name('reset-password');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+    Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 });
 
@@ -145,6 +152,34 @@ Route::post('/orders/{order}/status', [OrdersController::class, 'updateStatus'])
 Route::get('orders/retention', [OrdersController::class, 'retention'])->name('orders.retention');
 
 Route::get('orders/history', [OrdersController::class, 'history'])->name('orders.history');
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+
+Route::get('/test-email', function() {
+    $mail = new PHPMailer(true);
+    try {
+        $mail->SMTPDebug = 2;
+        $mail->isSMTP();
+        $mail->Host = env('MAIL_HOST');
+        $mail->SMTPAuth = true;
+        $mail->Username = env('MAIL_USERNAME');
+        $mail->Password = env('MAIL_PASSWORD');
+        $mail->SMTPSecure = env('MAIL_ENCRYPTION');
+        $mail->Port = env('MAIL_PORT');
+        
+        $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+        $mail->addAddress('your-test-email@gmail.com');
+        
+        $mail->isHTML(true);
+        $mail->Subject = 'Test Email';
+        $mail->Body = 'This is a test email';
+        
+        $mail->send();
+        return 'Email sent successfully';
+    } catch (\Exception $e) {
+        return 'Error: ' . $mail->ErrorInfo;
+    }
+});
 
 
 
