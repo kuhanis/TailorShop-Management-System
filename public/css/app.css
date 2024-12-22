@@ -66,3 +66,529 @@ div[class*="content-header"] {
 .card-body.card-dashboard.px-0 .table th {
     padding: 0.5rem 0.25rem;
 }
+
+/* Login page specific styles */
+.brand-logo {
+    width: 100px !important; /* Force smaller logo size */
+    height: auto !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Adjust card and container spacing */
+.card.border-grey {
+    margin: 0 !important;
+}
+
+.card-header.border-0 {
+    padding: 1rem 1rem 0.5rem !important;
+}
+
+.card-title.text-center {
+    margin-bottom: 0 !important;
+}
+
+.brand-text {
+    font-size: 1.2rem !important;
+    margin: 0.5rem 0 0 !important;
+}
+
+.card-subtitle {
+    margin: 0.5rem 0 !important;
+    font-size: 0.85rem !important;
+}
+
+.card-body {
+    padding: 1rem !important;
+}
+
+/* Form adjustments */
+.form-group {
+    margin-bottom: 1rem !important;
+}
+
+.form-control {
+    height: 38px !important;
+}
+
+/* Container adjustments */
+.flexbox-container {
+    min-height: 100vh !important;
+    padding: 0 !important;
+}
+
+/* Remove extra margins/padding */
+.px-1 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+}
+
+.py-1 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+/* Ensure content fits without scroll */
+.app-content.content {
+    min-height: 100vh !important;
+}
+
+/* Adjust box shadow container */
+.box-shadow-2 {
+    padding: 0 !important;
+}
+
+/* Make form more compact */
+.form-group.position-relative {
+    margin-bottom: 0.75rem !important;
+}
+
+.form-group.row {
+    margin-bottom: 1rem !important;
+}
+
+/* Button adjustments */
+.btn-block {
+    height: 38px !important;
+}
+
+/* Sidebar brand/logo area styling */
+.navbar-header {
+    height: auto !important;
+    padding: 1rem !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Logo in sidebar */
+.navbar-header .brand-logo {
+    width: 35px !important; /* Make sidebar logo smaller */
+    height: auto !important;
+    margin: 0 !important;
+}
+
+/* Brand text in sidebar */
+.navbar-header .brand-text {
+    font-size: 1.1rem !important;
+    margin: 0 !important;
+    color: #333 !important;
+}
+
+/* Adjust user profile section */
+.user-profile {
+    padding: 1rem !important;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.user-profile img {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+}
+
+/* Role text under profile */
+.role-text {
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+    color: #666 !important;
+}
+
+/* Main menu container */
+.main-menu {
+    border-right: 1px solid #eee;
+}
+
+/* Navigation menu spacing */
+.navigation {
+    padding-top: 0.5rem !important;
+}
+
+/* Header styling */
+.header-navbar {
+    height: 75px !important;
+    min-height: 75px !important;
+    background: #FFFFFF !important;
+    border-bottom: 1px solid #E0E0E0;
+    padding: 0 !important;
+    position: fixed !important;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 999 !important;
+}
+
+/* Left side brand area */
+.header-navbar .navbar-header {
+    width: 280px !important;
+    height: 75px !important;
+    padding: 0 1.8rem !important;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #E0E0E0;
+}
+
+/* Brand logo and text */
+.header-navbar .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-navbar .brand-logo {
+    width: 45px !important;
+    height: auto !important;
+}
+
+.header-navbar .brand-text {
+    color: #333333 !important;
+    font-size: 1.4rem !important;
+    font-weight: 500 !important;
+}
+
+/* Right side container */
+.header-navbar .navbar-container {
+    height: 75px !important;
+    padding: 0 2rem !important;
+    margin-left: 280px !important;
+}
+
+/* User profile area */
+.navbar-nav.float-right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.dropdown-user-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem !important;
+    border-radius: 4px;
+}
+
+.dropdown-user-link:hover {
+    background: #F5F5F5;
+}
+
+.dropdown-user-link .user-name {
+    color: #333333 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+
+.avatar {
+    width: 35px !important;
+    height: 35px !important;
+    border-radius: 50%;
+}
+
+/* Menu toggle button */
+.nav-menu-main {
+    color: #666666 !important;
+    margin-right: 1rem !important;
+}
+
+/* Remove unwanted effects */
+.header-navbar.floating-nav {
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* Ensure content is below header */
+.app-content {
+    margin-top: 75px !important;
+    margin-left: 280px !important;
+    padding: 1rem 2rem !important;
+}
+
+/* Hide unnecessary elements */
+.bookmark-wrapper {
+    display: none !important;
+}
+
+/* Sidebar adjustments */
+.main-menu {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 280px !important;
+    margin: 0 !important;
+    padding-top: 75px !important;
+    background: #FFFFFF !important;
+    border-right: 1px solid #E0E0E0;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Navigation container */
+.main-menu .main-menu-content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #FFFFFF !important;
+}
+
+/* Navigation list */
+.navigation {
+    flex: 1 !important;
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Navigation items */
+.navigation > li {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+}
+
+.navigation > li > a {
+    padding: 12px 1.8rem !important;
+    color: #666666 !important;
+    border-left: 4px solid transparent !important;
+    background: #FFFFFF !important;
+}
+
+/* User profile section in sidebar */
+.user-profile {
+    padding: 1.5rem !important;
+    text-align: center !important;
+    border-bottom: 1px solid #E0E0E0;
+    background: #FFFFFF !important;
+}
+
+.user-profile img {
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 50%;
+    margin-bottom: 0.75rem;
+}
+
+/* Navigation menu spacing */
+.navigation {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.navigation li {
+    margin: 0 !important;
+}
+
+.navigation li a {
+    padding: 12px 1.8rem !important;
+}
+
+/* Main content adjustments */
+.app-content {
+    margin-top: 75px !important;
+    margin-left: 280px !important;
+    padding: 0 !important;
+    min-height: calc(100vh - 75px) !important;
+}
+
+/* Dashboard cards */
+.card {
+    margin: 0 0 1rem 0 !important;
+    border-radius: 8px !important;
+}
+
+.card-title {
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+}
+
+/* Stats numbers */
+.stats-number {
+    font-size: 2rem !important;
+    font-weight: 600 !important;
+}
+
+/* Table styling */
+.table th {
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+}
+
+.table td {
+    font-size: 1rem !important;
+    padding: 1rem !important;
+}
+
+/* User profile in header */
+.dropdown-user-link {
+    padding: 0.75rem 1rem !important;
+}
+
+.dropdown-user-link .user-name {
+    font-size: 1.1rem !important;
+}
+
+.avatar {
+    width: 40px !important;
+    height: 40px !important;
+}
+
+/* Content wrapper adjustment */
+.content-wrapper {
+    padding: 1rem 1.5rem !important;
+    margin: 0 !important;
+}
+
+/* Remove any extra spacing */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+}
+
+/* Navigation adjustments */
+.navigation {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.navigation li {
+    margin: 0 !important;
+}
+
+.navigation li a {
+    padding: 12px 1.8rem !important;
+}
+
+/* Table container adjustments */
+.table-responsive {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Search box adjustments */
+.dataTables_filter {
+    margin: 0 0 1rem 0 !important;
+}
+
+/* Page title adjustments */
+.content-header {
+    margin: 0 0 1rem 0 !important;
+    padding: 0 !important;
+}
+
+/* Main menu navigation */
+.main-menu.menu-light .navigation {
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Header brand area */
+.header-navbar .navbar-header {
+    width: 280px !important;
+    height: 75px !important;
+    background: #FFFFFF !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 1.5rem !important;
+    border-right: 1px solid #E0E0E0;
+}
+
+/* Brand logo container */
+.header-navbar .navbar-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Logo image */
+.header-navbar .navbar-brand img {
+    width: 35px !important;
+    height: auto !important;
+    display: block !important;
+}
+
+/* Brand text */
+.header-navbar .navbar-brand .brand-text {
+    color: #333333 !important;
+    font-size: 1.3rem !important;
+    font-weight: 500 !important;
+    display: block !important;
+    margin: 0 !important;
+}
+
+/* User profile section */
+.user-profile {
+    padding: 1.5rem !important;
+    text-align: center !important;
+    border-bottom: 1px solid #E0E0E0;
+    background: #FFFFFF !important;
+}
+
+/* Navigation items */
+.navigation > li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.navigation > li > a {
+    padding: 12px 1.8rem !important;
+    color: #666666 !important;
+    border-left: 4px solid transparent !important;
+}
+
+.navigation > li.active > a {
+    background: #f8f8f8 !important;
+    border-left-color: #8B7355 !important;
+    color: #333333 !important;
+    font-weight: 500 !important;
+}
+
+/* Fix content area */
+.app-content {
+    margin-left: 280px !important;
+    margin-top: 75px !important;
+    padding: 1.5rem !important;
+    min-height: calc(100vh - 75px) !important;
+    background: #f8f8f8 !important;
+}
+
+/* Ensure header is above sidebar */
+.header-navbar {
+    z-index: 1000 !important;
+}
+
+.main-menu {
+    z-index: 999 !important;
+}
+
+/* Login page specific styles */
+.blank-page .header-navbar,
+.blank-page .main-menu {
+    display: none !important;  /* Hide header and menu on login pages */
+}
+
+.blank-page .app-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+}
+
+.blank-page {
+    background-color: #FAF9F6 !important;
+}
+
+.blank-page .content-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Hide any navigation elements on login page */
+.blank-page .navigation,
+.blank-page .navbar,
+.blank-page .header {
+    display: none !important;
+}
