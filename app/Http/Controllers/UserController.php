@@ -131,7 +131,7 @@ class UserController extends Controller
     public function firstTimePasswordChange(Request $request)
     {
         $this->validate($request, [
-            'password' => 'required|max:200'
+            'password' => 'required|max:200|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
         ]);
 
         auth()->user()->update([
