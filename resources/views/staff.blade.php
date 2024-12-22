@@ -308,7 +308,6 @@ $(document).ready(function() {
 <div class="modal wobble text-left" id="credentials-display" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            
             <div class="modal-body">
                 <div class="form-group">
                     <label>Username: </label>
@@ -319,7 +318,7 @@ $(document).ready(function() {
                     <div class="input-group">
                         <div class="form-control" id="new-password"></div>
                         <div class="input-group-append">
-                            <button class="btn btn-primary copy-btn" onclick="copyPassword()">
+                            <button type="button" class="btn btn-primary copy-btn">
                                 <i class="la la-copy"></i> Copy
                             </button>
                         </div>
@@ -490,12 +489,19 @@ $(document).ready(function() {
 
 
     // Add copy password function
-    function copyPassword() {
+    $('.copy-btn').on('click', function() {
         const password = document.getElementById('new-password').textContent;
-        navigator.clipboard.writeText(password);
-        $('.copy-btn').text('Copied!');
-        setTimeout(() => $('.copy-btn').html('<i class="la la-copy"></i> Copy'), 2000);
-    }
+        navigator.clipboard.writeText(password).then(function() {
+            // Show success message
+            toastr.success('Password copied to clipboard!');
+            $('.copy-btn').text('Copied!');
+            setTimeout(() => $('.copy-btn').html('<i class="la la-copy"></i> Copy'), 2000);
+        }).catch(function(err) {
+            // Show error message
+            toastr.error('Failed to copy password');
+            console.error('Failed to copy password: ', err);
+        });
+    });
 
     // Handle staff form submission
     $('#add-staff-details form').submit(function(e) {
