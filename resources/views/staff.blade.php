@@ -475,6 +475,20 @@ $(document).ready(function() {
                         console.log('Username Error:', errors.username[0]);
                         toastr.warning(errors.username[0], 'Username Error');
                     }
+
+                    // Add password validation error handling
+                    if (errors.password) {
+                        let passwordError = errors.password[0];
+                        if (passwordError.includes('confirmed')) {
+                            toastr.warning('Password and Confirm Password must match', 'Password Error');
+                        } else if (passwordError.includes('min')) {
+                            toastr.warning('Password must be at least 8 characters', 'Password Error');
+                        } else if (passwordError.includes('format') || passwordError.includes('invalid') || passwordError.includes('The password format is invalid')) {
+                            toastr.warning('Password must contain at least one uppercase letter, one lowercase letter, one number and one special character', 'Password Error');
+                        } else {
+                            toastr.warning(passwordError, 'Password Error');
+                        }
+                    }
                 }
             }
         });
