@@ -520,26 +520,44 @@ $(document).ready(function() {
 	});
 
 	// Delete button click handler
-	$('.deletebtn').on('click', function() {
-		let id = $(this).data('id');
-		
-		if(confirm('Are you sure you want to delete this measurement?')) {
-			$.ajax({
-				url: "{{ route('measurements.destroy') }}",
-				method: 'DELETE',
-				data: {
-					_token: '{{ csrf_token() }}',
-					id: id
-				},
-				success: function(response) {
-					toastr.success('Measurement deleted successfully!');
-					window.location.reload();
-				},
-				error: function(xhr) {
-					toastr.error('An error occurred while deleting the measurement.');
-				}
-			});
-		}
+	$(document).on('click', '.deletebtn', function() {
+		var id = $(this).data('id');
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "This will delete the body measurement! This action cannot be undone.",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: "{{ route('measurements.destroy') }}",
+					method: 'DELETE',
+					data: {
+						_token: '{{ csrf_token() }}',
+						id: id
+					},
+					success: function(response) {
+						Swal.fire(
+							'Deleted!',
+							'Body measurement has been deleted.',
+							'success'
+						).then(() => {
+							window.location.reload();
+						});
+					},
+					error: function(xhr) {
+						Swal.fire(
+							'Error!',
+							'Something went wrong.',
+							'error'
+						);
+					}
+				});
+			}
+		});
 	});
 });
 </script>
