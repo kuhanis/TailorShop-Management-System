@@ -305,28 +305,68 @@ $(document).ready(function() {
                         <input type="text" name="body_name" class="form-control" placeholder="Body name" required>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="shoulder" class="form-control" placeholder="Shoulder" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="shoulder" class="form-control" placeholder="Shoulder" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="chest" class="form-control" placeholder="Chest" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="chest" class="form-control" placeholder="Chest" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="waist" class="form-control" placeholder="Waist" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="waist" class="form-control" placeholder="Waist" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="hips" class="form-control" placeholder="Hips" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="hips" class="form-control" placeholder="Hips" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="dress_length" class="form-control" placeholder="Dress lenght" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="dress_length" class="form-control" placeholder="Dress lenght" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="wrist" class="form-control" placeholder="Wrist" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="wrist" class="form-control" placeholder="Wrist" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="skirt_length" class="form-control" placeholder="Skirt length" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="skirt_length" class="form-control" placeholder="Skirt length" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="number" step="0.01" name="armpit" class="form-control" placeholder="Armpit" required>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="armpit" class="form-control" placeholder="Armpit" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">inch</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

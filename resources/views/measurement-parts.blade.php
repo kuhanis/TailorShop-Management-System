@@ -226,35 +226,75 @@
 						</div>
 						<div class="form-group">
 							<label>Shoulder</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter shoulder measurement" name="shoulder" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter shoulder measurement" name="shoulder" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label>Chest</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter chest measurement" name="chest" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter chest measurement" name="chest" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label>Waist</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter waist measurement" name="waist" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter waist measurement" name="waist" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label>Hip</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter hip measurement" name="hips" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter hip measurement" name="hips" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label>Dress Length</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter dress length" name="dress_length" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter dress length" name="dress_length" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label>Wrist</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter wrist measurement" name="wrist" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter wrist measurement" name="wrist" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label>Skirt Length</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter skirt length" name="skirt_length" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter skirt length" name="skirt_length" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<label>Armpit</label>
-							<input type="number" step="0.01" class="form-control" placeholder="Enter armpit measurement" name="armpit" required>
+							<div class="input-group">
+								<input type="number" step="0.01" class="form-control" placeholder="Enter armpit measurement" name="armpit" required>
+								<div class="input-group-append">
+									<span class="input-group-text">inch</span>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -289,35 +329,75 @@
 					</div>
 					<div class="form-group">
 						<label>Shoulder:</label>
-						<input type="number" step="0.01" name="shoulder" id="edit_shoulder" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="shoulder" id="edit_shoulder" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Chest:</label>
-						<input type="number" step="0.01" name="chest" id="edit_chest" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="chest" id="edit_chest" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Waist:</label>
-						<input type="number" step="0.01" name="waist" id="edit_waist" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="waist" id="edit_waist" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Hips:</label>
-						<input type="number" step="0.01" name="hips" id="edit_hips" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="hips" id="edit_hips" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Dress Length:</label>
-						<input type="number" step="0.01" name="dress_length" id="edit_dress_length" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="dress_length" id="edit_dress_length" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Wrist:</label>
-						<input type="number" step="0.01" name="wrist" id="edit_wrist" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="wrist" id="edit_wrist" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Skirt Length:</label>
-						<input type="number" step="0.01" name="skirt_length" id="edit_skirt_length" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="skirt_length" id="edit_skirt_length" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Armpit:</label>
-						<input type="number" step="0.01" name="armpit" id="edit_armpit" class="form-control" required>
+						<div class="input-group">
+							<input type="number" step="0.01" name="armpit" id="edit_armpit" class="form-control" required>
+							<div class="input-group-append">
+								<span class="input-group-text">inch</span>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
