@@ -51,12 +51,10 @@ $(document).ready(function() {
         });
     });
 
-    // Edit button functionality
-    $('.editbtn').on('click', function() {
+    // Change the edit button handler to use event delegation
+    $(document).on('click', '.editbtn', function() {
         let id = $(this).data('id');
         
-        // Since we don't have a separate edit endpoint like in staff, 
-        // we'll use the data attributes directly
         $('#edit-customer').modal('show');
         $('#edit_id').val(id);
         $('#edit_fullname').val($(this).data('fullname'));
@@ -94,7 +92,8 @@ $(document).ready(function() {
         $(this).find('form')[0].reset();
     });
 
-    $('.deletebtn').on('click', function() {
+    // Change the delete button handler to use event delegation
+    $(document).on('click', '.deletebtn', function() {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Are you sure?',
@@ -581,7 +580,7 @@ $(document).ready(function() {
     });
 
     // Edit button functionality
-    $('.editbtn').on('click', function() {
+    $(document).on('click', '.editbtn', function() {
         $('#edit-customer').modal('show');
         $('#edit_id').val($(this).data('id'));
         $('#edit_fullname').val($(this).data('fullname'));
