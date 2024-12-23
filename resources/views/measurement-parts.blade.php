@@ -105,6 +105,11 @@
                     </div>
                   </div>
                   
+                  <!-- Add this right above the table -->
+                  <div class="alert alert-info" style="margin-bottom: 1rem;">
+                      <i class="la la-info-circle"></i> All measurements are in inches
+                  </div>
+                  
                   <!-- Wrap table in responsive container -->
                   <div class="table-responsive">
                     <table class="table table-striped table-bordered">
