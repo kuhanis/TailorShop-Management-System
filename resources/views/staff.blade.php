@@ -166,7 +166,6 @@ $(document).ready(function() {
 
                         </tr>
                         @endforeach
-                        <x-modals.delete :route="'staff.destroy'" :title="'Staff'" />
                     </tbody>
                 </table>
             </div>
@@ -580,6 +579,47 @@ $(document).ready(function() {
     // Custom search box functionality
     $('#search-input').on('keyup', function() {
         table.search($(this).val()).draw();
+    });
+
+    // Replace the delete button handler
+    $(document).on('click', '.deletebtn', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will delete the staff member! This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('staff.destroy') }}",
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: id
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Staff member has been deleted.',
+                            'success'
+                        ).then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     });
 });
 </script>

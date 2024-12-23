@@ -171,7 +171,6 @@ $(document).ready(function() {
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        <x-modals.delete :route="'order.destroy'" :title="'Customer Order'" />
                                     @endif                    
                                 </tbody>
                             </table>
@@ -438,8 +437,43 @@ function showImageModal(imageUrl, description) {
 
 $(document).ready(function() {
     $('.deletebtn').on('click', function() {
-        $('#delete-modal').modal('show');
-        $('#delete-id').val($(this).data('id'));
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will delete the order! This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('order.destroy') }}",
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: id
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Order has been deleted.',
+                            'success'
+                        ).then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     });
 
     // Add new copy link functionality
