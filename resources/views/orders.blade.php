@@ -205,7 +205,7 @@ $(document).ready(function() {
 										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
 									@endforeach
 								</optgroup>
-								<optgroup label="From Retention">
+								<optgroup label="Existing Customers">
 									@foreach ($retentionCustomers as $customer)
 										<option value="{{$customer->id}}">{{$customer->fullname}}</option>
 									@endforeach
