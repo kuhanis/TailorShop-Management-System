@@ -74,25 +74,52 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($request->id);
 
-        $this->validate($request, [
+        $request->validate([
             'fullname' => 'required|max:100',
-            'address' => 'required|max:200',
-            'phone' => [
-                'required', 
-                'max:15', 
+            'phone' => 'required|max:15',  // Removed unique validation since it's an update
+            'email' => [
+                'required',
+                'email',
+                'max:100',
                 Rule::unique('customers')->ignore($customer->id)
             ],
-            'email' => 'required|email|max:100'
+            'address' => 'required|max:200'
         ]);
 
-        $customer->update($request->all());
-        
-        $notification = [
-            'message' => "Customer updated successfully!!",
-            'alert-type' => 'success'
-        ];
-        
-        return back()->with($notification);
+        $customer->update([
+            'fullname' => $request->fullname,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address
+        ]);
+
+        return response()->json([
+            'message' => 'Customer updated successfully!',
+            'status' => 'success'
+        ]);
+    }
+
+    public function addBodyMeasurement(Request $request)
+    {
+        $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'body_name' => 'required|string',
+            'shoulder' => 'required|numeric',
+            'chest' => 'required|numeric',
+            'waist' => 'required|numeric',
+            'hips' => 'required|numeric',
+            'dress_length' => 'required|numeric',
+            'wrist' => 'required|numeric',
+            'skirt_length' => 'required|numeric',
+            'armpit' => 'required|numeric',
+        ]);
+
+        BodyMeasurement::create($request->all());
+
+        return response()->json([
+            'message' => 'Body measurements added successfully!',
+            'status' => 'success'
+        ]);
     }
 
     public function destroy(Request $request)

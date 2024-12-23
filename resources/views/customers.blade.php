@@ -74,7 +74,8 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                // Reload the page after successful update
+                toastr.success(response.message);
+                $('#edit-customer').modal('hide');
                 window.location.reload();
             },
             error: function(xhr) {
@@ -129,6 +130,57 @@ $(document).ready(function() {
                         );
                     }
                 });
+            }
+        });
+    });
+
+    // Add this after your existing edit button handler
+    $('#edit-add-body-btn').on('click', function() {
+        let customerId = $('#edit_id').val();
+        
+        // Hide edit customer modal
+        $('#edit-customer').modal('hide');
+        
+        // Show body measurements modal
+        $('#body-measurements-modal').modal('show');
+        
+        // Set the customer_id in the body measurements form
+        $('#customer_id').val(customerId);
+        
+        // Clear any existing values in the body measurements form
+        $('#body-measurements-form')[0].reset();
+    });
+
+    // Modify body measurements modal hidden event to handle both add and edit cases
+    $('#body-measurements-modal').on('hidden.bs.modal', function () {
+        // If we came from edit customer modal, show it again
+        if($('#edit_id').val()) {
+            $('#edit-customer').modal('show');
+        }
+    });
+
+    // Keep only one form submission handler for body measurements
+    $('#body-measurements-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: "{{ route('customer.body.measurement') }}",
+            method: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                toastr.success(response.message);
+                $('#body-measurements-modal').modal('hide');
+                window.location.reload();
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    Object.keys(errors).forEach(function(key) {
+                        toastr.error(errors[key][0]);
+                    });
+                }
             }
         });
     });
@@ -383,14 +435,14 @@ $(document).ready(function() {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title text-text-bold-600">Edit Customer</h3>
+                <h3 class="modal-title">Edit Customer</h3>
                 <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="{{route('customers.update')}}">
+            <form action="{{ route('customer.update') }}" method="post">
                 @csrf
-                @method('PUT')
+                @method("PUT")
                 <input type="hidden" name="id" id="edit_id">
                 <div class="modal-body">
                     <div class="form-group">
@@ -435,6 +487,7 @@ $(document).ready(function() {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary btn-lg" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-info btn-lg" id="edit-add-body-btn">Add Body</button>
                     <button type="submit" class="btn btn-outline-primary btn-lg">Update</button>
                 </div>
             </form>
@@ -547,33 +600,6 @@ $(document).ready(function() {
                     });
                 } else {
                     toastr.error('An error occurred. Please try again.');
-                }
-            }
-        });
-    });
-
-
-    // Handle final submit
-    $('#body-measurements-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        $.ajax({
-            url: "{{ route('body.measurements.store') }}",
-            method: 'POST',
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                toastr.success('Body measurements added successfully!');
-                $('#body-measurements-modal').modal('hide');
-                window.location.reload();
-            },
-            error: function(xhr) {
-                if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    Object.keys(errors).forEach(function(key) {
-                        toastr.error(errors[key][0]);
-                    });
                 }
             }
         });
