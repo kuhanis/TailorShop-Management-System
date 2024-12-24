@@ -84,14 +84,30 @@ class StaffController extends Controller
 
     public function destroy(Request $request)
     {
-        $staff = Staff::find($request->id);
-        $staff->user()->delete(); // Delete associated user
-        $staff->delete(); // Delete staff record
-        
-        return redirect()->route('staff')->with([
-            'message' => 'Staff deleted successfully!',
-            'alert-type' => 'success'
-        ]);
+        try {
+            $staff = Staff::findOrFail($request->id);
+            $user = $staff->user;
+            
+            \DB::beginTransaction();
+            try {
+                $staff->delete();
+                $user->delete();
+                \DB::commit();
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Staff deleted successfully!'
+                ]);
+            } catch (\Exception $e) {
+                \DB::rollback();
+                throw $e;
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting staff: ' . $e->getMessage()
+            ], 500);
+        }
     }
     
 }

@@ -187,5 +187,7 @@ Route::get('/test-email', function() {
 Route::put('/customer/update', [CustomerController::class, 'update'])->name('customer.update');
 Route::post('/customer/body-measurement', [CustomerController::class, 'addBodyMeasurement'])->name('customer.body.measurement');
 
+Route::delete('/staff/destroy', [StaffController::class, 'destroy'])->name('staff.destroy');
+
 
 

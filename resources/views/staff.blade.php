@@ -602,18 +602,26 @@ $(document).ready(function() {
                         id: id
                     },
                     success: function(response) {
-                        Swal.fire(
-                            'Deleted!',
-                            'Staff member has been deleted.',
-                            'success'
-                        ).then(() => {
-                            window.location.reload();
-                        });
+                        if (response.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                response.message,
+                                'error'
+                            );
+                        }
                     },
                     error: function(xhr) {
                         Swal.fire(
                             'Error!',
-                            'Something went wrong.',
+                            'Something went wrong while deleting the staff member.',
                             'error'
                         );
                     }
