@@ -11,7 +11,7 @@
         />
         <div class="role-text">
             @if(auth()->user()->name === 'admin')
-                Super admin
+                Admin
             @else
                 Staff
             @endif
