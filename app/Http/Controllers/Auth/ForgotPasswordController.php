@@ -13,6 +13,7 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class ForgotPasswordController extends Controller
 {
@@ -76,19 +77,21 @@ class ForgotPasswordController extends Controller
         }
     }
 
-    public function showResetForm($token)
+    public function showResetForm(Request $request, $token)
     {
-        $tokenData = DB::table('password_resets')
+        // Check if token exists and is not expired
+        $passwordReset = DB::table('password_resets')
             ->where('token', $token)
             ->first();
 
-        if (!$tokenData) {
-            return redirect()->route('login')->with('error', 'Invalid password reset link or link has expired.');
+        if (!$passwordReset || 
+            Carbon::parse($passwordReset->created_at)->addMinutes(5)->isPast()) {
+            abort(404, 'Password reset link has expired or is invalid.');
         }
 
         return view('auth.reset-password', [
             'token' => $token,
-            'email' => $tokenData->email
+            'email' => $request->email
         ]);
     }
 

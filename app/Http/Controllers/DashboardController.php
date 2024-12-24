@@ -12,7 +12,7 @@ class DashboardController extends Controller
 {
     public function index(){
         $title = "Dashboard";
-        
+
         // Get counts
         $totalUsers = DB::table('customers')->count();
         $completedOrders = DB::table('order_histories')->count();
