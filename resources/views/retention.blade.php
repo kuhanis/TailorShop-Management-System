@@ -78,21 +78,34 @@
                                         <tr>
                                             <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
                                             <td class="text-center">
-                                                <span class="badge badge-success">
-                                                    Active {{ $order->getDaysUntilExpiry() }}
-                                                </span>
+                                                @if($order->link_status === 'revoked')
+                                                    <span class="badge badge-danger">Inactive</span>
+                                                @else
+                                                    {!! $order->getDaysUntilExpiry() !!}
+                                                @endif
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex align-items-center justify-content-center" style="gap: 4px;">
-                                                    <a href="{{ $order->order_link }}" 
-                                                       target="_blank" 
-                                                       class="btn btn-sm btn-info">
-                                                        <i class="la la-link"></i> View
-                                                    </a>
-                                                    <button class="btn btn-sm btn-secondary copy-link"
-                                                            data-link="{{ $order->order_link }}">
-                                                        <i class="la la-copy"></i> Copy
-                                                    </button>
+                                                    @if($order->link_status !== 'revoked')
+                                                        <a href="{{ $order->order_link }}" 
+                                                           target="_blank" 
+                                                           class="btn btn-sm btn-info">
+                                                            <i class="la la-link"></i> View
+                                                        </a>
+                                                        <button class="btn btn-sm btn-secondary copy-link"
+                                                                data-link="{{ $order->order_link }}">
+                                                            <i class="la la-copy"></i> Copy
+                                                        </button>
+                                                        @if($order->getDaysUntilExpiry() === '<span class="badge badge-danger">Expired</span>')
+                                                            <button class="btn btn-sm btn-danger delete-customer"
+                                                                    data-order-id="{{ $order->id }}"
+                                                                    data-customer-id="{{ $order->customer_id }}">
+                                                                <i class="la la-trash"></i> Delete
+                                                            </button>
+                                                        @endif
+                                                    @else
+                                                        <span class="text-muted">Link Revoked</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -139,8 +152,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary text-white" data-dismiss="modal" style="color: white !important;">Close</button>
+                    <button type="submit" class="btn btn-primary text-white" style="color: white !important;">Save Changes</button>
                 </div>
             </form>
         </div>
@@ -170,10 +183,54 @@ $(document).ready(function() {
             toastr.error('Failed to copy link');
         });
     });
+
+    // Add delete customer handler
+    $('.delete-customer').on('click', function() {
+        const orderId = $(this).data('order-id');
+        const customerId = $(this).data('customer-id');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will delete the customer's data and measurements. This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("retention.delete-customer") }}',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        order_id: orderId,
+                        customer_id: customerId
+                    },
+                    success: function(response) {
+                        toastr.success('Customer data deleted successfully');
+                        // Remove the row from the table
+                        $(`button[data-order-id="${orderId}"]`).closest('tr').fadeOut(400, function() {
+                            $(this).remove();
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr);
+                        toastr.error('Failed to delete customer data');
+                    }
+                });
+            }
+        });
+    });
 });
 
 $('#retention-settings-form').on('submit', function(e) {
     e.preventDefault();
+    
+    const submitBtn = $(this).find('button[type="submit"]');
+    submitBtn.prop('disabled', true);
     
     $.ajax({
         url: '{{ route("retention.update") }}',
@@ -185,7 +242,9 @@ $('#retention-settings-form').on('submit', function(e) {
         success: function(response) {
             toastr.success('Retention settings updated successfully');
             $('#retention-settings').modal('hide');
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         },
         error: function(xhr) {
             console.error('Error:', xhr);
@@ -197,8 +256,16 @@ $('#retention-settings-form').on('submit', function(e) {
             } else {
                 toastr.error('An error occurred while saving settings');
             }
+            submitBtn.prop('disabled', false);
         }
     });
+});
+
+// Add this to handle modal close properly
+$('#retention-settings').on('hidden.bs.modal', function () {
+    const form = $('#retention-settings-form');
+    form.find('button[type="submit"]').prop('disabled', false);
+    form.trigger('reset');
 });
 </script>
 @endpush 
