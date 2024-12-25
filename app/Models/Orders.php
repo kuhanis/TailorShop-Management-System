@@ -31,21 +31,65 @@ class Orders extends Model
         return $this->access_token ? route('orders.view', $this->access_token) : null;
     }
 
-    public function isLinkExpired(): bool
+    public function isLinkExpired()
     {
-        if (!$this->link_activated_at) return false;
+        // Only check expiry for paid orders
+        if (!$this->paid_at) {
+            return false;  // Unpaid orders are never expired
+        }
+
+        if (!$this->access_token) {
+            return true;  // No access token means expired/revoked
+        }
+
+        $period = config('retention.period', 400);
+        $unit = config('retention.unit', 'days');
         
-        $expiryDate = Carbon::parse($this->link_activated_at)
-            ->addDays(config('app.link_retention_days'));
-        return $expiryDate->isPast();
+        $expiryDate = Carbon::parse($this->paid_at);
+        
+        switch($unit) {
+            case 'minutes':
+                $expiryDate->addMinutes($period);
+                break;
+            case 'hours':
+                $expiryDate->addHours($period);
+                break;
+            case 'days':
+                $expiryDate->addDays($period);
+                break;
+        }
+        
+        return Carbon::now()->gt($expiryDate);
     }
 
-    public function getDaysUntilExpiry(): int
+    public function getDaysUntilExpiry()
     {
-        if (!$this->link_activated_at) return config('app.link_retention_days');
+        if (!$this->paid_at) {
+            return "(not paid)";  // Show different message for unpaid orders
+        }
+
+        if (!$this->access_token) {
+            return "(revoked)";  // Show if link has been revoked
+        }
+
+        $period = config('retention.period', 400);
+        $unit = config('retention.unit', 'days');
         
-        $expiryDate = Carbon::parse($this->link_activated_at)
-            ->addDays(config('app.link_retention_days'));
-        return max(0, now()->diffInDays($expiryDate, false));
+        $expiryDate = Carbon::parse($this->paid_at);
+        
+        switch($unit) {
+            case 'minutes':
+                $expiryDate->addMinutes($period);
+                $diff = max(0, Carbon::now()->diffInMinutes($expiryDate, false));
+                return "($diff minutes left)";
+            case 'hours':
+                $expiryDate->addHours($period);
+                $diff = max(0, Carbon::now()->diffInHours($expiryDate, false));
+                return "($diff hours left)";
+            case 'days':
+                $expiryDate->addDays($period);
+                $diff = max(0, Carbon::now()->diffInDays($expiryDate, false));
+                return "($diff days left)";
+        }
     }
 }

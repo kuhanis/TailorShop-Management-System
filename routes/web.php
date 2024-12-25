@@ -19,9 +19,7 @@ use App\Http\Controllers\MeasurementPartController;
 use App\Http\Controllers\CustomerMeasurementController;
 use App\Http\Controllers\Auth\RecoverPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+use App\Http\Controllers\RetentionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,6 +186,9 @@ Route::put('/customer/update', [CustomerController::class, 'update'])->name('cus
 Route::post('/customer/body-measurement', [CustomerController::class, 'addBodyMeasurement'])->name('customer.body.measurement');
 
 Route::delete('/staff/destroy', [StaffController::class, 'destroy'])->name('staff.destroy');
+
+Route::post('/retention/settings', [RetentionController::class, 'updateRetentionSettings'])->name('retention.update');
+Route::get('/retention/cleanup', [RetentionController::class, 'cleanupExpiredData'])->name('retention.cleanup');
 
 
 

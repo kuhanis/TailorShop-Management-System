@@ -17,41 +17,18 @@ class OrdersController extends Controller
     public function index()
     {
         $title = "Orders";
-        $orders = Orders::where('status', '!=', 'paid')
-            ->whereNull('deleted_at')
-            ->get();
+        $orders = Orders::whereNull('paid_at')->get();
         
-        // Get new customers (who have never had any orders or history)
-        $newCustomers = Customer::whereNotExists(function($q) {
-            $q->select('customer_id')
-                ->from('orders')
-                ->whereColumn('customers.id', 'orders.customer_id');
-        })->whereNotExists(function($q) {
-            $q->select('customer_id')
-                ->from('order_histories')
-                ->whereColumn('customers.id', 'order_histories.customer_id');
+        // Get customers with active orders (not deleted)
+        $retentionCustomers = Customer::whereHas('orders', function($query) {
+            $query->whereNotNull('paid_at')
+                  ->whereNull('deleted_at');  // Only non-deleted orders
         })->get();
 
-        // Get retention customers (who have completed orders but no active orders)
-        $retentionCustomers = Customer::whereExists(function($q) {
-            // Has orders in history OR has paid orders
-            $q->select('customer_id')
-                ->from('order_histories')
-                ->whereColumn('customers.id', 'order_histories.customer_id')
-                ->orWhereExists(function($sq) {
-                    $sq->select('customer_id')
-                        ->from('orders')
-                        ->whereColumn('customers.id', 'orders.customer_id')
-                        ->where('status', '=', 'paid');
-                });
-        })->whereNotExists(function($q) {
-            // Exclude customers with active orders
-            $q->select('customer_id')
-                ->from('orders')
-                ->whereColumn('customers.id', 'orders.customer_id')
-                ->whereNull('deleted_at')
-                ->where('status', '!=', 'paid');
-        })->get();
+        // Get customers without any orders or with only unpaid orders
+        $newCustomers = Customer::whereDoesntHave('orders', function($query) {
+            $query->whereNotNull('paid_at');
+        })->whereNull('deleted_at')->get(); // Ensure deleted customers are excluded
 
         return view('orders', compact('title', 'orders', 'newCustomers', 'retentionCustomers'));
     }
@@ -189,10 +166,20 @@ class OrdersController extends Controller
 
     public function view($token)
     {
-        $title = "Order Details";
         $order = Orders::where('access_token', $token)
-            ->where('link_status', 'active')
-            ->firstOrFail();
+                       ->whereNull('deleted_at')
+                       ->first();
+
+        if (!$order) {
+            abort(404, 'Order not found');
+        }
+
+        // Only check expiry for paid orders
+        if ($order->paid_at && $order->isLinkExpired()) {
+            abort(404, 'Order link has expired');
+        }
+
+        $title = "Order Details";
 
         // If order is paid, show thank you page
         if ($order->status === 'paid') {
@@ -205,25 +192,21 @@ class OrdersController extends Controller
     public function updateStatus(Request $request, $order)
     {
         try {
-            $order = DB::table('orders')->where('id', $order)->first();
+            $order = Orders::find($order);
             if (!$order) {
                 return response()->json(['error' => 'Order not found'], 404);
             }
 
-            // Start transaction
             DB::transaction(function() use ($request, $order) {
                 $currentUser = auth()->user()->username;
                 
-                // Update order status and processor
-                DB::table('orders')
-                    ->where('id', $order->id)
-                    ->update([
-                        'status' => $request->status,
-                        'processed_by' => $currentUser,
-                        'paid_at' => $request->status === 'paid' ? now() : null
-                    ]);
+                $order->update([
+                    'status' => $request->status,
+                    'processed_by' => $currentUser,
+                    'paid_at' => $request->status === 'paid' ? now() : null,
+                    'is_ready_to_collect' => $request->status === 'to_collect' ? true : false
+                ]);
                 
-                // If status is paid, create history record
                 if ($request->status === 'paid') {
                     DB::table('order_histories')->insert([
                         'customer_id' => $order->customer_id,

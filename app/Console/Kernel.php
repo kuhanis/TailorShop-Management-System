@@ -24,7 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Run cleanup every minute to ensure timely removal
+        $schedule->call('App\Http\Controllers\RetentionController@cleanupExpiredData')
+                ->everyMinute()
+                ->withoutOverlapping();
     }
 
     /**

@@ -50,6 +50,9 @@
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <h4 class="card-title mb-0">Link Management</h4>
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#retention-settings">
+                            <i class="la la-cog"></i> Retention Settings
+                        </button>
                     </div>
                 </div>
                 <div class="card-content collapse show">
@@ -75,12 +78,8 @@
                                         <tr>
                                             <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
                                             <td class="text-center">
-                                                <span class="badge badge-{{ $order->isLinkExpired() ? 'danger' : 'success' }}">
-                                                    @if($order->isLinkExpired())
-                                                        Expired
-                                                    @else
-                                                        Active ({{ $order->getDaysUntilExpiry() }} days left)
-                                                    @endif
+                                                <span class="badge badge-success">
+                                                    Active {{ $order->getDaysUntilExpiry() }}
                                                 </span>
                                             </td>
                                             <td class="text-center">
@@ -107,6 +106,46 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade" id="retention-settings" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Data Retention Settings</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form id="retention-settings-form">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Retention Period</label>
+                        <input type="number" class="form-control" name="retention_period" 
+                               value="{{ config('retention.period', 400) }}" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time Unit</label>
+                        <select class="form-control" name="retention_unit">
+                            <option value="minutes" {{ config('retention.unit') == 'minutes' ? 'selected' : '' }}>Minutes</option>
+                            <option value="hours" {{ config('retention.unit') == 'hours' ? 'selected' : '' }}>Hours</option>
+                            <option value="days" {{ config('retention.unit') == 'days' ? 'selected' : '' }}>Days</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="la la-info-circle"></i>
+                        After this period, customer data and measurements will be automatically deleted. 
+                        Order history will be preserved.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('page-js')
@@ -130,6 +169,35 @@ $(document).ready(function() {
         }).catch(function(err) {
             toastr.error('Failed to copy link');
         });
+    });
+});
+
+$('#retention-settings-form').on('submit', function(e) {
+    e.preventDefault();
+    
+    $.ajax({
+        url: '{{ route("retention.update") }}',
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: $(this).serialize(),
+        success: function(response) {
+            toastr.success('Retention settings updated successfully');
+            $('#retention-settings').modal('hide');
+            window.location.reload();
+        },
+        error: function(xhr) {
+            console.error('Error:', xhr);
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                Object.keys(errors).forEach(function(key) {
+                    toastr.error(errors[key][0]);
+                });
+            } else {
+                toastr.error('An error occurred while saving settings');
+            }
+        }
     });
 });
 </script>
