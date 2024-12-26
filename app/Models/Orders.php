@@ -102,4 +102,34 @@ class Orders extends Model
 
         return '<span class="badge badge-success">Active (' . $diff . ' ' . $unit . ' left)</span>';
     }
+
+    public function getSecondsUntilExpiry()
+    {
+        // Check if the order is paid
+        if (!$this->paid_at) {
+            return 0; // If not paid, return 0 seconds
+        }
+
+        $period = config('retention.period', 400);
+        $unit = config('retention.unit', 'days');
+        
+        $expiryDate = Carbon::parse($this->paid_at);
+        
+        switch($unit) {
+            case 'minutes':
+                $expiryDate->addMinutes($period);
+                break;
+            case 'hours':
+                $expiryDate->addHours($period);
+                break;
+            case 'days':
+                $expiryDate->addDays($period);
+                break;
+        }
+
+        // Calculate the difference in seconds
+        $secondsLeft = Carbon::now()->diffInSeconds($expiryDate);
+
+        return max(0, $secondsLeft); // Ensure it doesn't return negative values
+    }
 }

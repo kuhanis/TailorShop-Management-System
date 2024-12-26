@@ -81,7 +81,15 @@
                                                 @if($order->link_status === 'revoked')
                                                     <span class="badge badge-danger">Inactive</span>
                                                 @else
-                                                    {!! $order->getDaysUntilExpiry() !!}
+                                                    @php
+                                                        $daysUntilExpiry = $order->getDaysUntilExpiry();
+                                                        $secondsLeft = $order->getSecondsUntilExpiry();
+                                                    @endphp
+                                                    @if ($secondsLeft < 60)
+                                                        <span class="badge badge-success">Active ({{ $secondsLeft }} seconds left)</span>
+                                                    @else
+                                                        <span class="badge badge-success">Active ({{ $daysUntilExpiry }})</span>
+                                                    @endif
                                                 @endif
                                             </td>
                                             <td class="text-center">
