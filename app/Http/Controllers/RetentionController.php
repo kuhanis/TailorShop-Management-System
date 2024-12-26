@@ -7,6 +7,9 @@ use App\Models\Orders;
 use App\Models\BodyMeasurement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RetentionController extends Controller
 {
@@ -18,6 +21,8 @@ class RetentionController extends Controller
         ]);
 
         try {
+            DB::beginTransaction();
+            
             // Update .env file
             $this->updateEnvFile([
                 'RETENTION_PERIOD' => $request->retention_period,
@@ -25,12 +30,14 @@ class RetentionController extends Controller
             ]);
 
             // Clear config cache to reflect changes
-            \Artisan::call('config:clear');
-            \Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
             
+            DB::commit();
             return response()->json(['message' => 'Retention settings updated successfully']);
         } catch (\Exception $e) {
-            \Log::error('Error updating retention settings: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Error updating retention settings: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to update settings'], 500);
         }
     }
@@ -54,36 +61,48 @@ class RetentionController extends Controller
                 break;
         }
 
-        // Get expired orders based on paid_at timestamp
-        $expiredOrders = Orders::whereNotNull('paid_at')
+        // Get expired orders
+        $expiredOrders = Orders::with('customer')
+                              ->whereNotNull('paid_at')
                               ->where('paid_at', '<=', $expiryDate)
+                              ->where('link_status', '!=', 'revoked')  // Only process non-revoked links
                               ->get();
 
         foreach($expiredOrders as $order) {
             try {
-                \DB::beginTransaction();
-                
-                // First revoke the link
+                DB::beginTransaction();
+
+                // First update the order status
                 $order->update([
                     'access_token' => null,
                     'link_status' => 'revoked'
                 ]);
 
-                // Delete customer measurements
-                BodyMeasurement::where('customer_id', $order->customer_id)->delete();
-                
-                // Delete customer (basic info)
-                Customer::where('id', $order->customer_id)->delete();
-                
-                // Delete the order itself
-                $order->delete();
+                // Use the same deletion logic as the delete button
+                try {
+                    DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // Temporarily disable foreign key checks
+                    
+                    // Delete from body_measurements first
+                    BodyMeasurement::where('customer_id', $order->customer_id)->delete();
+                    
+                    // Then delete from customers
+                    Customer::where('id', $order->customer_id)->delete();
+                    
+                    DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // Re-enable foreign key checks
+                } catch (\Exception $e) {
+                    Log::error('Error during customer deletion: ' . $e->getMessage());
+                    throw $e;
+                }
 
-                \DB::commit();
+                DB::commit();
+                Log::info('Successfully processed order #' . $order->id);
             } catch (\Exception $e) {
-                \DB::rollBack();
-                \Log::error('Error in cleanup: ' . $e->getMessage());
+                DB::rollBack();
+                Log::error('Error in cleanup for order #' . $order->id . ': ' . $e->getMessage());
             }
         }
+
+        return response()->json(['message' => 'Cleanup completed']);
     }
 
     private function updateEnvFile($data)
@@ -112,6 +131,59 @@ class RetentionController extends Controller
 
         if (file_put_contents($envFile, $envContents) === false) {
             throw new \Exception('Could not write to .env file');
+        }
+    }
+
+    public function deleteCustomer(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'customer_id' => 'required|exists:customers,id'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Get the order
+            $order = Orders::findOrFail($request->order_id);
+
+            // Update order status
+            $order->update([
+                'access_token' => null,
+                'link_status' => 'revoked'
+            ]);
+
+            // First delete from body_measurements due to foreign key constraint
+            try {
+                DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // Temporarily disable foreign key checks
+                
+                // Delete from body_measurements first
+                BodyMeasurement::where('customer_id', $request->customer_id)->delete();
+                
+                // Then delete from customers
+                Customer::where('id', $request->customer_id)->delete();
+                
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // Re-enable foreign key checks
+            } catch (\Exception $e) {
+                Log::error('Error during customer deletion: ' . $e->getMessage());
+                throw $e;
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Customer data deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting customer data: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete customer data'
+            ], 500);
         }
     }
 } 

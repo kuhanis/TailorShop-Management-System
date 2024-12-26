@@ -64,12 +64,14 @@ class Orders extends Model
 
     public function getDaysUntilExpiry()
     {
-        if (!$this->paid_at) {
-            return "(not paid)";  // Show different message for unpaid orders
+        // Check if link is already revoked
+        if ($this->link_status === 'revoked' || !$this->access_token) {
+            return '<span class="badge badge-danger">Inactive</span>';
         }
-
-        if (!$this->access_token) {
-            return "(revoked)";  // Show if link has been revoked
+        
+        // If not paid yet
+        if (!$this->paid_at) {
+            return '<span class="badge badge-warning">Pending Payment</span>';
         }
 
         $period = config('retention.period', 400);
@@ -80,16 +82,24 @@ class Orders extends Model
         switch($unit) {
             case 'minutes':
                 $expiryDate->addMinutes($period);
-                $diff = max(0, Carbon::now()->diffInMinutes($expiryDate, false));
-                return "($diff minutes left)";
+                $diff = Carbon::now()->diffInMinutes($expiryDate, false);
+                break;
             case 'hours':
                 $expiryDate->addHours($period);
-                $diff = max(0, Carbon::now()->diffInHours($expiryDate, false));
-                return "($diff hours left)";
+                $diff = Carbon::now()->diffInHours($expiryDate, false);
+                break;
             case 'days':
                 $expiryDate->addDays($period);
-                $diff = max(0, Carbon::now()->diffInDays($expiryDate, false));
-                return "($diff days left)";
+                $diff = Carbon::now()->diffInDays($expiryDate, false);
+                break;
+            default:
+                return '<span class="badge badge-danger">Invalid Unit</span>';
         }
+
+        if ($diff <= 0) {
+            return '<span class="badge badge-danger">Expired</span>';
+        }
+
+        return '<span class="badge badge-success">Active (' . $diff . ' ' . $unit . ' left)</span>';
     }
 }

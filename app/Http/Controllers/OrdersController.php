@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Orders;
 use App\Models\Customer;
+use Illuminate\Support\Str;
 use App\Models\OrderHistory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
+use App\Models\BodyMeasurement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -166,27 +167,85 @@ class OrdersController extends Controller
 
     public function view($token)
     {
-        $order = Orders::where('access_token', $token)
-                       ->whereNull('deleted_at')
-                       ->first();
+        try {
+            $order = Orders::where('access_token', $token)
+                          ->whereNull('deleted_at')
+                          ->first();
 
-        if (!$order) {
-            abort(404, 'Order not found');
+            if (!$order) {
+                // Try to find order with this token to get customer ID
+                $order = Orders::where('access_token', $token)
+                              ->withTrashed()
+                              ->first();
+                
+                if ($order) {
+                    try {
+                        DB::beginTransaction();
+                        
+                        // Disable foreign key checks
+                        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+                        
+                        // Delete measurements
+                        BodyMeasurement::where('customer_id', $order->customer_id)->delete();
+                        
+                        // Delete customer
+                        Customer::where('id', $order->customer_id)->delete();
+                        
+                        // Re-enable foreign key checks
+                        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+                        
+                        DB::commit();
+                        
+                        Log::info('Customer data deleted after invalid link access. Order ID: ' . $order->id);
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        Log::error('Error deleting customer data on invalid link: ' . $e->getMessage());
+                    }
+                }
+                
+                abort(404, 'Order not found');
+            }
+
+            // Only check expiry for paid orders
+            if ($order->paid_at && $order->isLinkExpired()) {
+                try {
+                    DB::beginTransaction();
+                    
+                    // Disable foreign key checks
+                    DB::statement('SET FOREIGN_KEY_CHECKS=0');
+                    
+                    // Delete measurements
+                    BodyMeasurement::where('customer_id', $order->customer_id)->delete();
+                    
+                    // Delete customer
+                    Customer::where('id', $order->customer_id)->delete();
+                    
+                    // Re-enable foreign key checks
+                    DB::statement('SET FOREIGN_KEY_CHECKS=1');
+                    
+                    DB::commit();
+                    
+                    Log::info('Customer data deleted after expired link access. Order ID: ' . $order->id);
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    Log::error('Error deleting customer data on expired link: ' . $e->getMessage());
+                }
+                
+                abort(404, 'Order link has expired');
+            }
+
+            $title = "Order Details";
+
+            // If order is paid, show thank you page
+            if ($order->status === 'paid') {
+                return view('orders.thank-you', compact('order', 'title'));
+            }
+
+            return view('public.order-details', compact('order', 'title'));
+        } catch (\Exception $e) {
+            Log::error('Error in order view: ' . $e->getMessage());
+            abort(404);
         }
-
-        // Only check expiry for paid orders
-        if ($order->paid_at && $order->isLinkExpired()) {
-            abort(404, 'Order link has expired');
-        }
-
-        $title = "Order Details";
-
-        // If order is paid, show thank you page
-        if ($order->status === 'paid') {
-            return view('orders.thank-you', compact('order', 'title'));
-        }
-
-        return view('public.order-details', compact('order', 'title'));
     }
 
     public function updateStatus(Request $request, $order)

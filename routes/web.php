@@ -190,5 +190,9 @@ Route::delete('/staff/destroy', [StaffController::class, 'destroy'])->name('staf
 Route::post('/retention/settings', [RetentionController::class, 'updateRetentionSettings'])->name('retention.update');
 Route::get('/retention/cleanup', [RetentionController::class, 'cleanupExpiredData'])->name('retention.cleanup');
 
+Route::post('/retention/delete-customer', [RetentionController::class, 'deleteCustomer'])
+    ->name('retention.delete-customer')
+    ->middleware('auth');
+
 
 
