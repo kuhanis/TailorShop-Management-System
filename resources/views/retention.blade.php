@@ -96,13 +96,6 @@
                                                                 data-link="{{ $order->order_link }}">
                                                             <i class="la la-copy"></i> Copy
                                                         </button>
-                                                        @if($order->getDaysUntilExpiry() === '<span class="badge badge-danger">Expired</span>')
-                                                            <button class="btn btn-sm btn-danger delete-customer"
-                                                                    data-order-id="{{ $order->id }}"
-                                                                    data-customer-id="{{ $order->customer_id }}">
-                                                                <i class="la la-trash"></i> Delete
-                                                            </button>
-                                                        @endif
                                                     @else
                                                         <span class="text-muted">Link Revoked</span>
                                                     @endif
