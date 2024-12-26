@@ -15,7 +15,6 @@ Enter your new password
 <form class="form-horizontal" method="POST" action="{{ route('password.update') }}">
     @csrf
     <input type="hidden" name="token" value="{{ $token }}">
-    <input type="hidden" name="email" value="{{ $email }}">
 
     <fieldset class="form-group position-relative has-icon-left">
         <input type="password" class="form-control @error('password') is-invalid @enderror" 
@@ -43,4 +42,11 @@ Enter your new password
         <i class="ft-unlock"></i> Reset Password
     </button>
 </form>
+
+@if (session('status'))
+    <div class="alert alert-success mt-3">
+        Your password has been reset successfully! 
+        <a href="{{ route('login') }}" class="alert-link">Back to Login</a>
+    </div>
+@endif
 @endsection 

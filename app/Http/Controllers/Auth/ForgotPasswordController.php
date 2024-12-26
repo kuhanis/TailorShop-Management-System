@@ -99,13 +99,11 @@ class ForgotPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|max:200|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
         ]);
 
         $tokenData = DB::table('password_resets')
             ->where('token', $request->token)
-            ->where('email', $request->email)
             ->first();
 
         if (!$tokenData) {
@@ -113,7 +111,7 @@ class ForgotPasswordController extends Controller
         }
 
         $user = DB::table('users')
-            ->where('email', $request->email)
+            ->where('email', $tokenData->email)
             ->first();
 
         if (!$user) {
@@ -121,14 +119,14 @@ class ForgotPasswordController extends Controller
         }
 
         DB::table('users')
-            ->where('email', $request->email)
+            ->where('email', $tokenData->email)
             ->update(['password' => bcrypt($request->password)]);
 
         DB::table('password_resets')
-            ->where('email', $request->email)
+            ->where('email', $tokenData->email)
             ->delete();
 
-        return redirect()->route('login')
-            ->with('status', 'Your password has been reset successfully!');
+        // Set a session status message
+        return redirect()->route('login')->with('status', 'Your password has been reset successfully!');
     }
 } 
