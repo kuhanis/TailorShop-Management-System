@@ -31,6 +31,16 @@ class OrdersController extends Controller
             $query->whereNotNull('paid_at');
         })->whereNull('deleted_at')->get(); // Ensure deleted customers are excluded
 
+        // Exclude customers who already have orders from the new customers list
+        $newCustomers = $newCustomers->reject(function($customer) use ($orders) {
+            return $orders->contains('customer_id', $customer->id);
+        });
+
+        // Exclude customers who already have orders from the retention customers list
+        $retentionCustomers = $retentionCustomers->reject(function($customer) use ($orders) {
+            return $orders->contains('customer_id', $customer->id);
+        });
+
         return view('orders', compact('title', 'orders', 'newCustomers', 'retentionCustomers'));
     }
 

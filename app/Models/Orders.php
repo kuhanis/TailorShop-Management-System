@@ -100,7 +100,12 @@ class Orders extends Model
             return '<span class="badge badge-danger">Expired</span>';
         }
 
-        return '<span class="badge badge-success">Active (' . $diff . ' ' . $unit . ' left)</span>';
+        // Adjust the return statement to show the correct time left
+        if ($unit === 'minutes') {
+            return '<span class="badge badge-success">Active (' . $diff . ' minutes left)</span>';
+        } else {
+            return '<span class="badge badge-success">Active (' . $diff . ' ' . $unit . ' left)</span>';
+        }
     }
 
     public function getSecondsUntilExpiry()
