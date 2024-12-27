@@ -268,24 +268,34 @@ class OrdersController extends Controller
 
             DB::transaction(function() use ($request, $order) {
                 $currentUser = auth()->user()->username;
-                
+
+                // Update order status
                 $order->update([
                     'status' => $request->status,
                     'processed_by' => $currentUser,
                     'paid_at' => $request->status === 'paid' ? now() : null,
                     'is_ready_to_collect' => $request->status === 'to_collect' ? true : false
                 ]);
-                
+
                 if ($request->status === 'paid') {
-                    DB::table('order_histories')->insert([
-                        'customer_id' => $order->customer_id,
-                        'description' => $order->description,
-                        'received_on' => $order->received_on,
-                        'amount_charged' => $order->amount_charged,
-                        'processed_by' => $currentUser,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
+                    // Check if the order history already exists
+                    $existingOrderHistory = OrderHistory::where('description', $order->description)
+                        ->where('received_on', $order->received_on) // Ensure this field is correct
+                        ->where('amount_charged', $order->amount_charged) // Ensure this field is correct
+                        ->first();
+
+                    if (!$existingOrderHistory) {
+                        // Create a new order history entry
+                        OrderHistory::create([
+                            'customer_id' => $order->customer_id,
+                            'description' => $order->description,
+                            'received_on' => $order->received_on,
+                            'amount_charged' => $order->amount_charged,
+                            'processed_by' => $currentUser,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
                 }
             });
 
@@ -340,5 +350,30 @@ class OrdersController extends Controller
             ->orderBy('received_on', 'desc')
             ->get();
         return view('order_history', compact('title', 'orders'));
+    }
+
+    public function markAsPaid($orderId)
+    {
+        // ... existing code ...
+
+        // Check if the order history already exists
+        $existingOrderHistory = OrderHistory::where('description', $order->description)
+            ->where('date_ordered', $order->date_ordered)
+            ->where('amount', $order->amount)
+            ->first();
+
+        if (!$existingOrderHistory) {
+            // Create a new order history entry
+            OrderHistory::create([
+                'customer_name' => $order->customer_name, // Ensure customer name is stored
+                'description' => $order->description,
+                'date_ordered' => $order->date_ordered,
+                'amount' => $order->amount,
+                'status' => 'Paid',
+                'processed_by' => auth()->user()->name,
+            ]);
+        }
+
+        // ... existing code ...
     }
 }
