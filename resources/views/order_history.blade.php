@@ -79,7 +79,7 @@
                                     @foreach ($orders as $index => $order)
                                         <tr>
                                             <td>{{$index + 1}}</td>
-                                            <td>{{$order->customer ? $order->customer->fullname : '-'}}</td>
+                                            <td>{{$order->customer_name ?? ($order->customer ? $order->customer->fullname : '-')}}</td>
                                             <td>{{$order->description}}</td>
                                             <td>{{$order->received_on}}</td>
                                             <td>RM {{number_format($order->amount_charged, 2)}}</td>
