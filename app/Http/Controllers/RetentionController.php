@@ -72,6 +72,15 @@ class RetentionController extends Controller
             try {
                 DB::beginTransaction();
 
+                // Store customer name in order_histories before deletion
+                if ($order->customer) {
+                    // Get all order histories for this customer and update them
+                    DB::table('order_histories')
+                        ->where('customer_id', $order->customer_id)
+                        ->whereNull('customer_name')  // Only update if customer_name is not set
+                        ->update(['customer_name' => $order->customer->fullname]);
+                }
+
                 // First update the order status
                 $order->update([
                     'access_token' => null,
@@ -144,8 +153,17 @@ class RetentionController extends Controller
         try {
             DB::beginTransaction();
 
-            // Get the order
+            // Get the order and customer
             $order = Orders::findOrFail($request->order_id);
+            $customer = Customer::find($request->customer_id);
+
+            // Store customer name in order_histories before deletion
+            if ($customer) {
+                DB::table('order_histories')
+                    ->where('customer_id', $customer->id)
+                    ->whereNull('customer_name')  // Only update if customer_name is not set
+                    ->update(['customer_name' => $customer->fullname]);
+            }
 
             // Update order status
             $order->update([
