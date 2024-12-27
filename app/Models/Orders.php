@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
+use App\Models\OrderHistory;
+use Illuminate\Support\Facades\Log;
 
 class Orders extends Model
 {
@@ -136,5 +138,48 @@ class Orders extends Model
         $secondsLeft = Carbon::now()->diffInSeconds($expiryDate);
 
         return max(0, $secondsLeft); // Ensure it doesn't return negative values
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($order) {
+            // Only create OrderHistory when paid_at changes from null to a value
+            if ($order->isDirty('paid_at') && 
+                $order->paid_at !== null && 
+                $order->getOriginal('paid_at') === null) {  // Check if it was previously unpaid
+                
+                Log::info('Creating OrderHistory for paid Order', [
+                    'order_id' => $order->id,
+                    'customer_id' => $order->customer_id,
+                    'paid_at' => $order->paid_at,
+                    'original_paid_at' => $order->getOriginal('paid_at')
+                ]);
+
+                // Check if OrderHistory already exists for this order
+                $existingHistory = OrderHistory::where([
+                    'customer_id' => $order->customer_id,
+                    'description' => $order->description,
+                    'received_on' => $order->created_at->toDateString(),
+                    'amount_charged' => $order->amount_charged,
+                ])->exists();  // Using exists() instead of first() for efficiency
+
+                if (!$existingHistory) {
+                    // Get customer name before creating history
+                    $customer = Customer::find($order->customer_id);
+                    
+                    OrderHistory::create([
+                        'customer_id' => $order->customer_id,
+                        'customer_name' => $customer ? $customer->fullname : null,
+                        'description' => $order->description,
+                        'received_on' => $order->created_at->toDateString(),
+                        'amount_charged' => $order->amount_charged,
+                        'processed_by' => auth()->user()->name ?? 'System',
+                        'staff_id' => auth()->id()
+                    ]);
+                }
+            }
+        });
     }
 }
