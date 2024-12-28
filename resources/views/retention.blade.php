@@ -86,14 +86,20 @@
                                                     @php
                                                         $daysUntilExpiry = $order->getDaysUntilExpiry();
                                                         $secondsLeft = $order->getSecondsUntilExpiry();
+                                                        $minutesLeft = floor($secondsLeft / 60);
+                                                        $hoursLeft = floor($minutesLeft / 60);
                                                     @endphp
-                                                    @if ($secondsLeft < 60)
                                                     <span class="badge badge-success countdown-timer" data-seconds="{{ $secondsLeft }}">
-                                                        Active ({{ $secondsLeft }} seconds left)
+                                                        @if ($secondsLeft < 60)
+                                                            Active ({{ $secondsLeft }} seconds left)
+                                                        @elseif ($minutesLeft < 60)
+                                                            Active ({{ $minutesLeft }} minutes left)
+                                                        @elseif ($hoursLeft < 24)
+                                                            Active ({{ $hoursLeft }} hours left)
+                                                        @else
+                                                            Active ({{ $daysUntilExpiry }} days left)
+                                                        @endif
                                                     </span>
-                                                    @else
-                                                        <span class="badge badge-success">Active ({{ $daysUntilExpiry }})</span>
-                                                    @endif
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -230,35 +236,44 @@ $(document).ready(function() {
         });
     });
 
-    // Check for inactive links on page load
-    $('.countdown-timer').each(function() {
-        const timerElement = $(this);
-        let seconds = parseInt(timerElement.data('seconds'));
-        
-        // If the timer has expired, remove the row
-        if (seconds <= 0) {
-            timerElement.removeClass('badge-success').addClass('badge-danger');
-            timerElement.text('Inactive');
-            timerElement.closest('tr').fadeOut(400, function() {
-                $(this).remove();
-            });
-        } else {
-            const timer = setInterval(() => {
+    function updateCountdown() {
+        $('.countdown-timer').each(function() {
+            let timerElement = $(this);
+            let seconds = parseInt(timerElement.data('seconds'));
+
+            if (seconds > 0) {
                 seconds--;
-                
-                if (seconds <= 0) {
-                    clearInterval(timer);
-                    timerElement.removeClass('badge-success').addClass('badge-danger');
-                    timerElement.text('Inactive');
-                    timerElement.closest('tr').fadeOut(400, function() {
-                        $(this).remove();
-                    });
-                } else {
+                timerElement.data('seconds', seconds); // Update the data attribute
+
+                // Update the display based on the remaining time
+                if (seconds < 60) {
                     timerElement.text(`Active (${seconds} seconds left)`);
+                } else {
+                    let minutesLeft = Math.floor(seconds / 60);
+                    if (minutesLeft < 60) {
+                        timerElement.text(`Active (${minutesLeft} minutes left)`);
+                    } else {
+                        let hoursLeft = Math.floor(minutesLeft / 60);
+                        if (hoursLeft < 24) {
+                            timerElement.text(`Active (${hoursLeft} hours left)`);
+                        } else {
+                            let daysLeft = Math.floor(hoursLeft / 24);
+                            timerElement.text(`Active (${daysLeft} days left)`);
+                        }
+                    }
                 }
-            }, 1000);
-        }
-    });
+            } else {
+                timerElement.removeClass('badge-success').addClass('badge-danger');
+                timerElement.text('Inactive');
+                timerElement.closest('tr').fadeOut(400, function() {
+                    $(this).remove();
+                });
+            }
+        });
+    }
+
+    // Call this function every second
+    setInterval(updateCountdown, 1000);
 });
 
 $('#retention-settings-form').on('submit', function(e) {
