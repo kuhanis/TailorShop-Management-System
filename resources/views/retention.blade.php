@@ -229,22 +229,35 @@ $(document).ready(function() {
             }
         });
     });
-    // Update countdown timers
+
+    // Check for inactive links on page load
     $('.countdown-timer').each(function() {
         const timerElement = $(this);
         let seconds = parseInt(timerElement.data('seconds'));
         
-        const timer = setInterval(() => {
-            seconds--;
-            
-            if (seconds <= 0) {
-                clearInterval(timer);
-                timerElement.removeClass('badge-success').addClass('badge-danger');
-                timerElement.text('Inactive');
-            } else {
-                timerElement.text(`Active (${seconds} seconds left)`);
-            }
-        }, 1000);
+        // If the timer has expired, remove the row
+        if (seconds <= 0) {
+            timerElement.removeClass('badge-success').addClass('badge-danger');
+            timerElement.text('Inactive');
+            timerElement.closest('tr').fadeOut(400, function() {
+                $(this).remove();
+            });
+        } else {
+            const timer = setInterval(() => {
+                seconds--;
+                
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    timerElement.removeClass('badge-success').addClass('badge-danger');
+                    timerElement.text('Inactive');
+                    timerElement.closest('tr').fadeOut(400, function() {
+                        $(this).remove();
+                    });
+                } else {
+                    timerElement.text(`Active (${seconds} seconds left)`);
+                }
+            }, 1000);
+        }
     });
 });
 
