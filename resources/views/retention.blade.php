@@ -50,9 +50,11 @@
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <h4 class="card-title mb-0">Link Management</h4>
-                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#retention-settings">
-                            <i class="la la-cog"></i> Retention Settings
-                        </button>
+                        @if(auth()->user()->staff->role === 'admin')
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#retention-settings">
+                                <i class="la la-cog"></i> Retention Settings
+                            </button>
+                        @endif
                     </div>
                 </div>
                 <div class="card-content collapse show">
