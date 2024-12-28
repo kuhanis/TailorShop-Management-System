@@ -88,7 +88,9 @@
                                                         $secondsLeft = $order->getSecondsUntilExpiry();
                                                     @endphp
                                                     @if ($secondsLeft < 60)
-                                                        <span class="badge badge-success">Active ({{ $secondsLeft }} seconds left)</span>
+                                                    <span class="badge badge-success countdown-timer" data-seconds="{{ $secondsLeft }}">
+                                                        Active ({{ $secondsLeft }} seconds left)
+                                                    </span>
                                                     @else
                                                         <span class="badge badge-success">Active ({{ $daysUntilExpiry }})</span>
                                                     @endif
@@ -226,6 +228,23 @@ $(document).ready(function() {
                 });
             }
         });
+    });
+    // Update countdown timers
+    $('.countdown-timer').each(function() {
+        const timerElement = $(this);
+        let seconds = parseInt(timerElement.data('seconds'));
+        
+        const timer = setInterval(() => {
+            seconds--;
+            
+            if (seconds <= 0) {
+                clearInterval(timer);
+                timerElement.removeClass('badge-success').addClass('badge-danger');
+                timerElement.text('Inactive');
+            } else {
+                timerElement.text(`Active (${seconds} seconds left)`);
+            }
+        }, 1000);
     });
 });
 
