@@ -50,9 +50,11 @@
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <h4 class="card-title mb-0">Link Management</h4>
-                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#retention-settings">
-                            <i class="la la-cog"></i> Retention Settings
-                        </button>
+                        @if(auth()->user()->staff->role === 'admin')
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#retention-settings">
+                                <i class="la la-cog"></i> Retention Settings
+                            </button>
+                        @endif
                     </div>
                 </div>
                 <div class="card-content collapse show">
@@ -86,7 +88,9 @@
                                                         $secondsLeft = $order->getSecondsUntilExpiry();
                                                     @endphp
                                                     @if ($secondsLeft < 60)
-                                                        <span class="badge badge-success">Active ({{ $secondsLeft }} seconds left)</span>
+                                                    <span class="badge badge-success countdown-timer" data-seconds="{{ $secondsLeft }}">
+                                                        Active ({{ $secondsLeft }} seconds left)
+                                                    </span>
                                                     @else
                                                         <span class="badge badge-success">Active ({{ $daysUntilExpiry }})</span>
                                                     @endif
@@ -224,6 +228,23 @@ $(document).ready(function() {
                 });
             }
         });
+    });
+    // Update countdown timers
+    $('.countdown-timer').each(function() {
+        const timerElement = $(this);
+        let seconds = parseInt(timerElement.data('seconds'));
+        
+        const timer = setInterval(() => {
+            seconds--;
+            
+            if (seconds <= 0) {
+                clearInterval(timer);
+                timerElement.removeClass('badge-success').addClass('badge-danger');
+                timerElement.text('Inactive');
+            } else {
+                timerElement.text(`Active (${seconds} seconds left)`);
+            }
+        }, 1000);
     });
 });
 
