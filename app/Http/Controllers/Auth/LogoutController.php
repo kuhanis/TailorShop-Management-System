@@ -22,6 +22,6 @@ class LogoutController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->view('auth.logout-redirect');
+        return response()->view('auth.login');
     }
 }
