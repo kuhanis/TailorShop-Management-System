@@ -346,8 +346,10 @@ class OrdersController extends Controller
     public function history()
     {
         $title = "Order History";
+        // Fetch orders sorted by received_on in descending order, then by ID in descending order
         $orders = OrderHistory::with('customer')
-            ->orderBy('received_on', 'desc')
+            ->orderBy('received_on', 'desc') // Primary sort by received_on
+            ->orderBy('id', 'desc') // Secondary sort by ID
             ->get();
         return view('order_history', compact('title', 'orders'));
     }
