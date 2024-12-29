@@ -26,8 +26,15 @@ class Kernel extends ConsoleKernel
     {
         // Run cleanup every minute to ensure timely removal
         $schedule->call('App\Http\Controllers\RetentionController@cleanupExpiredData')
-                ->everyMinute()
-                ->withoutOverlapping();
+            ->name('cleanup-expired-data')
+            ->everyMinute()
+            ->withoutOverlapping();
+
+        $schedule->command('links:revoke-expired')
+            ->name('revoke-expired-links')
+            ->everyMinute()
+            ->withoutOverlapping();
+            
     }
 
     /**
