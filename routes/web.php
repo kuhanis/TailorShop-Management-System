@@ -187,6 +187,7 @@ Route::post('/customer/body-measurement', [CustomerController::class, 'addBodyMe
 
 Route::delete('/staff/destroy', [StaffController::class, 'destroy'])->name('staff.destroy');
 
+Route::post('/retention/update-status', [RetentionController::class, 'updateStatus'])->name('retention.update-status');
 Route::post('/retention/settings', [RetentionController::class, 'updateRetentionSettings'])->name('retention.update');
 Route::get('/retention/cleanup', [RetentionController::class, 'cleanupExpiredData'])->name('retention.cleanup');
 

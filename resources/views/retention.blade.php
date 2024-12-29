@@ -89,7 +89,7 @@
                                                         $minutesLeft = floor($secondsLeft / 60);
                                                         $hoursLeft = floor($minutesLeft / 60);
                                                     @endphp
-                                                    <span class="badge badge-success countdown-timer" data-seconds="{{ $secondsLeft }}">
+                                                    <span class="badge badge-success countdown-timer" data-seconds="{{ $secondsLeft }}" data-order-id="{{ $order->id }}">
                                                         @if ($secondsLeft < 60)
                                                             Active ({{ $secondsLeft }} seconds left)
                                                         @elseif ($minutesLeft < 60)
@@ -263,10 +263,31 @@ $(document).ready(function() {
                     }
                 }
             } else {
-                timerElement.removeClass('badge-success').addClass('badge-danger');
-                timerElement.text('Inactive');
-                timerElement.closest('tr').fadeOut(400, function() {
-                    $(this).remove();
+                // Get the order ID from a data attribute we'll add to the timer element
+                let orderId = timerElement.data('order-id');
+                
+                // Make AJAX call to update status
+                $.ajax({
+                    url: '/retention/update-status',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        order_id: orderId,
+                        status: 'revoked'
+                    },
+                    success: function(response) {
+                        timerElement.removeClass('badge-success').addClass('badge-danger');
+                        timerElement.text('Inactive');
+                        timerElement.closest('tr').fadeOut(400, function() {
+                            $(this).remove();
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error('Error updating order status:', xhr);
+                        toastr.error('Failed to update order status');
+                    }
                 });
             }
         });

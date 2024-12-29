@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Orders;
-use App\Models\BodyMeasurement;
 use Carbon\Carbon;
+use App\Models\Order;
+use App\Models\Orders;
+use App\Models\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\BodyMeasurement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
 class RetentionController extends Controller
 {
@@ -203,5 +204,21 @@ class RetentionController extends Controller
                 'message' => 'Failed to delete customer data'
             ], 500);
         }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $order = Orders::findOrFail($request->order_id);
+        
+        // Update both link_status and status fields
+        $order->update([
+            'link_status' => 'revoked',
+            'status' => 'paid'  // Assuming we want to mark it as paid when link expires
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order status updated successfully'
+        ]);
     }
 } 
