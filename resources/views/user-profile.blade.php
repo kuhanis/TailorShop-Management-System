@@ -21,10 +21,8 @@
 @endpush
 
 @section('content')
-	<!-- account setting page start -->
 	<section id="page-account-settings">
 		<div class="row">
-			<!-- left menu section -->
 			<div class="col-md-3 mb-2 mb-md-0">
 				<ul class="nav nav-pills flex-column mt-md-0 mt-1">
 					<li class="nav-item">
@@ -41,10 +39,8 @@
 							Change Password
 						</a>
 					</li>
-					
 				</ul>
 			</div>
-			<!-- right content section -->
 			<div class="col-md-9">
 				<div class="card">
 					<div class="card-content">
@@ -55,22 +51,25 @@
 									
 									<div class="media">
 										<a href="javascript: void(0);">
-											<img src="@if(!empty(auth()->user()->avatar)){{asset('storage/avatars/'.auth()->user()->avatar)}}@else {{asset('app-assets/images/portrait/small/avatar-s-1.png')}} @endif" class="rounded mr-75" alt="profile image" height="64" width="64">
+											<img src="@if(!empty(auth()->user()->avatar)){{ asset('storage/' . auth()->user()->avatar) }}@else {{ asset('app-assets/images/portrait/small/avatar-s-1.png') }} @endif" class="rounded mr-75" alt="profile image" height="64" width="64">
 										</a>
 										<div class="media-body mt-75">
 											<div class="col-12 px-0 d-flex flex-sm-row flex-column justify-content-start">
-												<label class="btn btn-sm btn-primary ml-50 mb-50 mb-sm-0 cursor-pointer"
-													for="account-upload">Upload new photo</label>
-											
+												<form action="{{ route('user-profile.update') }}" method="POST" enctype="multipart/form-data">
+													@csrf
+													<input type="file" name="avatar" id="account-upload" hidden accept="image/*" onchange="this.form.submit()">
+													<button type="button" class="btn btn-primary" onclick="document.getElementById('account-upload').click();">
+														UPLOAD NEW PHOTO
+													</button>
+												</form>
 											</div>
 										</div>
 									</div>
 									<hr>
-									<form method="post" enctype="multipart/form-data" action="{{route('user-profile')}}">
+									<form method="post" action="{{route('user-profile')}}">
 										@method("PUT")
 										@csrf
 										<div class="row">
-											<input type="file" value="{{auth()->user()->avatar}}" name="avatar" id="account-upload" hidden>
 											<div class="col-12">
 												<div class="form-group">
 													<div class="controls">
@@ -89,7 +88,6 @@
 													</div>
 												</div>
 											</div>
-											
 											<div class="col-12">
 												<div class="form-group">
 													<div class="controls">
@@ -99,9 +97,6 @@
 													</div>
 												</div>
 											</div>
-											
-											
-											
 											<div class="col-12 d-flex flex-sm-row flex-column justify-content-end">
 												<button type="submit" name="update_info" class="btn btn-primary mr-sm-1 mb-1 mb-sm-0">Save
 													changes</button>
@@ -150,7 +145,6 @@
 										</div>
 									</form>
 								</div>
-								
 							</div>
 						</div>
 					</div>
@@ -158,9 +152,7 @@
 			</div>
 		</div>
 	</section>
-	<!-- account setting page end -->
 @endsection
-
 
 @push('page-js')
 	

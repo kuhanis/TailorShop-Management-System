@@ -195,5 +195,7 @@ Route::post('/retention/delete-customer', [RetentionController::class, 'deleteCu
     ->name('retention.delete-customer')
     ->middleware('auth');
 
+Route::post('user-profile', [UserController::class, 'updateProfile'])->name('user-profile.update');
+
 
 

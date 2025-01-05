@@ -4,9 +4,9 @@
     <div class="user-profile text-center">
         <img class="user-img img-fluid rounded-circle" 
              src="@if(!empty(auth()->user()->avatar))
-                    {{asset('storage/avatars/'.auth()->user()->avatar)}}
+                    {{ asset('storage/' . auth()->user()->avatar) }}
                  @else 
-                    {{asset('app-assets/images/portrait/small/avatar-s-1.png')}} 
+                    {{ asset('app-assets/images/portrait/small/avatar-s-1.png') }} 
                  @endif"
         />
         <div class="role-text">

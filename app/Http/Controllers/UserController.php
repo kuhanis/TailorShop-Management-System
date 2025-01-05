@@ -56,29 +56,24 @@ class UserController extends Controller
         return view('user-profile',compact('title'));
     }
 
-    public function updateProfile(Request $request){
-        $this->validate($request,[
-            'username'=>'required',
-            'name' => 'required',
-            'email' => 'required',
-            'avatar' =>'file|image|mimes:jpg,jpeg,png,gif',
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate the image
         ]);
-        $imageName = null;
-        if($request->avatar != null){
-            $imageName = time().'.'.$request->avatar->extension();
-            $request->avatar->move(public_path('storage/avatars'), $imageName);
+
+        $user = auth()->user();
+
+        if ($request->hasFile('avatar')) {
+            // Store the new avatar
+            $path = $request->file('avatar')->store('avatars', 'public');
+
+            // Update the user's avatar path in the database
+            $user->avatar = $path;
+            $user->save();
         }
-        auth()->user()->update([
-            'username'=>$request->username,
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'avatar'=>$imageName,
-        ]);
-        $notification = array(
-            'message'=>"User profile updated successfully!!",
-            'alert-type'=>'success'
-        );
-        return back()->with($notification); 
+
+        return redirect()->back()->with('success', 'Profile photo updated successfully.');
     }
 
     public function updatePassword(Request $request){
