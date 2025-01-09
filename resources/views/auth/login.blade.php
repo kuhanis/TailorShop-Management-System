@@ -25,8 +25,10 @@ Enter Username And Password To Login
             <div class="form-control-position">
                 <i class="la la-key"></i>
             </div>
-            <div class="form-control-position" style="right: 0;">
-                <i class="la la-eye-slash toggle-password" style="cursor: pointer;"></i>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="la la-eye-slash"></i>
+                </button>
             </div>
         </div>
     </fieldset>
@@ -45,29 +47,6 @@ Enter Username And Password To Login
 
 @section('scripts')
 <script>
-    function initPasswordToggle() {
-        const toggleBtn = document.querySelector('.toggle-password');
-        const pwdField = document.getElementById('user-password');
-        
-        if(toggleBtn && pwdField) {
-            toggleBtn.onclick = function(e) {
-                e.preventDefault();
-                if(pwdField.type === 'password') {
-                    pwdField.type = 'text';
-                    toggleBtn.classList.remove('la-eye-slash');
-                    toggleBtn.classList.add('la-eye');
-                } else {
-                    pwdField.type = 'password';
-                    toggleBtn.classList.remove('la-eye');
-                    toggleBtn.classList.add('la-eye-slash');
-                }
-            }
-        }
-    }
-
-    // Initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', initPasswordToggle);
-
     // Keep your existing window.onload code
     window.onload = function() {
         if (window.history.replaceState) {
@@ -77,6 +56,17 @@ Enter Username And Password To Login
         window.onpopstate = function () {
             window.history.pushState(null, null, window.location.href);
         };
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('user-password');
+        
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('la-eye');
+            icon.classList.toggle('la-eye-slash');
+        });
     }
 </script>
 @endsection
