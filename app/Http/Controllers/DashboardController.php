@@ -22,7 +22,6 @@ class DashboardController extends Controller
         $retentionCount = DB::table('orders')
             ->where('status', 'in_progress')
             ->where('link_status', 'active')
-            ->whereNotNull('order_link')
             ->count();
 
         // For bar chart
