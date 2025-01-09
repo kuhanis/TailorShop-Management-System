@@ -44,7 +44,24 @@ Enter Username And Password To Login
 @endsection
 
 @section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var togglePassword = document.querySelector('.toggle-password');
+        var passwordInput = document.querySelector('#user-password');
+
+        togglePassword.addEventListener('click', function() {
+            // Toggle type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle icon
+            this.classList.toggle('la-eye');
+            this.classList.toggle('la-eye-slash');
+        });
+    });
+
+    // Keep your existing window.onload code
     window.onload = function() {
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
@@ -54,19 +71,6 @@ Enter Username And Password To Login
             window.history.pushState(null, null, window.location.href);
         };
     }
-    $(document).ready(function() {
-        // Password toggle functionality
-        $('.toggle-password').on('click', function() {
-            const passwordInput = $('#user-password');
-            const type = passwordInput.attr('type');
-            
-            // Toggle password visibility
-            passwordInput.attr('type', type === 'password' ? 'text' : 'password');
-            
-            // Toggle icon
-            $(this).toggleClass('la-eye la-eye-slash');
-        });
-    });
 </script>
 @endsection
 
