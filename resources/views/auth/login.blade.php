@@ -20,9 +20,14 @@ Enter Username And Password To Login
         </div>
     </fieldset>
     <fieldset class="form-group position-relative has-icon-left">
-        <input type="password" value="<?php if(isset($_COOKIE["userpassword"])) { echo $_COOKIE["userpassword"]; } ?>" name="password" class="form-control" id="user-password" placeholder="Enter Password" >
-        <div class="form-control-position">
-            <i class="la la-key"></i>
+        <div class="position-relative">
+            <input type="password" value="<?php if(isset($_COOKIE["userpassword"])) { echo $_COOKIE["userpassword"]; } ?>" name="password" class="form-control password-input" id="user-password" placeholder="Enter Password" >
+            <div class="form-control-position">
+                <i class="la la-key"></i>
+            </div>
+            <div class="form-control-position" style="right: 0;">
+                <i class="la la-eye-slash toggle-password" style="cursor: pointer;"></i>
+            </div>
         </div>
     </fieldset>
     <div class="form-group row">
