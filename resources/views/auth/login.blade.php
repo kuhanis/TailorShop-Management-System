@@ -54,11 +54,18 @@ Enter Username And Password To Login
             window.history.pushState(null, null, window.location.href);
         };
     }
-    $('.toggle-password').on('click', function() {
-        const input = $(this).closest('.position-relative').find('.password-input');
-        const type = input.attr('type');
-        input.attr('type', type === 'password' ? 'text' : 'password');
-        $(this).toggleClass('la-eye la-eye-slash');
+    $(document).ready(function() {
+        // Password toggle functionality
+        $('.toggle-password').on('click', function() {
+            const passwordInput = $('#user-password');
+            const type = passwordInput.attr('type');
+            
+            // Toggle password visibility
+            passwordInput.attr('type', type === 'password' ? 'text' : 'password');
+            
+            // Toggle icon
+            $(this).toggleClass('la-eye la-eye-slash');
+        });
     });
 </script>
 @endsection
