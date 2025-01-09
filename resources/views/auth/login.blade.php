@@ -25,11 +25,6 @@ Enter Username And Password To Login
             <div class="form-control-position">
                 <i class="la la-key"></i>
             </div>
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                    <i class="la la-eye-slash"></i>
-                </button>
-            </div>
         </div>
     </fieldset>
     <div class="form-group row">
@@ -56,17 +51,6 @@ Enter Username And Password To Login
         window.onpopstate = function () {
             window.history.pushState(null, null, window.location.href);
         };
-        const togglePassword = document.getElementById('togglePassword');
-        const password = document.getElementById('user-password');
-        
-        togglePassword.addEventListener('click', function() {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            
-            const icon = this.querySelector('i');
-            icon.classList.toggle('la-eye');
-            icon.classList.toggle('la-eye-slash');
-        });
     }
 </script>
 @endsection
