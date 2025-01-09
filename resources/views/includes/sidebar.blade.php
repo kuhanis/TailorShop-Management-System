@@ -6,7 +6,7 @@
              src="@if(!empty(auth()->user()->avatar))
                     {{ asset('storage/' . auth()->user()->avatar) }}
                  @else 
-                    {{ asset('app-assets/images/portrait/small/avatar-s-1.png') }} 
+                    {{ asset('app-assets/images/portrait/small/default-pp.png') }} 
                  @endif"
         />
         <div class="role-text">

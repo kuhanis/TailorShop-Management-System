@@ -42,7 +42,7 @@
                     <li class="dropdown dropdown-user nav-item">
                         <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                             <span class="mr-1 user-name text-bold-700">{{auth()->user()->name}}</span>
-                            <span class="avatar avatar-online"><img src="@if(!empty(auth()->user()->avatar)){{asset('storage/avatars/'.auth()->user()->avatar)}}@else app-assets/images/portrait/small/avatar-s-1.png @endif" alt="avatar"><i></i>
+                            <span class="avatar avatar-online"><img src="@if(!empty(auth()->user()->avatar)){{asset('storage/avatars/'.auth()->user()->avatar)}}@else app-assets/images/portrait/small/default-pp.png @endif" alt="avatar"><i></i>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">

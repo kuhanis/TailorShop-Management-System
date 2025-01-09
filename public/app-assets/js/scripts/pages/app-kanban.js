@@ -22,8 +22,8 @@ $(document).ready(function () {
       comment: 1,
       attachment: 3,
       users: [
-        "../../../app-assets/images/portrait/small/avatar-s-11.png",
-        "../../../app-assets/images/portrait/small/avatar-s-12.png"
+        "../../../app-assets/images/portrait/small/default-pp1.png",
+        "../../../app-assets/images/portrait/small/default-pp2.png"
       ]
     },
     {
@@ -41,8 +41,8 @@ $(document).ready(function () {
       comment: 23,
       attachment: 4,
       users: [
-        "../../../app-assets/images/portrait/small/avatar-s-1.png",
-        "../../../app-assets/images/portrait/small/avatar-s-18.png"
+        "../../../app-assets/images/portrait/small/default-pp.png",
+        "../../../app-assets/images/portrait/small/default-pp8.png"
       ]
     },
     {
@@ -53,7 +53,7 @@ $(document).ready(function () {
       attachment: 2,
       users: [
         "../../../app-assets/images/portrait/small/avatar-s-26.png",
-        "../../../app-assets/images/portrait/small/avatar-s-16.png"
+        "../../../app-assets/images/portrait/small/default-pp6.png"
       ]
     },
     {
@@ -79,7 +79,7 @@ $(document).ready(function () {
       comment: 8,
       users: [
         "../../../app-assets/images/portrait/small/avatar-s-24.png",
-        "../../../app-assets/images/portrait/small/avatar-s-14.png"
+        "../../../app-assets/images/portrait/small/default-pp4.png"
       ]
     },
     {
@@ -111,7 +111,7 @@ $(document).ready(function () {
       users: [
         "../../../app-assets/images/portrait/small/avatar-s-20.png",
         "../../../app-assets/images/portrait/small/avatar-s-22.png",
-        "../../../app-assets/images/portrait/small/avatar-s-13.png"
+        "../../../app-assets/images/portrait/small/default-pp3.png"
       ]
     },
     {
@@ -129,7 +129,7 @@ $(document).ready(function () {
       border: "primary",
       dueDate: "Mar 9",
       users: [
-        "../../../app-assets/images/portrait/small/avatar-s-1.png",
+        "../../../app-assets/images/portrait/small/default-pp.png",
         "../../../app-assets/images/portrait/small/avatar-s-2.png"
       ]
     }
