@@ -99,9 +99,14 @@ class ForgotPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'password' => 'required|max:200|min:8|confirmed|regex:/^(?=.*[a-z])
-            (?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
+            'password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
+            ]
         ]);
+        
 
         $tokenData = DB::table('password_resets')
             ->where('token', $request->token)
