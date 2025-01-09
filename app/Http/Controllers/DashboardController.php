@@ -18,7 +18,8 @@ class DashboardController extends Controller
         $completedOrders = DB::table('order_histories')->count();
         $activeOrders = DB::table('orders')
             ->where('status', 'in_progress')
-            ->where('status', 'to_collect')
+            ->whereNull('paid_at')
+            ->whereNull('deleted_at')
             ->count();
 
             $retentionPeriod = config('retention.period');
