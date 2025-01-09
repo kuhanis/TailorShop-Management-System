@@ -17,11 +17,11 @@ class DashboardController extends Controller
         $totalUsers = DB::table('customers')->count();
         $completedOrders = DB::table('order_histories')->count();
         $activeOrders = DB::table('orders')
-            ->where('status', 'in_progress')
+            ->where('status', 'active')
             ->count();
         $retentionCount = DB::table('orders')
-            ->where('status', 'in_progress')
-            ->where('link_status', 'active')
+            ->where('link_status', '!=', 'revoked')
+            ->whereNotNull('order_link')
             ->count();
 
         // For bar chart
