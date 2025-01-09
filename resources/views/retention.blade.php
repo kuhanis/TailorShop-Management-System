@@ -188,13 +188,22 @@ $(document).ready(function() {
     // Copy link functionality
     $('.copy-link').on('click', function() {
         const link = $(this).data('link');
-        navigator.clipboard.writeText(link).then(function() {
-            toastr.success('Link copied to clipboard!');
-        }).catch(function(err) {
-            toastr.error('Failed to copy link');
-        });
+        const tempInput = document.createElement('input');
+        tempInput.value = link;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        // Visual feedback
+        $(this).html('<i class="la la-check"></i> Copied');
+        setTimeout(() => {
+            $(this).html('<i class="la la-copy"></i> Copy');
+        }, 2000);
+        
+        toastr.success('Link copied to clipboard!');
     });
-
+    
     // Add delete customer handler
     $('.delete-customer').on('click', function() {
         const orderId = $(this).data('order-id');

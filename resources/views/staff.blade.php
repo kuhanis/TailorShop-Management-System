@@ -504,16 +504,16 @@ $(document).ready(function() {
     // Add copy password function
     $('.copy-btn').on('click', function() {
         const password = document.getElementById('new-password').textContent;
-        navigator.clipboard.writeText(password).then(function() {
-            // Show success message
-            toastr.success('Password copied to clipboard!');
-            $('.copy-btn').text('Copied!');
-            setTimeout(() => $('.copy-btn').html('<i class="la la-copy"></i> Copy'), 2000);
-        }).catch(function(err) {
-            // Show error message
-            toastr.error('Failed to copy password');
-            console.error('Failed to copy password: ', err);
-        });
+        const tempInput = document.createElement('input');
+        tempInput.value = password;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        toastr.success('Password copied to clipboard!');
+        $('.copy-btn').text('Copied!');
+        setTimeout(() => $('.copy-btn').html('<i class="la la-copy"></i> Copy'), 2000);
     });
 
     // Handle staff form submission
