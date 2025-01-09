@@ -44,22 +44,29 @@ Enter Username And Password To Login
 @endsection
 
 @section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var togglePassword = document.querySelector('.toggle-password');
-        var passwordInput = document.querySelector('#user-password');
+    function initPasswordToggle() {
+        const toggleBtn = document.querySelector('.toggle-password');
+        const pwdField = document.getElementById('user-password');
+        
+        if(toggleBtn && pwdField) {
+            toggleBtn.onclick = function(e) {
+                e.preventDefault();
+                if(pwdField.type === 'password') {
+                    pwdField.type = 'text';
+                    toggleBtn.classList.remove('la-eye-slash');
+                    toggleBtn.classList.add('la-eye');
+                } else {
+                    pwdField.type = 'password';
+                    toggleBtn.classList.remove('la-eye');
+                    toggleBtn.classList.add('la-eye-slash');
+                }
+            }
+        }
+    }
 
-        togglePassword.addEventListener('click', function() {
-            // Toggle type attribute
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            // Toggle icon
-            this.classList.toggle('la-eye');
-            this.classList.toggle('la-eye-slash');
-        });
-    });
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', initPasswordToggle);
 
     // Keep your existing window.onload code
     window.onload = function() {
