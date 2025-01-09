@@ -22,7 +22,6 @@ class DashboardController extends Controller
         $retentionCount = DB::table('orders')
             ->whereNotNull('paid_at')
             ->where('status', 'paid')
-            ->where('link_status', 'active')
             ->whereNotNull('access_token')
             ->count();
 
