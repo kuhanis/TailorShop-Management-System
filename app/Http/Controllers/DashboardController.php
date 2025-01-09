@@ -18,10 +18,29 @@ class DashboardController extends Controller
         $completedOrders = DB::table('order_histories')->count();
         $activeOrders = DB::table('orders')
             ->where('status', 'in_progress')
+            ->where('status', 'to_collect')
             ->count();
+
+            $retentionPeriod = config('retention.period');
+            $retentionUnit = config('retention.unit', 'days', 'hours', 'minutes');
+
+            $expiryDate = Carbon::now();
+            switch($retentionUnit) {
+                case 'minutes':
+                    $expiryDate = $expiryDate->subMinutes($retentionPeriod);
+                    break;
+                case 'hours':
+                    $expiryDate = $expiryDate->subHours($retentionPeriod);
+                    break;
+                case 'days':
+                    $expiryDate = $expiryDate->subDays($retentionPeriod);
+                    break;
+            }
+
         $retentionCount = DB::table('orders')
             ->whereNotNull('paid_at')
-            ->where('status', 'paid')
+            ->where('paid_at', '>', $expiryDate)
+            ->where('link_status', 'active')
             ->whereNotNull('access_token')
             ->count();
 
