@@ -54,6 +54,12 @@ Enter Username And Password To Login
             window.history.pushState(null, null, window.location.href);
         };
     }
+    $('.toggle-password').on('click', function() {
+        const input = $(this).closest('.position-relative').find('.password-input');
+        const type = input.attr('type');
+        input.attr('type', type === 'password' ? 'text' : 'password');
+        $(this).toggleClass('la-eye la-eye-slash');
+    });
 </script>
 @endsection
 
